@@ -1,0 +1,42 @@
+<!--<ion-header>
+</ion-header>-->
+<ion-content>
+  <ion-card class="ion-text-center ion-no-margin detail-card">
+    <ion-card-header>
+      <ion-card-title>Detalle de nodo</ion-card-title>
+    </ion-card-header>
+    <ion-card-content>
+      <ion-grid *ngIf="node">
+        <ion-row>
+          <ion-col>ID</ion-col>
+          <ion-col class="ion-text-end">{{ node.fid_sipe }}</ion-col>
+        </ion-row>
+        <ion-row>
+          <ion-col>Integridad</ion-col>
+          <ion-col class="ion-text-end">{{ node.cat_itegr }}</ion-col>
+        </ion-row>
+        <ion-row>
+          <ion-col>Ecosistema</ion-col>
+          <ion-col class="ion-text-end">{{ node.id_ecosist }} {{ node.ecosistema }}</ion-col>
+        </ion-row>
+        <ion-row>
+          <ion-col>Cúmulo</ion-col>
+          <ion-col class="ion-text-end">{{ node.id_cumulo }}</ion-col>
+        </ion-row>
+        <ion-row>
+          <ion-col>Coordsx1</ion-col>
+          <ion-col class="ion-text-end">{{ node.coordsx1 }}</ion-col>
+        </ion-row>
+        <ion-row>
+          <ion-col>Coordsx2</ion-col>
+          <ion-col class="ion-text-end">{{ node.coordsx2 }}</ion-col>
+        </ion-row>
+        <ion-row>
+          <ion-col class="ion-text-end">
+            Latitud: {{ node.latitud }}, longitud: {{ node.longitud }}, altitud: {{ node.altitud }}m</ion-col
+          >
+        </ion-row>
+      </ion-grid>
+    </ion-card-content>
+  </ion-card>
+</ion-content>

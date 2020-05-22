@@ -1,0 +1,31 @@
+<!--<ion-header>
+</ion-header>-->
+<ion-content>
+  <ion-card class="ion-text-center ion-no-margin">
+    <ion-toolbar class="filter-bar">
+      <ion-buttons slot="start">
+        <ion-menu-button auto-hide="false" menu="main-menu" color="success"></ion-menu-button>
+      </ion-buttons>
+      <ion-grid>
+        <ion-row>
+          <ion-col>
+            <ion-label for="degradacion-select" color="dark">Degradación: </ion-label>
+            <select id="degradacion-select" [(ngModel)]="integrity" (change)="filterChanged()">
+              <option [value]="null">Selecciona una opción</option>
+              <option [value]="'Degradado'">Degradado</option>
+              <option [value]="'Integro'">Integro</option>
+            </select>
+          </ion-col>
+          <ion-col>
+            <ion-label for="ecosystem-select" color="dark">Ecosistema: </ion-label>
+            <select id="ecosystem-select" [(ngModel)]="ecosystem" (change)="filterChanged()">
+              <option selected [value]="null">Selecciona una opción</option>
+              <option *ngFor="let e of ecosystems" value="{{ e.ecosistema }}">{{ e.ecosistema }}</option>
+            </select>
+          </ion-col>
+        </ion-row>
+      </ion-grid>
+    </ion-toolbar>
+    <div id="map" style="display: block; height: 100vh; width: 100%;"></div>
+  </ion-card>
+</ion-content>
