@@ -1,4 +1,4 @@
-FROM node:10.16.0
+FROM node:12.16.1
 
 RUN apt-get update
 RUN apt-get upgrade -y
@@ -13,7 +13,7 @@ RUN npm install -g @angular/cli@9.1.0
 
 COPY ./ ./
 
-EXPOSE 4300
+EXPOSE 4200
 
 CMD ["npm", "run", "env"]
 CMD ["ng", "serve", "--host", "0.0.0.0"]
