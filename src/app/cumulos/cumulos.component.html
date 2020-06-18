@@ -1,0 +1,56 @@
+<ion-header>
+  <ion-toolbar color="light">
+    <ion-buttons slot="start">
+      <ion-menu-button></ion-menu-button>
+    </ion-buttons>
+    <ion-title><span translate>Nodos</span></ion-title>
+  </ion-toolbar>
+</ion-header>
+<ion-content>
+  <ion-toolbar>
+    <ion-grid>
+      <ion-row>
+        <ion-col>
+          <ion-item color="transparent" lines="none">
+            <ion-label color="secondary" class="bold-text">Cúmulo activo</ion-label>
+            <ion-toggle slot="start" color="secondary"></ion-toggle>
+          </ion-item>
+        </ion-col>
+      </ion-row>
+    </ion-grid>
+  </ion-toolbar>
+  <ion-card>
+    <ion-card-content>
+      <ion-grid>
+        <ion-row class="ion-text-center">
+          <ion-col size="1"><ion-label color="primary">Cúmulo</ion-label></ion-col>
+          <ion-col><ion-label color="primary">Ecosistema</ion-label></ion-col>
+          <ion-col size="1"><ion-label color="primary">Acciones</ion-label></ion-col>
+        </ion-row>
+        <ion-row *ngFor="let n of nodes">
+          <ion-col size="1">{{ n.idCumulo }}</ion-col>
+          <ion-col>{{ n.ecosistema }}</ion-col>
+          <ion-col size="1">
+            <ion-buttons>
+              <ion-button>
+                <ion-icon slot="icon-only" name="create"></ion-icon>
+              </ion-button>
+              <ion-button>
+                <ion-icon slot="icon-only" name="trash"></ion-icon>
+              </ion-button>
+            </ion-buttons>
+          </ion-col>
+        </ion-row>
+      </ion-grid>
+    </ion-card-content>
+  </ion-card>
+  <ion-fab vertical="bottom" horizontal="end" slot="fixed">
+    <ion-fab-button>
+      <ion-icon name="add"></ion-icon>
+    </ion-fab-button>
+    <ion-fab-list side="start">
+      <ion-fab-button><ion-icon name="person"></ion-icon></ion-fab-button>
+      <ion-fab-button><ion-icon name="pin"></ion-icon></ion-fab-button>
+    </ion-fab-list>
+  </ion-fab>
+</ion-content>

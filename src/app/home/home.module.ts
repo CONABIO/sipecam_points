@@ -9,10 +9,11 @@ import { SharedModule } from '@shared';
 import { HomeRoutingModule } from './home-routing.module';
 import { HomeComponent } from './home.component';
 import { NodeDetailComponent } from './node-detail/node-detail.component';
+import { FiltersComponent } from './filters/filters.component';
 
 @NgModule({
   imports: [CommonModule, TranslateModule, FormsModule, CoreModule, SharedModule, IonicModule, HomeRoutingModule],
-  declarations: [HomeComponent, NodeDetailComponent],
+  declarations: [HomeComponent, NodeDetailComponent, FiltersComponent],
   entryComponents: [NodeDetailComponent],
 })
 export class HomeModule {}

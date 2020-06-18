@@ -2,3 +2,8 @@
  * Global application theme.
  * Framework overrides and customization goes here.
  */
+.filters-popover {
+  .popover-content {
+    width: 600px;
+  }
+}

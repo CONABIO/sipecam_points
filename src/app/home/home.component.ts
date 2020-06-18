@@ -1,9 +1,17 @@
 import { Component, OnInit } from '@angular/core';
-import { ModalController } from '@ionic/angular';
+import { ModalController, PopoverController } from '@ionic/angular';
 import { environment } from '@env/environment';
 import { DashboardService } from './services/dashboard.service';
+import { FiltersService } from './services/filters.service';
 import { NodeDetailComponent } from './node-detail/node-detail.component';
+import { FiltersComponent } from './filters/filters.component';
 import * as mapboxgl from 'mapbox-gl';
+
+export interface MapContext {
+  ecosystem: string | null;
+  integrity: string | null;
+  layer: string | null;
+}
 
 @Component({
   selector: 'app-home',
@@ -17,12 +25,36 @@ export class HomeComponent implements OnInit {
   map: mapboxgl.Map;
   points: any = [];
 
-  constructor(private dashboardService: DashboardService, private modalCtrl: ModalController) {}
+  filters: MapContext = {
+    ecosystem: null,
+    integrity: null,
+    layer: null,
+  };
 
-  async filterChanged() {
-    console.log('change', typeof this.ecosystem, this.ecosystem, this.integrity);
+  layers = {
+    integridad_ecosistemica:
+      'https://monitoreo.conabio.gob.mx/geoserver/geoportal/wms?service=WMS&version=1.1.0&request=GetMap&layers=geoportal:mex_ie_2014_250m&styles=&bbox={bbox-epsg-3857}&width=768&height=436&srs=EPSG:3857&format=image%2Fpng',
+    vegetacion:
+      'https://monitoreo.conabio.gob.mx/geoserver/geoportal/wms?service=WMS&version=1.1.0&request=GetMap&layers=geoportal:mex_RE_2015_8_clases&styles=&bbox={bbox-epsg-3857}&width=768&height=456&srs=EPSG:3857&format=image%2Fpng',
+    puma:
+      'https://monitoreo.conabio.gob.mx/geoserver/geoportal/wms?service=WMS&version=1.1.0&request=GetMap&layers=geoportal:mex_pconcolorB1suitability_2014&styles=&bbox={bbox-epsg-3857}&width=768&height=445&srs=EPSG:3857&format=image%2Fpng',
+    pantera:
+      'https://monitoreo.conabio.gob.mx/geoserver/geoportal/wms?service=WMS&version=1.1.0&request=GetMap&layers=geoportal:mex_poncaB1suitability_2014&styles=&bbox={bbox-epsg-3857}&width=768&height=444&srs=EPSG:3857&format=image%2Fpng',
+    perdida_vegetacion:
+      'https://monitoreo.conabio.gob.mx/geoserver/geoportal_deprecated/wms?service=WMS&version=1.1.0&request=GetMap&layers=geoportal_deprecated:mex_LSperdida_2001_2017&styles=&bbox={bbox-epsg-3857}&width=768&height=576&srs=EPSG:3857&format=image%2Fjpeg',
+  };
+
+  constructor(
+    private dashboardService: DashboardService,
+    private filtersService: FiltersService,
+    private modalCtrl: ModalController,
+    private popoverCtrl: PopoverController
+  ) {}
+
+  async filterChanged(filters: MapContext) {
+    console.log('change', typeof filters.ecosystem, filters);
     try {
-      this.points = await this.dashboardService.getFilteredNodes(this.ecosystem, this.integrity);
+      this.points = await this.dashboardService.getFilteredNodes(filters.ecosystem, filters.integrity);
       console.log('points', this.points);
       const data = {
         type: 'FeatureCollection',
@@ -81,6 +113,52 @@ export class HomeComponent implements OnInit {
 
       console.log('*****', this.points);
 
+      this.map.addSource('integridad_ecosistemica-src', {
+        type: 'raster',
+        tiles: [
+          'https://monitoreo.conabio.gob.mx/geoserver/geoportal/wms?service=WMS&version=1.1.0&request=GetMap&layers=geoportal:mex_ie_2014_250m&styles=&bbox={bbox-epsg-3857}&width=768&height=436&srs=EPSG:3857&format=image%2Fpng',
+        ],
+        tileSize: 256,
+      });
+
+      this.map.addSource('vegetacion-src', {
+        type: 'raster',
+        tiles: [
+          'https://monitoreo.conabio.gob.mx/geoserver/geoportal/wms?service=WMS&version=1.1.0&request=GetMap&layers=geoportal:mex_RE_2015_8_clases&styles=&bbox={bbox-epsg-3857}&width=768&height=456&srs=EPSG:3857&format=image%2Fpng',
+        ],
+        tileSize: 256,
+      });
+
+      this.map.addSource('puma-src', {
+        type: 'raster',
+        tiles: [
+          'https://monitoreo.conabio.gob.mx/geoserver/geoportal/wms?service=WMS&version=1.1.0&request=GetMap&layers=geoportal:mex_pconcolorB1suitability_2014&styles=&bbox={bbox-epsg-3857}&width=768&height=445&srs=EPSG:3857&format=image%2Fpng',
+        ],
+        tileSize: 256,
+      });
+
+      this.map.addSource('pantera-src', {
+        type: 'raster',
+        tiles: [
+          'https://monitoreo.conabio.gob.mx/geoserver/geoportal/wms?service=WMS&version=1.1.0&request=GetMap&layers=geoportal:mex_poncaB1suitability_2014&styles=&bbox={bbox-epsg-3857}&width=768&height=444&srs=EPSG:3857&format=image%2Fpng',
+        ],
+        tileSize: 256,
+      });
+
+      this.map.addSource('perdida_vegetacion-src', {
+        type: 'raster',
+        tiles: [
+          'https://monitoreo.conabio.gob.mx/geoserver/geoportal_deprecated/wms?service=WMS&version=1.1.0&request=GetMap&layers=geoportal_deprecated:mex_LSperdida_2001_2017&styles=&bbox={bbox-epsg-3857}&width=768&height=576&srs=EPSG:3857&format=image%2Fjpeg',
+        ],
+        tileSize: 256,
+      });
+
+      /*this.map.addLayer({
+        id: 'capas',
+        type: 'raster',
+        source: 'capa-src'
+      });*/
+
       this.map.addSource('points-src', {
         type: 'geojson',
         data: {
@@ -108,6 +186,7 @@ export class HomeComponent implements OnInit {
         clusterRadius: 25, // Radius of each cluster when clustering points (defaults to 50)
       });
 
+      console.log('GET', this.map.getSource('points-src'));
       this.map.addLayer({
         id: 'unclustered-point',
         type: 'circle',
@@ -158,6 +237,32 @@ export class HomeComponent implements OnInit {
   ngOnInit() {
     this.getEcosystems();
     this.initMap();
+    console.log('graphql call');
+    // this.dashboardService.graphql();
+    this.filtersService.filtersObservable.subscribe((filters) => {
+      console.log('FILTERS', this.filters, filters);
+      if (this.filters.layer != filters.layer) {
+        console.log('entre');
+        if (this.filters.layer != null) {
+          console.log('entre remove');
+          this.map.removeLayer('capas');
+        }
+        if (filters.layer) {
+          console.log('entre add', filters.layer);
+          this.map.addLayer(
+            {
+              id: 'capas',
+              type: 'raster',
+              source: `${filters.layer}-src`,
+            },
+            'unclustered-point'
+          );
+        }
+      }
+      this.filters = { ...filters };
+      console.log('ASSIG', this.filters);
+      this.filterChanged(filters);
+    });
   }
 
   async showDetail(id: string) {
@@ -167,5 +272,19 @@ export class HomeComponent implements OnInit {
     });
 
     modal.present();
+  }
+
+  async showFilters(ev: any) {
+    const popover = await this.popoverCtrl.create({
+      component: FiltersComponent,
+      cssClass: 'filters-popover',
+      event: ev,
+      translucent: true,
+      componentProps: {
+        filters: this.filtersService.filters,
+        fs: this.filtersService,
+      },
+    });
+    return await popover.present();
   }
 }

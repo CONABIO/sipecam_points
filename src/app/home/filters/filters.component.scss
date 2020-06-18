@@ -1,0 +1,21 @@
+ion-item {
+  --min-height: 25px;
+  font-size: 12px;
+}
+
+ion-item ion-label {
+  margin-top: 6px;
+  margin-bottom: 6px;
+  font-size: 12px;
+}
+
+ion-item ion-radio {
+  margin-inline-end: 5px;
+  margin-top: 6px;
+  margin-bottom: 6px;
+}
+
+ion-select {
+  --padding-top: 2px;
+  --padding-bottom: 2px;
+}

@@ -2,13 +2,16 @@ import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { forkJoin } from 'rxjs';
 
+import { Apollo } from 'apollo-angular';
+import gql from 'graphql-tag';
+
 import { environment } from '@env/environment';
 
 @Injectable({
   providedIn: 'root',
 })
 export class DashboardService {
-  constructor(private http: HttpClient) {}
+  constructor(private apollo: Apollo, private http: HttpClient) {}
 
   private formatParams(params: object) {
     return Object.keys(params)
@@ -16,6 +19,34 @@ export class DashboardService {
         return key + '=' + encodeURIComponent(params[key]);
       })
       .join('&');
+  }
+
+  allNodesGraphql() {
+    return new Promise((resolve, reject) => {
+      this.apollo
+        .watchQuery({
+          query: gql`
+            {
+              allSitios {
+                nodes {
+                  idCumulo
+                  ecosistema
+                }
+              }
+            }
+          `,
+        })
+        .valueChanges.subscribe(
+          (result: any) => {
+            console.log('graphql', result);
+            resolve(result.data ? result.data.allSitios.nodes : []);
+          },
+          (err) => {
+            console.log(err);
+            reject(err);
+          }
+        );
+    });
   }
 
   getEcosystems() {
@@ -49,16 +80,16 @@ export class DashboardService {
   }
 
   getFilteredNodes(ecosystem: string, integrity: string) {
-    if (ecosystem == 'null' && integrity == 'null') {
+    if (ecosystem == null && integrity == null) {
       return this.getAllNodes();
     }
 
     let url = `${environment.serverUrl}/both/${encodeURIComponent(ecosystem)}/${integrity}`;
-    if (ecosystem == 'null') {
+    if (ecosystem == null) {
       url = `${environment.serverUrl}/filterintegrity/${integrity}`;
     }
 
-    if (integrity == 'null') {
+    if (integrity == null) {
       url = `${environment.serverUrl}/filterecosystem/${encodeURIComponent(ecosystem)}`;
     }
 
