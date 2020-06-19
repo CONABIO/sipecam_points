@@ -25,9 +25,15 @@ export class FiltersComponent implements OnInit {
     this.fs.setParam(param, event.target.value);
   }
 
+  resetFilters() {
+    this.fs.resetParams();
+    this.filters = this.fs.filters;
+  }
+
   async getEcosystems() {
     try {
       this.ecosystems = await this.dashboardService.getEcosystems();
+      this.filters = this.fs.filters;
     } catch (error) {
       console.log(error);
     }

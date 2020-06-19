@@ -242,9 +242,7 @@ export class HomeComponent implements OnInit {
     this.filtersService.filtersObservable.subscribe((filters) => {
       console.log('FILTERS', this.filters, filters);
       if (this.filters.layer != filters.layer) {
-        console.log('entre');
         if (this.filters.layer != null) {
-          console.log('entre remove');
           this.map.removeLayer('capas');
         }
         if (filters.layer) {

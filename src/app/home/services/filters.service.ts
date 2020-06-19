@@ -25,6 +25,14 @@ export class FiltersService {
     return this._filters.getValue();
   }
 
+  resetParams() {
+    this._filters.next({
+      ecosystem: null,
+      integrity: null,
+      layer: null,
+    });
+  }
+
   setParam(param: string, value: any) {
     this._filters.next({
       ...this._filters.getValue(),
