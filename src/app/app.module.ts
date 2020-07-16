@@ -10,6 +10,7 @@ import { GraphQLModule } from './graphql.module';
 import { CoreModule } from '@core';
 import { SharedModule } from '@shared';
 import { CumulosModule } from './cumulos/cumulos.module';
+import { SociosModule } from './socios/socios.module';
 import { HomeModule } from './home/home.module';
 import { ShellModule } from './shell/shell.module';
 import { AppComponent } from './app.component';
@@ -28,6 +29,7 @@ import { AppRoutingModule } from './app-routing.module';
     ShellModule,
     HomeModule,
     CumulosModule,
+    SociosModule,
     AppRoutingModule, // must be imported as the last module as it contains the fallback route
   ],
   declarations: [AppComponent],

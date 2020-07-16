@@ -1,16 +1,16 @@
 import { Component, OnInit } from '@angular/core';
 import { DashboardService } from '../home/services/dashboard.service';
 import { AlertController, ModalController } from '@ionic/angular';
-import { AddCumuloComponent } from './add-cumulo/add-cumulo.component';
+import { AddSocioComponent } from './add-socio/add-socio.component';
 
 import { environment } from '@env/environment';
 
 @Component({
-  selector: 'app-cumulos',
-  templateUrl: './cumulos.component.html',
-  styleUrls: ['./cumulos.component.scss'],
+  selector: 'app-socios',
+  templateUrl: './socios.component.html',
+  styleUrls: ['./socios.component.scss'],
 })
-export class CumulosComponent implements OnInit {
+export class SociosComponent implements OnInit {
   nodes: any = [];
 
   constructor(
@@ -19,16 +19,16 @@ export class CumulosComponent implements OnInit {
     private modalController: ModalController
   ) {}
 
-  async deleteCumulo(id: string) {
+  async deleteSocio(id: string) {
     const alert = await this.alertController.create({
-      header: 'Eliminar cúmulo',
-      message: `¿Deseas elimininar el cúmulo ${id}`,
+      header: 'Eliminar socio',
+      message: `¿Deseas eliminar al socio ${id}`,
       buttons: [
         'Cancelar',
         {
           text: 'Eliminar',
           handler: () => {
-            console.log('Cúmulo eliminado');
+            console.log('Socio eliminado');
           },
         },
       ],
@@ -37,12 +37,12 @@ export class CumulosComponent implements OnInit {
     await alert.present();
   }
 
-  async addCumulo(cumulo?: any) {
+  async addSocio(socio?: any) {
     console.log('EDIT');
     const modal = await this.modalController.create({
-      component: AddCumuloComponent,
+      component: AddSocioComponent,
       componentProps: {
-        cumulo,
+        socio,
       },
       // cssClass: 'my-custom-class'
     });
@@ -51,7 +51,7 @@ export class CumulosComponent implements OnInit {
 
   async getNodes() {
     try {
-      this.nodes = await this.dashboardService.allCumulusesGraphql();
+      this.nodes = await this.dashboardService.allPartnersGraphql();
     } catch (error) {
       console.log(error);
     }

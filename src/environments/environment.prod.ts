@@ -16,6 +16,6 @@ export const environment = {
   mapbox: {
     accessToken:
       'pk.eyJ1IjoibnRyaW5pZGFkLWNvbmFiaW8iLCJhIjoiY2s1NWc5d3B3MGpsazNkc2JvdDl0dmswOSJ9.7aVSqlGPrLBHjt23HjBgPA',
-    style: 'mapbox://styles/ntrinidad-conabio/ck680atts0k851inxdfu5p1gh',
+    style: 'mapbox://styles/ntrinidad-conabio/ckcl6xwth0dky1io6f6t6sb26',
   },
 };

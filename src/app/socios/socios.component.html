@@ -1,0 +1,52 @@
+<ion-header>
+  <ion-toolbar color="light">
+    <ion-buttons slot="start">
+      <ion-menu-button></ion-menu-button>
+    </ion-buttons>
+    <ion-title><span translate>Socios</span></ion-title>
+  </ion-toolbar>
+</ion-header>
+<ion-content>
+  <ion-grid>
+    <ion-row>
+      <ion-col size="4" *ngFor="let n of nodes; let i = index">
+        <ion-card>
+          <ion-card-content>
+            <ion-item>
+              <ion-thumbnail slot="start">
+                <img src="assets/avatar.svg" />
+              </ion-thumbnail>
+              <ion-label class="ion-text-wrap">
+                <h4>{{ n.grade }} {{ n.firstname }} {{ n.lastname }}</h4>
+                <p>{{ n.email }}</p>
+                <p>Tel. {{ n.phoneNumber }}</p>
+                <p>{{ n.institution }}</p>
+              </ion-label>
+            </ion-item>
+            <h6>Comentarios</h6>
+            <p>{{ n.comments }}</p>
+            <ion-footer>
+              <ion-buttons class="ion-justify-content-end">
+                <ion-button (click)="addSocio(n)">
+                  <ion-icon slot="icon-only" name="create"></ion-icon>
+                </ion-button>
+                <ion-button (click)="deleteSocio(n.idSocio)">
+                  <ion-icon slot="icon-only" name="trash"></ion-icon>
+                </ion-button>
+              </ion-buttons>
+            </ion-footer>
+          </ion-card-content>
+        </ion-card>
+      </ion-col>
+    </ion-row>
+  </ion-grid>
+
+  <ion-fab vertical="bottom" horizontal="end" slot="fixed">
+    <ion-fab-button>
+      <ion-icon name="add"></ion-icon>
+    </ion-fab-button>
+    <ion-fab-list side="start">
+      <ion-fab-button (click)="addSocio()"><ion-icon name="person"></ion-icon></ion-fab-button>
+    </ion-fab-list>
+  </ion-fab>
+</ion-content>

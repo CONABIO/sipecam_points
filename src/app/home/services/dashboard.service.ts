@@ -49,6 +49,74 @@ export class DashboardService {
     });
   }
 
+  allCumulusesGraphql() {
+    return new Promise((resolve, reject) => {
+      this.apollo
+        .watchQuery({
+          query: gql`
+            {
+              allCumuluses {
+                nodes {
+                  id
+                  idCumulo
+                  status
+                  criteria
+                  partner
+                  hasAgreement
+                  agreement
+                }
+              }
+            }
+          `,
+        })
+        .valueChanges.subscribe(
+          (result: any) => {
+            console.log('graphql', result);
+            resolve(result.data ? result.data.allCumuluses.nodes : []);
+          },
+          (err) => {
+            console.log(err);
+            reject(err);
+          }
+        );
+    });
+  }
+
+  allPartnersGraphql() {
+    return new Promise((resolve, reject) => {
+      this.apollo
+        .watchQuery({
+          query: gql`
+            {
+              allPartners {
+                nodes {
+                  id
+                  institution
+                  address
+                  firstname
+                  lastname
+                  email
+                  phoneNumber
+                  comments
+                  grade
+                }
+              }
+            }
+          `,
+        })
+        .valueChanges.subscribe(
+          (result: any) => {
+            console.log('graphql', result);
+            resolve(result.data ? result.data.allPartners.nodes : []);
+          },
+          (err) => {
+            console.log(err);
+            reject(err);
+          }
+        );
+    });
+  }
+
   getEcosystems() {
     return new Promise((resolve, reject) => {
       this.http.get(`${environment.serverUrl}/ecosystems`).subscribe(
