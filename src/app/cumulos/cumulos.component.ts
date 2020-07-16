@@ -1,7 +1,10 @@
 import { Component, OnInit } from '@angular/core';
 import { DashboardService } from '../home/services/dashboard.service';
-import { AlertController, ModalController } from '@ionic/angular';
+import { AlertController, ModalController, ToastController } from '@ionic/angular';
 import { AddCumuloComponent } from './add-cumulo/add-cumulo.component';
+
+import { Apollo } from 'apollo-angular';
+import gql from 'graphql-tag';
 
 import { environment } from '@env/environment';
 
@@ -15,20 +18,41 @@ export class CumulosComponent implements OnInit {
 
   constructor(
     private alertController: AlertController,
+    private apollo: Apollo,
     private dashboardService: DashboardService,
-    private modalController: ModalController
+    private modalController: ModalController,
+    private toastController: ToastController
   ) {}
 
-  async deleteCumulo(id: string) {
+  async deleteCumulo(id: string, idCumulo: string) {
+    console.log('id', id);
     const alert = await this.alertController.create({
       header: 'Eliminar cúmulo',
-      message: `¿Deseas elimininar el cúmulo ${id}`,
+      message: `¿Deseas elimininar el cúmulo ${idCumulo}`,
       buttons: [
         'Cancelar',
         {
           text: 'Eliminar',
-          handler: () => {
-            console.log('Cúmulo eliminado');
+          handler: async () => {
+            try {
+              const result = await this.apollo
+                .mutate({
+                  mutation: gql`
+                    mutation {
+                      deleteCumulus(input: {nodeId: "${id}"}) {
+                        deletedCumulusId
+                      }
+                    }
+                  `,
+                })
+                .toPromise();
+              console.log(result);
+              this.presentToast('Cúmulo eliminado');
+              this.getNodes();
+            } catch (error) {
+              console.log(error);
+              this.presentToast('Ocurrió un error');
+            }
           },
         },
       ],
@@ -46,6 +70,9 @@ export class CumulosComponent implements OnInit {
       },
       // cssClass: 'my-custom-class'
     });
+    modal.onDidDismiss().then(() => {
+      this.getNodes();
+    });
     return await modal.present();
   }
 
@@ -58,5 +85,13 @@ export class CumulosComponent implements OnInit {
   }
   ngOnInit() {
     this.getNodes();
+  }
+
+  async presentToast(message: string) {
+    const toast = await this.toastController.create({
+      message: message,
+      duration: 5000,
+    });
+    toast.present();
   }
 }

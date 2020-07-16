@@ -58,6 +58,7 @@ export class DashboardService {
               allCumuluses {
                 nodes {
                   id
+                  nodeId
                   idCumulo
                   status
                   criteria
