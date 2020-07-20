@@ -228,23 +228,29 @@ export class HomeComponent implements OnInit {
     // this.dashboardService.graphql();
     this.filtersService.filtersObservable.subscribe((filters) => {
       console.log('FILTERS', this.filters, filters);
+
       if (this.filters.layer != filters.layer) {
-        if (this.filters.layer != null) {
-          this.map.removeLayer('capas');
-        }
-        if (filters.layer) {
-          console.log('entre add', filters.layer);
-          this.map.addLayer(
-            {
-              id: 'capas',
-              type: 'raster',
-              source: `${filters.layer}-src`,
-              paint: {
-                'raster-opacity': 1,
+        if (filters.layer === 'ecosistemas') {
+          this.map.setLayoutProperty('ecosistemas', 'visibility', 'visible');
+        } else {
+          this.map.setLayoutProperty('ecosistemas', 'visibility', 'none');
+          if (this.filters.layer != null) {
+            this.map.removeLayer('capas');
+          }
+          if (filters.layer) {
+            console.log('entre add', filters.layer);
+            this.map.addLayer(
+              {
+                id: 'capas',
+                type: 'raster',
+                source: `${filters.layer}-src`,
+                paint: {
+                  'raster-opacity': 1,
+                },
               },
-            },
-            'unclustered-point'
-          );
+              'unclustered-point'
+            );
+          }
         }
       }
       this.filters = { ...filters };
