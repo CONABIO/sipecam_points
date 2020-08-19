@@ -8,7 +8,7 @@
       </ion-col>
     </ion-row>
     <ion-row class="ion-text-center">
-      <ion-col>
+      <ion-col size="12">
         <h6>Mostrar</h6>
         <ion-list>
           <ion-radio-group
@@ -34,8 +34,42 @@
             </ion-item>
           </ion-radio-group>
         </ion-list>
+        <ion-list *ngIf="filters.layer === 'ecosistemas'" class="ion-text-left">
+          <ion-item lines="none">
+            <span class="selva-seca" slot="start"></span>
+            <ion-label>Selva Seca</ion-label>
+          </ion-item>
+          <ion-item lines="none">
+            <span class="manglar" slot="start"></span>
+            <ion-label>Manglar</ion-label>
+          </ion-item>
+          <ion-item lines="none">
+            <span class="bosque-templado" slot="start"></span>
+            <ion-label>Bosque Templado</ion-label>
+          </ion-item>
+          <ion-item lines="none">
+            <span class="matorral-xerofilo" slot="start"></span>
+            <ion-label>Matorral Xerofilo</ion-label>
+          </ion-item>
+          <ion-item lines="none">
+            <span class="pastizales" slot="start"></span>
+            <ion-label>Pastizales</ion-label>
+          </ion-item>
+          <ion-item lines="none">
+            <span class="bosque-templado-encinos" slot="start"></span>
+            <ion-label>Bosque Templado Encinos</ion-label>
+          </ion-item>
+          <ion-item lines="none">
+            <span class="selva-humeda" slot="start"></span>
+            <ion-label>Selva Húmeda</ion-label>
+          </ion-item>
+          <ion-item lines="none">
+            <span class="bosque-mesofilo" slot="start"></span>
+            <ion-label>Bosque Mesófilo</ion-label>
+          </ion-item>
+        </ion-list>
       </ion-col>
-      <ion-col>
+      <ion-col size="12">
         <h6>Nodos</h6>
         <ion-list>
           <ion-item lines="none">
@@ -64,6 +98,29 @@
               <ion-select-option value="Integro">Integro</ion-select-option>
               <ion-select-option value="Degradado">Degradado</ion-select-option>
             </ion-select>
+          </ion-item>
+        </ion-list>
+      </ion-col>
+    </ion-row>
+    <ion-row class="ion-text-center">
+      <ion-col size="12">
+        <h6>Leyendas</h6>
+        <ion-list class="ion-text-left">
+          <ion-item lines="none">
+            <span class="cluster-nodo" slot="start"></span>
+            <ion-label>Clúster de n nodos</ion-label>
+          </ion-item>
+          <ion-item lines="none">
+            <span class="nodo-integro" slot="start"></span>
+            <ion-label>Nodo integro</ion-label>
+          </ion-item>
+          <ion-item lines="none">
+            <span class="nodo-degradado" slot="start"></span>
+            <ion-label>Nodo degradado</ion-label>
+          </ion-item>
+          <ion-item lines="none">
+            <span class="anp" slot="start"></span>
+            <ion-label>ANP</ion-label>
           </ion-item>
         </ion-list>
       </ion-col>

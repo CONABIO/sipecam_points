@@ -42,7 +42,7 @@ export class HomeComponent implements OnInit {
 
   constructor(
     private dashboardService: DashboardService,
-    private filtersService: FiltersService,
+    public filtersService: FiltersService,
     private modalCtrl: ModalController,
     private popoverCtrl: PopoverController
   ) {}
@@ -99,6 +99,7 @@ export class HomeComponent implements OnInit {
       accessToken: environment.mapbox.accessToken,
       container: 'map',
       style: environment.mapbox.style,
+      minZoom: 5,
     });
 
     this.map.on('load', async () => {
@@ -163,7 +164,7 @@ export class HomeComponent implements OnInit {
         },
         cluster: true,
         clusterMaxZoom: 17, // Max zoom to cluster points on
-        clusterRadius: 25, // Radius of each cluster when clustering points (defaults to 50)
+        clusterRadius: 17, // Radius of each cluster when clustering points (defaults to 50)
       });
 
       console.log('GET', this.map.getSource('points-src'));

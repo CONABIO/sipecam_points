@@ -19,3 +19,99 @@ ion-select {
   --padding-top: 2px;
   --padding-bottom: 2px;
 }
+
+.cluster-nodo {
+  display: inline-block;
+  background: #ff8900;
+  border-radius: 50%;
+  width: 16px;
+  height: 16px;
+}
+
+.nodo-integro {
+  display: inline-block;
+  background: #00ff00;
+  border-radius: 50%;
+  width: 16px;
+  height: 16px;
+}
+
+.nodo-degradado {
+  display: inline-block;
+  background: #ff0000;
+  border-radius: 50%;
+  width: 16px;
+  height: 16px;
+}
+
+.anp {
+  display: inline-block;
+  background: #14e614;
+  opacity: 0.4;
+  width: 16px;
+  height: 16px;
+}
+
+.selva-seca {
+  display: inline-block;
+  background: #54a23f;
+  opacity: 0.6;
+  width: 16px;
+  height: 16px;
+}
+
+.manglar {
+  display: inline-block;
+  background: #f8ee30;
+  opacity: 0.6;
+  width: 16px;
+  height: 16px;
+}
+
+.bosque-templado {
+  display: inline-block;
+  background: #0d72b5;
+  opacity: 0.6;
+  width: 16px;
+  height: 16px;
+}
+
+.matorral-xerofilo {
+  display: inline-block;
+  background: #f8a92a;
+  opacity: 0.6;
+  width: 16px;
+  height: 16px;
+}
+
+.pastizales {
+  display: inline-block;
+  background: #a656f0;
+  opacity: 0.6;
+  width: 16px;
+  height: 16px;
+}
+
+.bosque-templado-encinos {
+  display: inline-block;
+  background: #993e06;
+  opacity: 0.6;
+  width: 16px;
+  height: 16px;
+}
+
+.selva-humeda {
+  display: inline-block;
+  background: #df1111;
+  opacity: 0.6;
+  width: 16px;
+  height: 16px;
+}
+
+.bosque-mesofilo {
+  display: inline-block;
+  background: #f62cd5;
+  opacity: 0.6;
+  width: 16px;
+  height: 16px;
+}
