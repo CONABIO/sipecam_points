@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { DashboardService } from '../home/services/dashboard.service';
+import { DashboardService } from '../mapa/services/dashboard.service';
 import { AlertController, ModalController, ToastController } from '@ionic/angular';
 import { AddCumuloComponent } from './add-cumulo/add-cumulo.component';
 

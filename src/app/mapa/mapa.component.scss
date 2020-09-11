@@ -1,0 +1,42 @@
+.logo {
+  width: 200px;
+  margin: 0 auto;
+}
+
+.filter-bar {
+  display: block;
+  height: calc(100vh - 80px);
+  min-width: 250px;
+  width: 20%;
+  position: absolute;
+  right: 10px;
+  top: 65px;
+  z-index: 1;
+
+  .display-button {
+    float: right;
+    display: block;
+    right: 0;
+    z-index: 1;
+    position: absolute;
+  }
+}
+
+.hidden-filter-bar {
+  height: 0;
+  width: 0;
+}
+
+ion-toolbar.title-bar {
+  /* --background: rgba($color: #000000, $alpha: 1.0);*/
+  --background: rgba(220, 220, 220, 0.4);
+}
+
+#map {
+  height: calc(100% - 56px);
+  width: 100%;
+}
+
+.hidden {
+  display: none !important;
+}

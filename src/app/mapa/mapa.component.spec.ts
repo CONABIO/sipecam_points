@@ -5,24 +5,23 @@ import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 
 import { CoreModule } from '@core';
 import { SharedModule } from '@shared';
-import { HomeComponent } from './home.component';
-import { QuoteService } from './quote.service';
+import { MapaComponent } from './mapa.component';
 
-describe('HomeComponent', () => {
-  let component: HomeComponent;
-  let fixture: ComponentFixture<HomeComponent>;
+describe('MapaComponent', () => {
+  let component: MapaComponent;
+  let fixture: ComponentFixture<MapaComponent>;
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
       imports: [IonicModule.forRoot(), CoreModule, SharedModule, HttpClientTestingModule],
       schemas: [CUSTOM_ELEMENTS_SCHEMA],
-      declarations: [HomeComponent],
-      providers: [QuoteService],
+      declarations: [MapaComponent],
+      providers: [],
     }).compileComponents();
   }));
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(HomeComponent);
+    fixture = TestBed.createComponent(MapaComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

@@ -3,6 +3,7 @@ import { DashboardService } from '../services/dashboard.service';
 import { FiltersService } from '../services/filters.service';
 
 export interface MapContext {
+  anp: boolean;
   ecosystem: string | null;
   integrity: string | null;
   layer: string | null;
@@ -21,8 +22,7 @@ export class FiltersComponent implements OnInit {
   constructor(private dashboardService: DashboardService) {}
 
   filterChanged(param: string, event: any) {
-    console.log(param, event.target.value);
-    this.fs.setParam(param, event.target.value);
+    this.fs.setParam(param, event.target.value || null);
   }
 
   resetFilters() {

@@ -1,19 +1,18 @@
 <!--<ion-header>
 </ion-header>-->
-<ion-content>
-  <ion-card class="ion-text-center ion-no-margin">
-    <ion-toolbar class="filter-bar">
-      <ion-buttons slot="start">
-        <ion-menu-button auto-hide="false" menu="main-menu" color="success"></ion-menu-button>
-      </ion-buttons>
-      <ion-label><b>MAPA SIPECAM </b></ion-label>
-      <!--<ion-buttons slot="end">
+<ion-content class="ion-text-center ion-no-margin">
+  <ion-toolbar class="ion-text-start" color="dark">
+    <ion-buttons slot="start">
+      <ion-menu-button auto-hide="false" menu="main-menu"></ion-menu-button>
+    </ion-buttons>
+    <ion-label><b>MAPA SIPECAM </b></ion-label>
+    <!--<ion-buttons slot="end">
         <ion-icon name="options"></ion-icon>
         <ion-button (click)="showFilters($event)">
           Filtros
         </ion-button>
       </ion-buttons>-->
-      <!--<ion-grid>
+    <!--<ion-grid>
         <ion-row>
           <ion-col>
             <ion-label for="degradacion-select" color="dark">Degradación: </ion-label>
@@ -32,10 +31,17 @@
           </ion-col>
         </ion-row>
       </ion-grid>-->
-    </ion-toolbar>
-    <div style="display: block; height: 90vh; width: 20%; position: absolute; right: 10px; top: 5vh; z-index: 1;">
-      <app-filters [filters]="filtersService.filters" [fs]="filtersService"></app-filters>
-    </div>
-    <div id="map" style="display: block; height: 100vh; width: 100%;"></div>
-  </ion-card>
+  </ion-toolbar>
+  <div class="filter-bar" [ngClass]="{ 'hidden-filter-bar': !showFilterBar }">
+    <ion-button class="display-button" fill="clear" size="small" (click)="showFilterBar = !showFilterBar">
+      <ion-icon *ngIf="showFilterBar" slot="icon-only" name="remove" color="medium"></ion-icon>
+      <ion-icon *ngIf="!showFilterBar" slot="icon-only" name="resize" color="medium"></ion-icon>
+    </ion-button>
+    <app-filters
+      [filters]="filtersService.filters"
+      [fs]="filtersService"
+      [ngClass]="{ hidden: !showFilterBar }"
+    ></app-filters>
+  </div>
+  <div id="map"></div>
 </ion-content>

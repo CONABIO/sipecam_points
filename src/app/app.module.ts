@@ -11,7 +11,7 @@ import { CoreModule } from '@core';
 import { SharedModule } from '@shared';
 import { CumulosModule } from './cumulos/cumulos.module';
 import { SociosModule } from './socios/socios.module';
-import { HomeModule } from './home/home.module';
+import { MapaModule } from './mapa/mapa.module';
 import { ShellModule } from './shell/shell.module';
 import { AppComponent } from './app.component';
 import { AppRoutingModule } from './app-routing.module';
@@ -27,7 +27,7 @@ import { AppRoutingModule } from './app-routing.module';
     CoreModule,
     SharedModule,
     ShellModule,
-    HomeModule,
+    MapaModule,
     CumulosModule,
     SociosModule,
     AppRoutingModule, // must be imported as the last module as it contains the fallback route

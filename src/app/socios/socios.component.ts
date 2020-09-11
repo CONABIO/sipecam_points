@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { DashboardService } from '../home/services/dashboard.service';
+import { DashboardService } from '../mapa/services/dashboard.service';
 import { AlertController, ModalController } from '@ionic/angular';
 import { AddSocioComponent } from './add-socio/add-socio.component';
 
