@@ -1,16 +1,16 @@
 import { Component, OnInit } from '@angular/core';
-import { ModalController, PopoverController } from '@ionic/angular';
+import { ModalController } from '@ionic/angular';
 import { environment } from '@env/environment';
 import { DashboardService } from './services/dashboard.service';
 import { FiltersService } from './services/filters.service';
 import { NodeDetailComponent } from './node-detail/node-detail.component';
-import { FiltersComponent } from './filters/filters.component';
 import * as mapboxgl from 'mapbox-gl';
 import * as turf from '@turf/turf';
 import * as _ from 'lodash';
 
 export interface MapContext {
   anp: boolean;
+  cumulos: boolean;
   ecosystem: string | null;
   integrity: string | null;
   layer: string | null;
@@ -30,6 +30,7 @@ export class MapaComponent implements OnInit {
 
   filters: MapContext = {
     anp: true,
+    cumulos: true,
     ecosystem: null,
     integrity: null,
     layer: null,
@@ -49,8 +50,7 @@ export class MapaComponent implements OnInit {
   constructor(
     private dashboardService: DashboardService,
     public filtersService: FiltersService,
-    private modalCtrl: ModalController,
-    private popoverCtrl: PopoverController
+    private modalCtrl: ModalController
   ) {}
 
   createMapLayers() {
@@ -218,6 +218,11 @@ export class MapaComponent implements OnInit {
       if (this.filters.anp !== filters.anp) {
         this.showANPLayer(filters.anp);
       }
+
+      if (this.filters.cumulos !== filters.cumulos) {
+        this.showCumulosLayer(filters.cumulos);
+      }
+
       this.filters = { ...filters };
     });
   }
@@ -339,6 +344,14 @@ export class MapaComponent implements OnInit {
     });
   }
 
+  showCumulosLayer(show: boolean) {
+    const value = show ? 'visible' : 'none';
+
+    ['cumulos', 'cumulos-fill', 'cumulos-label', 'cumulos-point', 'cumulos-point-count'].forEach((layer) => {
+      this.map.setLayoutProperty(layer, 'visibility', value);
+    });
+  }
+
   async showDetail(id: string) {
     const modal = await this.modalCtrl.create({
       component: NodeDetailComponent,
@@ -346,20 +359,6 @@ export class MapaComponent implements OnInit {
     });
 
     modal.present();
-  }
-
-  async showFilters(ev: any) {
-    const popover = await this.popoverCtrl.create({
-      component: FiltersComponent,
-      cssClass: 'filters-popover',
-      event: ev,
-      translucent: true,
-      componentProps: {
-        filters: this.filtersService.filters,
-        fs: this.filtersService,
-      },
-    });
-    return await popover.present();
   }
 
   updateCentroids() {

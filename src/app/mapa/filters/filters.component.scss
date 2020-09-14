@@ -199,3 +199,215 @@ ion-select {
   width: 16px;
   height: 16px;
 }
+
+.vegetacion {
+  &-bosque-templado {
+    display: inline-block;
+    background: #4d642d;
+    opacity: 1;
+    width: 16px;
+    height: 16px;
+  }
+
+  &-selva {
+    display: inline-block;
+    background: #4cb974;
+    opacity: 1;
+    width: 16px;
+    height: 16px;
+  }
+
+  &-matorral {
+    display: inline-block;
+    background: #e59f26;
+    opacity: 1;
+    width: 16px;
+    height: 16px;
+  }
+
+  &-pastizales {
+    display: inline-block;
+    background: #e0b762;
+    opacity: 1;
+    width: 16px;
+    height: 16px;
+  }
+
+  &-tierras-agricolas {
+    display: inline-block;
+    background: #9c9877;
+    opacity: 1;
+    width: 16px;
+    height: 16px;
+  }
+
+  &-urbano {
+    display: inline-block;
+    background: #b4b8bc;
+    opacity: 1;
+    width: 16px;
+    height: 16px;
+  }
+
+  &-suelo-desnudo {
+    display: inline-block;
+    background: #3f2f21;
+    opacity: 1;
+    width: 16px;
+    height: 16px;
+  }
+
+  &-agua {
+    display: inline-block;
+    background: #2eccfa;
+    opacity: 1;
+    width: 16px;
+    height: 16px;
+  }
+
+  &-nubes {
+    display: inline-block;
+    background: #000000;
+    opacity: 1;
+    width: 16px;
+    height: 16px;
+  }
+}
+
+.perdida {
+  &-2001 {
+    display: inline-block;
+    background: #fff5f0;
+    opacity: 1;
+    width: 16px;
+    height: 16px;
+  }
+
+  &-2002 {
+    display: inline-block;
+    background: #ffebe2;
+    opacity: 1;
+    width: 16px;
+    height: 16px;
+  }
+
+  &-2003 {
+    display: inline-block;
+    background: #ffe1d3;
+    opacity: 1;
+    width: 16px;
+    height: 16px;
+  }
+
+  &-2004 {
+    display: inline-block;
+    background: #fed0bd;
+    opacity: 1;
+    width: 16px;
+    height: 16px;
+  }
+
+  &-2005 {
+    display: inline-block;
+    background: #fdbea5;
+    opacity: 1;
+    width: 16px;
+    height: 16px;
+  }
+
+  &-2006 {
+    display: inline-block;
+    background: #fcab8e;
+    opacity: 1;
+    width: 16px;
+    height: 16px;
+  }
+
+  &-2007 {
+    display: inline-block;
+    background: #fc9777;
+    opacity: 1;
+    width: 16px;
+    height: 16px;
+  }
+
+  &-2008 {
+    display: inline-block;
+    background: #fc8363;
+    opacity: 1;
+    width: 16px;
+    height: 16px;
+  }
+
+  &-2009 {
+    display: inline-block;
+    background: #fc7050;
+    opacity: 1;
+    width: 16px;
+    height: 16px;
+  }
+
+  &-2010 {
+    display: inline-block;
+    background: #f85a40;
+    opacity: 1;
+    width: 16px;
+    height: 16px;
+  }
+
+  &-2011 {
+    display: inline-block;
+    background: #f24431;
+    opacity: 1;
+    width: 16px;
+    height: 16px;
+  }
+
+  &-2012 {
+    display: inline-block;
+    background: #e53127;
+    opacity: 1;
+    width: 16px;
+    height: 16px;
+  }
+
+  &-2013 {
+    display: inline-block;
+    background: #d42020;
+    opacity: 1;
+    width: 16px;
+    height: 16px;
+  }
+
+  &-2014 {
+    display: inline-block;
+    background: #c1151a;
+    opacity: 1;
+    width: 16px;
+    height: 16px;
+  }
+
+  &-2015 {
+    display: inline-block;
+    background: #ad1016;
+    opacity: 1;
+    width: 16px;
+    height: 16px;
+  }
+
+  &-2016 {
+    display: inline-block;
+    background: #8e0912;
+    opacity: 1;
+    width: 16px;
+    height: 16px;
+  }
+
+  &-2017 {
+    display: inline-block;
+    background: #67000d;
+    opacity: 1;
+    width: 16px;
+    height: 16px;
+  }
+}

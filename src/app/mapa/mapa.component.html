@@ -6,32 +6,8 @@
       <ion-menu-button auto-hide="false" menu="main-menu"></ion-menu-button>
     </ion-buttons>
     <ion-label><b>MAPA SIPECAM </b></ion-label>
-    <!--<ion-buttons slot="end">
-        <ion-icon name="options"></ion-icon>
-        <ion-button (click)="showFilters($event)">
-          Filtros
-        </ion-button>
-      </ion-buttons>-->
-    <!--<ion-grid>
-        <ion-row>
-          <ion-col>
-            <ion-label for="degradacion-select" color="dark">Degradación: </ion-label>
-            <select id="degradacion-select" [(ngModel)]="integrity" (change)="filterChanged()">
-              <option [value]="null">Selecciona una opción</option>
-              <option [value]="'Degradado'">Degradado</option>
-              <option [value]="'Integro'">Integro</option>
-            </select>
-          </ion-col>
-          <ion-col>
-            <ion-label for="ecosystem-select" color="dark">Ecosistema: </ion-label>
-            <select id="ecosystem-select" [(ngModel)]="ecosystem" (change)="filterChanged()">
-              <option selected [value]="null">Selecciona una opción</option>
-              <option *ngFor="let e of ecosystems" value="{{ e.ecosistema }}">{{ e.ecosistema }}</option>
-            </select>
-          </ion-col>
-        </ion-row>
-      </ion-grid>-->
   </ion-toolbar>
+
   <div class="filter-bar" [ngClass]="{ 'hidden-filter-bar': !showFilterBar }">
     <ion-button class="display-button" fill="clear" size="small" (click)="showFilterBar = !showFilterBar">
       <ion-icon *ngIf="showFilterBar" slot="icon-only" name="remove" color="medium"></ion-icon>

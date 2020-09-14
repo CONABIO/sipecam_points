@@ -4,6 +4,7 @@ import { FiltersService } from '../services/filters.service';
 
 export interface MapContext {
   anp: boolean;
+  cumulos: boolean;
   ecosystem: string | null;
   integrity: string | null;
   layer: string | null;

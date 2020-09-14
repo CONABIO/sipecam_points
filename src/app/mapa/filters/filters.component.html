@@ -58,7 +58,7 @@
           </ion-item>
           <ion-item lines="none">
             <span class="bosque-templado-encinos" slot="start"></span>
-            <ion-label>Bosque Templado Encinos</ion-label>
+            <ion-label class="ion-text-wrap">Bosque Templado Encinos</ion-label>
           </ion-item>
           <ion-item lines="none">
             <span class="selva-humeda" slot="start"></span>
@@ -69,6 +69,7 @@
             <ion-label>Bosque Mesófilo</ion-label>
           </ion-item>
         </ion-list>
+
         <ion-list *ngIf="filters.layer === 'integridad_ecosistemica'" class="ion-text-left">
           <ion-item lines="none">
             <span class="ie-0-01" slot="start"></span>
@@ -109,6 +110,118 @@
           <ion-item lines="none">
             <span class="ie-0-9" slot="start"></span>
             <ion-label>0.9 - 1</ion-label>
+          </ion-item>
+        </ion-list>
+
+        <ion-list *ngIf="filters.layer === 'vegetacion'" class="ion-text-left">
+          <ion-item lines="none">
+            <span class="vegetacion-bosque-templado" slot="start"></span>
+            <ion-label>Bosque Templado</ion-label>
+          </ion-item>
+          <ion-item lines="none">
+            <span class="vegetacion-selva" slot="start"></span>
+            <ion-label class="ion-text-wrap"
+              >Selva Perennifolia, Subperennifolia, Caducifolia y Subcaducifolia</ion-label
+            >
+          </ion-item>
+          <ion-item lines="none">
+            <span class="vegetacion-matorral" slot="start"></span>
+            <ion-label>Matorral</ion-label>
+          </ion-item>
+          <ion-item lines="none">
+            <span class="vegetacion-pastizales" slot="start"></span>
+            <ion-label class="ion-text-wrap">Vegetación menor y Pastizales</ion-label>
+          </ion-item>
+          <ion-item lines="none">
+            <span class="vegetacion-tierras-agricolas" slot="start"></span>
+            <ion-label>Tierras Agrícolas</ion-label>
+          </ion-item>
+          <ion-item lines="none">
+            <span class="vegetacion-urbano" slot="start"></span>
+            <ion-label>Urbano y Construido</ion-label>
+          </ion-item>
+          <ion-item lines="none">
+            <span class="vegetacion-suelo-desnudo" slot="start"></span>
+            <ion-label>Suelo Desnudo</ion-label>
+          </ion-item>
+          <ion-item lines="none">
+            <span class="vegetacion-agua" slot="start"></span>
+            <ion-label>Agua</ion-label>
+          </ion-item>
+          <ion-item lines="none">
+            <span class="vegetacion-nubes" slot="start"></span>
+            <ion-label>Nubes</ion-label>
+          </ion-item>
+        </ion-list>
+
+        <ion-list *ngIf="filters.layer === 'perdida_vegetacion'" class="ion-text-left">
+          <ion-item lines="none">
+            <span class="perdida-2001" slot="start"></span>
+            <ion-label>2001</ion-label>
+          </ion-item>
+          <ion-item lines="none">
+            <span class="perdida-2002" slot="start"></span>
+            <ion-label>2002</ion-label>
+          </ion-item>
+          <ion-item lines="none">
+            <span class="perdida-2003" slot="start"></span>
+            <ion-label>2003</ion-label>
+          </ion-item>
+          <ion-item lines="none">
+            <span class="perdida-2004" slot="start"></span>
+            <ion-label>2004</ion-label>
+          </ion-item>
+          <ion-item lines="none">
+            <span class="perdida-2005" slot="start"></span>
+            <ion-label>2005</ion-label>
+          </ion-item>
+          <ion-item lines="none">
+            <span class="perdida-2006" slot="start"></span>
+            <ion-label>2006</ion-label>
+          </ion-item>
+          <ion-item lines="none">
+            <span class="perdida-2007" slot="start"></span>
+            <ion-label>2007</ion-label>
+          </ion-item>
+          <ion-item lines="none">
+            <span class="perdida-2008" slot="start"></span>
+            <ion-label>2008</ion-label>
+          </ion-item>
+          <ion-item lines="none">
+            <span class="perdida-2009" slot="start"></span>
+            <ion-label>2009</ion-label>
+          </ion-item>
+          <ion-item lines="none">
+            <span class="perdida-2010" slot="start"></span>
+            <ion-label>2010</ion-label>
+          </ion-item>
+          <ion-item lines="none">
+            <span class="perdida-2011" slot="start"></span>
+            <ion-label>2011</ion-label>
+          </ion-item>
+          <ion-item lines="none">
+            <span class="perdida-2012" slot="start"></span>
+            <ion-label>2012</ion-label>
+          </ion-item>
+          <ion-item lines="none">
+            <span class="perdida-2013" slot="start"></span>
+            <ion-label>2013</ion-label>
+          </ion-item>
+          <ion-item lines="none">
+            <span class="perdida-2014" slot="start"></span>
+            <ion-label>2014</ion-label>
+          </ion-item>
+          <ion-item lines="none">
+            <span class="perdida-2015" slot="start"></span>
+            <ion-label>2015</ion-label>
+          </ion-item>
+          <ion-item lines="none">
+            <span class="perdida-2016" slot="start"></span>
+            <ion-label>2016</ion-label>
+          </ion-item>
+          <ion-item lines="none">
+            <span class="perdida-2017" slot="start"></span>
+            <ion-label>2017</ion-label>
           </ion-item>
         </ion-list>
       </ion-col>
@@ -152,6 +265,18 @@
           <ion-item lines="none">
             <span class="cluster-nodo" slot="start"></span>
             <ion-label>Cúmulo de n nodos</ion-label>
+            <ion-icon
+              class="cursor-pointer"
+              *ngIf="filters.cumulos"
+              name="eye-off"
+              (click)="fs.setParam('cumulos', false)"
+            ></ion-icon>
+            <ion-icon
+              class="cursor-pointer"
+              *ngIf="!filters.cumulos"
+              name="eye"
+              (click)="fs.setParam('cumulos', true)"
+            ></ion-icon>
           </ion-item>
           <ion-item lines="none">
             <span class="nodo-integro" slot="start"></span>

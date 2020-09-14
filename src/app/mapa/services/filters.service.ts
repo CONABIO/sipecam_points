@@ -3,6 +3,7 @@ import { BehaviorSubject } from 'rxjs';
 
 export interface MapContext {
   anp: boolean;
+  cumulos: boolean;
   ecosystem: string | null;
   integrity: string | null;
   layer: string | null;
@@ -14,6 +15,7 @@ export interface MapContext {
 export class FiltersService {
   private _filters = new BehaviorSubject<MapContext>({
     anp: true,
+    cumulos: true,
     ecosystem: null,
     integrity: null,
     layer: null,
@@ -30,6 +32,7 @@ export class FiltersService {
   resetParams() {
     this._filters.next({
       anp: true,
+      cumulos: true,
       ecosystem: null,
       integrity: null,
       layer: null,
