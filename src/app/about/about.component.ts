@@ -8,7 +8,13 @@ import { environment } from '@env/environment';
   styleUrls: ['./about.component.scss'],
 })
 export class AboutComponent implements OnInit {
-  version: string | null = environment.version;
+  slideOpts = {
+    initialSlide: 1,
+    speed: 400,
+    autoplay: {
+      delay: 5000,
+    },
+  };
 
   constructor() {}
 

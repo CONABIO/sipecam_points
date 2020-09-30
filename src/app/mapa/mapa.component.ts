@@ -327,7 +327,7 @@ export class MapaComponent implements OnInit {
       type: 'symbol',
       source: 'cumulos-centroides-src',
       layout: {
-        'text-field': '{nodos}',
+        'text-field': '{cumulo}',
         'text-font': ['DIN Offc Pro Medium', 'Arial Unicode MS Bold'],
         'text-size': 8,
         'text-allow-overlap': true,
