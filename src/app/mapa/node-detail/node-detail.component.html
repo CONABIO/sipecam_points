@@ -1,42 +1,45 @@
-<!--<ion-header>
-</ion-header>-->
 <ion-content>
   <ion-card class="ion-text-center ion-no-margin detail-card">
-    <ion-card-header>
+    <ion-card-header color="dark">
       <ion-card-title>Detalle de nodo</ion-card-title>
     </ion-card-header>
     <ion-card-content>
-      <ion-grid *ngIf="node">
+      <ion-grid *ngIf="node" class="ion-margin-top">
         <ion-row>
-          <ion-col>ID</ion-col>
+          <ion-col><b>ID</b></ion-col>
           <ion-col class="ion-text-end">{{ node.id_sipe }}</ion-col>
         </ion-row>
         <ion-row>
-          <ion-col>Módulo</ion-col>
-          <ion-col class="ion-text-end">{{ node.cat_itegr }}</ion-col>
+          <ion-col><b>Ecosistema</b></ion-col>
+          <ion-col class="ion-text-end">{{ node.id_ecosist }} - {{ node.ecosistema }}</ion-col>
         </ion-row>
         <ion-row>
-          <ion-col>Ecosistema</ion-col>
-          <ion-col class="ion-text-end">{{ node.id_ecosist }} {{ node.ecosistema }}</ion-col>
-        </ion-row>
-        <ion-row>
-          <ion-col>Cúmulo</ion-col>
+          <ion-col><b>Cúmulo</b></ion-col>
           <ion-col class="ion-text-end">{{ node.id_cumulo }}</ion-col>
         </ion-row>
         <ion-row>
-          <ion-col>Coordsx1</ion-col>
+          <ion-col><b>Módulo</b></ion-col>
+          <ion-col class="ion-text-end">{{ node.cat_itegr }}</ion-col>
+        </ion-row>
+        <ion-row>
+          <ion-col><b>Coordenadas x1</b></ion-col>
           <ion-col class="ion-text-end">{{ node.coordsx1 }}</ion-col>
         </ion-row>
         <ion-row>
-          <ion-col>Coordsx2</ion-col>
+          <ion-col><b>Coordenadas x2</b></ion-col>
           <ion-col class="ion-text-end">{{ node.coordsx2 }}</ion-col>
         </ion-row>
         <ion-row>
           <ion-col class="ion-text-end">
-            Latitud: {{ node.latitud }}, longitud: {{ node.longitud }}, altitud: {{ node.altitud }}m</ion-col
+            <b>Latitud:</b> {{ node.latitud }} / <b>Longitud:</b> {{ node.longitud }} / <b>Altitud:</b>
+            {{ node.altitud }}m</ion-col
           >
         </ion-row>
       </ion-grid>
+
+      <div id="detail-map"></div>
+
+      <ion-button expand="block" fill="outline" (click)="dismiss()">Cerrar</ion-button>
     </ion-card-content>
   </ion-card>
 </ion-content>

@@ -19,4 +19,18 @@ ion-toolbar.filter-bar {
 
 .detail-card {
   height: 100%;
+  overflow: auto;
+
+  ion-grid,
+  ion-col,
+  ion-row {
+    border: solid var(--ion-color-light-shade) 0.5px;
+  }
+}
+
+#detail-map {
+  width: 100%;
+  height: 250px;
+  border: solid var(--ion-color-dark) 1px;
+  margin: 10px 0;
 }
