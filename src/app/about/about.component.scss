@@ -12,7 +12,7 @@ ion-content {
   opacity: 0.65;
   /* Create the parallax scrolling effect */
   background-attachment: fixed;
-  background-position: center;
+  background-position: bottom;
   background-repeat: no-repeat;
   background-size: cover;
 }
@@ -38,7 +38,7 @@ ion-content {
   color: #777;
   background-color: white;
   text-align: center;
-  padding: 50px 80px;
+  padding: 40px 60px;
   text-align: justify;
 }
 
@@ -64,14 +64,14 @@ ion-content {
 
 .team-section {
   background-color: #282e34;
-  padding: 50px 80px;
+  padding: 40px 60px;
   text-align: center;
 
   ion-card-content {
     color: #ddd;
     background-color: #282e34;
     text-align: justify;
-    min-height: 160px;
+    min-height: 170px;
   }
 
   ion-thumbnail,
