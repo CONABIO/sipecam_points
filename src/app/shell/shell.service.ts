@@ -1,5 +1,6 @@
 import { Routes, Route } from '@angular/router';
 
+import { AuthenticationGuard } from '@app/auth';
 import { ShellComponent } from './shell.component';
 
 /**
@@ -11,11 +12,12 @@ export class Shell {
    * @param routes The routes to add.
    * @return The new route using shell as the base.
    */
-  static childRoutes(routes: Routes): Route {
+  static childRoutes(routes: Routes, canActivateEnabled: boolean = true): Route {
     return {
       path: '',
       component: ShellComponent,
       children: routes,
+      canActivate: canActivateEnabled ? [AuthenticationGuard] : [],
       // Reuse ShellComponent instance when navigating between child views
       data: { reuse: true },
     };

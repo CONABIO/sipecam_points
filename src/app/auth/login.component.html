@@ -1,0 +1,60 @@
+<ion-content no-bounce>
+  <div class="login-background"></div>
+  <ion-grid class="ion-no-padding">
+    <ion-row class="ion-justify-content-center ion-no-padding">
+      <ion-col size-sm="8" size-lg="6" size-xl="4" class="ion-align-self-center ion-no-padding">
+        <div class="login-header ion-text-center">
+          <h2 translate>
+            <b class="highlight-color">SI</b>TIOS <b class="highlight-color">PE</b>RMANENTES DE
+            <b class="highlight-color">CA</b>LIBRACIÓN Y <b class="highlight-color">M</b>ONITOREO DE LA BIODIVERSIDAD
+          </h2>
+          <h4 class="highlight-color">SiPeCaM</h4>
+        </div>
+        <div class="login-container">
+          <form (ngSubmit)="login()" [formGroup]="loginForm" novalidate>
+            <ion-text color="danger" [hidden]="!error || loginForm.dirty || isLoading">
+              <span class="ion-padding" translate>Username or password incorrect.</span>
+            </ion-text>
+            <ion-list>
+              <ion-item lines="inset">
+                <ion-label color="medium" position="floating" translate>Usuario</ion-label>
+                <ion-input type="text" formControlName="username" autocomplete="username"></ion-input>
+              </ion-item>
+              <ion-text
+                color="danger"
+                [hidden]="loginForm.controls.username.valid || loginForm.controls.username.untouched"
+              >
+                <span class="ion-padding" translate>Nombre de usuario requerido</span>
+              </ion-text>
+              <ion-item lines="inset">
+                <ion-label color="medium" position="floating" translate>Contraseña</ion-label>
+                <ion-input type="password" formControlName="password" autocomplete="current-password"></ion-input>
+              </ion-item>
+              <ion-text
+                color="danger"
+                [hidden]="loginForm.controls.password.valid || loginForm.controls.password.untouched"
+              >
+                <span class="ion-padding" translate>Contraseña requerida</span>
+              </ion-text>
+              <ion-item class="ion-padding-top" lines="none">
+                <ion-label translate>Recordarme</ion-label>
+                <ion-checkbox slot="start" formControlName="remember"></ion-checkbox>
+              </ion-item>
+            </ion-list>
+            <div class="ion-padding-horizontal">
+              <ion-button
+                type="submit"
+                [disabled]="loginForm.invalid || isLoading"
+                color="primary"
+                expand="block"
+                translate
+              >
+                Iniciar sesión
+              </ion-button>
+            </div>
+          </form>
+        </div>
+      </ion-col>
+    </ion-row>
+  </ion-grid>
+</ion-content>

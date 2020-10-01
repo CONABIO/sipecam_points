@@ -6,10 +6,13 @@ import { MapaComponent } from './mapa.component';
 import { Shell } from '@app/shell/shell.service';
 
 const routes: Routes = [
-  Shell.childRoutes([
-    { path: '', redirectTo: '/mapa', pathMatch: 'full' },
-    { path: 'mapa', component: MapaComponent, data: { title: extract('Mapa') } },
-  ]),
+  Shell.childRoutes(
+    [
+      { path: '', redirectTo: '/mapa', pathMatch: 'full' },
+      { path: 'mapa', component: MapaComponent, data: { title: extract('Mapa') } },
+    ],
+    false
+  ),
 ];
 
 @NgModule({

@@ -1,30 +1,42 @@
 <ion-split-pane contentId="main-content" disabled="true">
   <ion-menu contentId="main-content" menuId="main-menu">
     <ion-header>
-      <ion-toolbar color="light">
-        <ion-title>SIPECAM</ion-title>
+      <ion-toolbar color="dark">
+        <ion-title>SiPeCaM</ion-title>
+        <ion-buttons slot="end">
+          <ion-button *ngIf="!isLoggedIn" (click)="login()">
+            <ion-icon slot="icon-only" name="log-in"></ion-icon>
+          </ion-button>
+          <ion-button *ngIf="isLoggedIn" (click)="logout()">
+            <ion-icon slot="icon-only" name="log-out"></ion-icon>
+          </ion-button>
+        </ion-buttons>
       </ion-toolbar>
     </ion-header>
     <ion-content>
-      <div ion-fixed>
+      <div ion-fixed class="roedor-img">
         <ion-list lines="full" class="ion-no-padding">
           <ion-menu-toggle auto-hide="false">
-            <ion-item [routerDirection]="'root'" routerLink="/home" routerLinkActive="active">
-              <ion-label><span translate>Mapa de nodos</span></ion-label>
+            <ion-item [routerDirection]="'root'" routerLink="/mapa" routerLinkActive="active-link">
+              <ion-icon name="map" slot="start"></ion-icon>
+              <ion-label><span translate>Mapa</span></ion-label>
             </ion-item>
           </ion-menu-toggle>
-          <ion-menu-toggle auto-hide="false">
-            <ion-item [routerDirection]="'root'" routerLink="/cumulos" routerLinkActive="active">
+          <ion-menu-toggle auto-hide="false" *ngIf="isLoggedIn">
+            <ion-item [routerDirection]="'root'" routerLink="/cumulos" routerLinkActive="active-link">
+              <ion-icon name="leaf" slot="start"></ion-icon>
               <ion-label><span translate>Cúmulos</span></ion-label>
             </ion-item>
           </ion-menu-toggle>
-          <ion-menu-toggle auto-hide="false">
-            <ion-item [routerDirection]="'root'" routerLink="/socios" routerLinkActive="active">
+          <ion-menu-toggle auto-hide="false" *ngIf="isLoggedIn">
+            <ion-item [routerDirection]="'root'" routerLink="/socios" routerLinkActive="active-link">
+              <ion-icon name="people" slot="start"></ion-icon>
               <ion-label><span translate>Socios</span></ion-label>
             </ion-item>
           </ion-menu-toggle>
           <ion-menu-toggle auto-hide="false">
-            <ion-item [routerDirection]="'root'" routerLink="/quienes-somos" routerLinkActive="active">
+            <ion-item [routerDirection]="'root'" routerLink="/quienes-somos" routerLinkActive="active-link">
+              <ion-icon name="information-circle" slot="start"></ion-icon>
               <ion-label><span translate>¿Quiénes somos?</span></ion-label>
             </ion-item>
           </ion-menu-toggle>

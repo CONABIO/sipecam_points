@@ -1,0 +1,43 @@
+/*@import "src/theme/theme-variables";*/
+
+:host {
+  display: flex;
+  flex: 1;
+  background-color: #ffffff;
+}
+
+ion-grid,
+ion-row {
+  height: 100%;
+}
+
+.login-background {
+  background-color: var(--ion-color-primary);
+
+  color: var(--ion-color-primary-contrast);
+}
+
+.login-header {
+  color: var(--ion-color-primary-contrast);
+}
+
+.login-background {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 50%;
+  background-image: url(../../assets/fototrampas/venado_bura3.jpeg);
+  opacity: 0.85;
+  background-position: top;
+  background-repeat: no-repeat;
+  background-size: cover;
+}
+
+.login-container {
+  background-color: var(--ion-background-color);
+}
+
+.highlight-color {
+  color: var(--ion-color-light-shade);
+}

@@ -9,6 +9,7 @@ import { GraphQLModule } from './graphql.module';
 
 import { CoreModule } from '@core';
 import { SharedModule } from '@shared';
+import { AuthModule } from '@app/auth';
 import { CumulosModule } from './cumulos/cumulos.module';
 import { SociosModule } from './socios/socios.module';
 import { MapaModule } from './mapa/mapa.module';
@@ -27,6 +28,7 @@ import { AppRoutingModule } from './app-routing.module';
     CoreModule,
     SharedModule,
     ShellModule,
+    AuthModule,
     MapaModule,
     CumulosModule,
     SociosModule,

@@ -1,9 +1,11 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
-import { ActionSheetController, AlertController, Platform } from '@ionic/angular';
-import { ActionSheetButton, ActionSheetOptions, TextFieldTypes } from '@ionic/core';
+import { AlertController, Platform } from '@ionic/angular';
+import { TextFieldTypes } from '@ionic/core';
 import { TranslateService } from '@ngx-translate/core';
 
+import { AuthenticationService } from '@app/auth/authentication.service';
+import { CredentialsService } from '@app/auth/credentials.service';
 import { I18nService } from '@app/i18n';
 
 @Component({
@@ -12,14 +14,19 @@ import { I18nService } from '@app/i18n';
   styleUrls: ['./shell.component.scss'],
 })
 export class ShellComponent {
+  isLoggedIn = false;
+
   constructor(
     private router: Router,
     private translateService: TranslateService,
     private platform: Platform,
     private alertController: AlertController,
-    private actionSheetController: ActionSheetController,
+    private authenticationService: AuthenticationService,
+    private credentialsService: CredentialsService,
     private i18nService: I18nService
-  ) {}
+  ) {
+    this.isLoggedIn = this.credentialsService.isAuthenticated();
+  }
 
   get isWeb(): boolean {
     return !this.platform.is('cordova');
@@ -49,5 +56,18 @@ export class ShellComponent {
       ],
     });
     await alertController.present();
+  }
+
+  login() {
+    this.router.navigate(['/login'], { replaceUrl: true });
+  }
+
+  logout() {
+    this.authenticationService.logout().subscribe((success) => {
+      if (success) {
+        this.isLoggedIn = false;
+        this.router.navigate(['/'], { replaceUrl: true });
+      }
+    });
   }
 }

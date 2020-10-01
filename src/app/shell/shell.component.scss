@@ -13,3 +13,20 @@
   font-size: 6rem;
   color: var(--ion-color-primary-contrast);
 }
+
+.roedor-img {
+  position: relative;
+  opacity: 0.65;
+  background-position: bottom;
+  background-repeat: no-repeat;
+  background-size: contain;
+  background-image: url(../../assets/roedor.png);
+}
+
+.active-link {
+  --ion-background-color: var(--ion-color-primary);
+  color: var(--ion-color-primary-contrast) !important;
+  ion-icon {
+    color: var(--ion-color-primary-contrast) !important;
+  }
+}
