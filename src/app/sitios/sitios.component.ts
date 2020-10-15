@@ -9,11 +9,11 @@ import gql from 'graphql-tag';
 import { environment } from '@env/environment';
 
 @Component({
-  selector: 'app-cumulos',
-  templateUrl: './cumulos.component.html',
-  styleUrls: ['./cumulos.component.scss'],
+  selector: 'app-sitios',
+  templateUrl: './sitios.component.html',
+  styleUrls: ['./sitios.component.scss'],
 })
-export class CumulosComponent implements OnInit {
+export class SitiosComponent implements OnInit {
   nodes: any = [];
 
   constructor(
@@ -24,11 +24,11 @@ export class CumulosComponent implements OnInit {
     private toastController: ToastController
   ) {}
 
-  async deleteCumulo(id: string, idCumulo: string) {
+  async deleteCumulo(id: string, idSitio: string) {
     console.log('id', id);
     const alert = await this.alertController.create({
       header: 'Eliminar cúmulo',
-      message: `¿Deseas elimininar el cúmulo ${idCumulo}`,
+      message: `¿Deseas elimininar el cúmulo ${idSitio}`,
       buttons: [
         'Cancelar',
         {
