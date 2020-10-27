@@ -1,4 +1,3 @@
-import { ThrowStmt } from '@angular/compiler';
 import { Component, OnInit } from '@angular/core';
 import { AlertController, LoadingController, ModalController } from '@ionic/angular';
 
@@ -185,6 +184,8 @@ export class UploadFileComponent implements OnInit {
                   latitud
                   longitud
                   nodeId
+                  idSocio
+                  conSocio
                 }
               }
             }
@@ -300,7 +301,8 @@ export class UploadFileComponent implements OnInit {
         latitud: point.LATITUD.toString(),
         longitud: point.LONGITUD.toString(),
         fidSipe1: point.FID_sipe_1,
-        fidSipeca: 9999,
+        idSocio: point.id_socio,
+        conSocio: point.con_socio,
       };
     });
   }

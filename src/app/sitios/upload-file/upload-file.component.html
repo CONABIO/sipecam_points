@@ -130,7 +130,7 @@
             <b>ID: {{ n.idSipe }}</b>
           </ion-text>
           <h3>{{ n.ecosistema }} - {{ n.catItegr }}</h3>
-          <small>Cúmulo: {{ n.idCumulo }}</small>
+          <small>Cúmulo: {{ n.idCumulo }} - Con socio: {{ n.conSocio === 0 ? 'No' : 'Sí' }}</small>
         </ion-label>
         <ion-button color="danger" slot="end" fill="clear" (click)="deleteNode('added', i)">
           <ion-icon slot="icon-only" name="close"></ion-icon>
@@ -172,7 +172,7 @@
               </ion-text>
               <br />
               <ion-text>
-                <small>Cúmulo: {{ n[0].idCumulo }}</small>
+                <small>Cúmulo: {{ n[0].idCumulo }} - Con socio: {{ n[0].conSocio === 0 ? 'No' : 'Sí' }}</small>
               </ion-text>
             </ion-label>
           </ion-item>
@@ -196,7 +196,7 @@
               </ion-text>
               <br />
               <ion-text>
-                <small>Cúmulo: {{ n[1].idCumulo }}</small>
+                <small>Cúmulo: {{ n[1].idCumulo }} - Con socio: {{ n[1].conSocio === 0 ? 'No' : 'Sí' }}</small>
               </ion-text>
             </ion-label>
             <ion-button color="danger" fill="clear" (click)="deleteNode('edited', i)">
@@ -227,7 +227,7 @@
             <b>ID: {{ n.idSipe }}</b>
           </ion-text>
           <h3>{{ n.ecosistema }} - {{ n.catItegr }}</h3>
-          <small>Cúmulo: {{ n.idCumulo }}</small>
+          <small>Cúmulo: {{ n.idCumulo }} - Con socio: {{ n.conSocio === 0 ? 'No' : 'Sí' }}</small>
         </ion-label>
         <ion-button color="danger" slot="end" fill="clear" (click)="deleteNode('deleted', i)">
           <ion-icon slot="icon-only" name="close"></ion-icon>
