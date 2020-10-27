@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { DashboardService } from '../mapa/services/dashboard.service';
 import { AlertController, ModalController, ToastController } from '@ionic/angular';
 import { AddCumuloComponent } from './add-cumulo/add-cumulo.component';
+import { UploadFileComponent } from './upload-file/upload-file.component';
 
 import { Apollo } from 'apollo-angular';
 import gql from 'graphql-tag';
@@ -93,5 +94,16 @@ export class SitiosComponent implements OnInit {
       duration: 5000,
     });
     toast.present();
+  }
+
+  async uploadFile() {
+    const modal = await this.modalController.create({
+      component: UploadFileComponent,
+      // cssClass: 'my-custom-class'
+    });
+    modal.onDidDismiss().then(() => {
+      this.getNodes();
+    });
+    return await modal.present();
   }
 }

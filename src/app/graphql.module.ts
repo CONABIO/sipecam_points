@@ -5,9 +5,21 @@ import { InMemoryCache } from 'apollo-cache-inmemory';
 
 const uri = 'https://sipecamdata.conabio.gob.mx/graphql/'; // <-- add the URL of the GraphQL server here
 export function createApollo(httpLink: HttpLink) {
+  const defaultOptions = {
+    watchQuery: {
+      fetchPolicy: 'network-only', //'cache-and-network'
+    },
+    query: {
+      fetchPolicy: 'network-only',
+    },
+  };
+
   return {
     link: httpLink.create({ uri }),
-    cache: new InMemoryCache(),
+    cache: new InMemoryCache({
+      addTypename: false,
+    }),
+    defaultOptions,
   };
 }
 

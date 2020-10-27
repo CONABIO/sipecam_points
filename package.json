@@ -40,6 +40,7 @@
     "mapbox-gl": "^1.10.0",
     "rxjs": "^6.5.4",
     "tslib": "^1.10.1",
+    "xlsx": "^0.16.8",
     "zone.js": "^0.10.3"
   },
   "devDependencies": {
