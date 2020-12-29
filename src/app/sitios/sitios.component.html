@@ -5,8 +5,19 @@
     </ion-buttons>
     <ion-title><span translate>Sitios</span></ion-title>
   </ion-toolbar>
+  <ion-toolbar>
+    <ion-segment>
+      <ion-segment-button value="nodos" routerLink="nodos">
+        Nodos
+      </ion-segment-button>
+      <ion-segment-button value="cumulos">
+        Cúmulos
+      </ion-segment-button>
+    </ion-segment>
+  </ion-toolbar>
 </ion-header>
 <ion-content>
+  <ion-router-outlet></ion-router-outlet>
   <!--<ion-toolbar>
     <ion-grid>
       <ion-row>
@@ -18,9 +29,7 @@
         </ion-col>
       </ion-row>
     </ion-grid>
-  </ion-toolbar>-->
-  <br />
-  <br />
+  </ion-toolbar>
   <ion-card
     style="
       max-width: 80%;
@@ -63,7 +72,7 @@
         </ion-row>
       </ion-grid>
     </ion-card-content>
-  </ion-card>
+  </ion-card>-->
   <ion-fab vertical="bottom" horizontal="end" slot="fixed">
     <ion-fab-button>
       <ion-icon name="add"></ion-icon>

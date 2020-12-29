@@ -1,7 +1,7 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { ModalController } from '@ionic/angular';
 import { environment } from '@env/environment';
-import { DashboardService } from '../services/dashboard.service';
+import { DashboardService } from '../../services/dashboard.service';
 import * as mapboxgl from 'mapbox-gl';
 
 @Component({

@@ -1,6 +1,6 @@
 import { Component, Input, OnInit } from '@angular/core';
-import { DashboardService } from '../services/dashboard.service';
-import { FiltersService } from '../services/filters.service';
+import { DashboardService } from '../../services/dashboard.service';
+import { FiltersService } from '../../services/filters.service';
 
 export interface MapContext {
   anp: boolean;

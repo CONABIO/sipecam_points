@@ -1,8 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { ModalController } from '@ionic/angular';
 import { environment } from '@env/environment';
-import { DashboardService } from './services/dashboard.service';
-import { FiltersService } from './services/filters.service';
+import { DashboardService } from '../services/dashboard.service';
+import { FiltersService } from '../services/filters.service';
 import { NodeDetailComponent } from './node-detail/node-detail.component';
 import * as mapboxgl from 'mapbox-gl';
 import * as turf from '@turf/turf';

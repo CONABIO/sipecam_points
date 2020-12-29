@@ -6,12 +6,13 @@ import { IonicModule } from '@ionic/angular';
 
 import { SitiosRoutingModule } from './sitios-routing.module';
 import { SitiosComponent } from './sitios.component';
+import { NodosComponent } from './nodos/nodos.component';
 import { AddCumuloComponent } from '../sitios/add-cumulo/add-cumulo.component';
 import { UploadFileComponent } from './upload-file/upload-file.component';
 
 @NgModule({
   imports: [CommonModule, ReactiveFormsModule, TranslateModule, IonicModule, SitiosRoutingModule],
-  declarations: [SitiosComponent, AddCumuloComponent, UploadFileComponent],
+  declarations: [SitiosComponent, NodosComponent, AddCumuloComponent, UploadFileComponent],
   entryComponents: [AddCumuloComponent],
 })
 export class SitiosModule {}

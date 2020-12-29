@@ -21,6 +21,42 @@ export class DashboardService {
       .join('&');
   }
 
+  async allNodes() {
+    let nodes = [];
+
+    try {
+      const existingNodes: any = await this.apollo
+        .query({
+          query: gql`
+            {
+              allSitios {
+                nodes {
+                  id
+                  idSipe
+                  idCumulo
+                  idEcosist
+                  catItegr
+                  ecosistema
+                  altitud
+                  latitud
+                  longitud
+                  nodeId
+                  idSocio
+                  conSocio
+                }
+              }
+            }
+          `,
+        })
+        .toPromise();
+      nodes = existingNodes.data.allSitios.nodes;
+    } catch (error) {
+      console.log(error);
+    } finally {
+      return nodes;
+    }
+  }
+
   allNodesGraphql() {
     return new Promise((resolve, reject) => {
       this.apollo
