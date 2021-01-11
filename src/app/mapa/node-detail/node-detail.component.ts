@@ -33,6 +33,19 @@ export class NodeDetailComponent implements OnInit {
     }
   }
 
+  getSocioText(value: number) {
+    switch (value) {
+      case 0:
+        return 'Sin socio';
+      case 1:
+        return 'Con socio potencial';
+      case 2:
+        return 'Con socio';
+      default:
+        return '';
+    }
+  }
+
   initMap() {
     const lng = this.node.longitud != 0 ? Number(this.node.longitud) : 0;
     const lat = this.node.latitud != 0 ? Number(this.node.latitud) : 0;

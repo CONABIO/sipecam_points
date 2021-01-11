@@ -302,7 +302,7 @@ export class UploadFileComponent implements OnInit {
         longitud: point.LONGITUD.toString(),
         fidSipe1: point.FID_sipe_1,
         idSocio: point.id_socio,
-        conSocio: point.con_socio.toLowerCase() === 'si' ? 1 : 0,
+        conSocio: point.con_socio,
       };
     });
 

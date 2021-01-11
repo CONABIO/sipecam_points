@@ -125,6 +125,19 @@ export class MapaComponent implements OnInit {
     }
   }
 
+  getSocioValue(nodes: any) {
+    for (const node of nodes) {
+      if (node.con_socio === 2) {
+        return 2;
+      }
+      if (node.con_socio === 1) {
+        return 1;
+      }
+    }
+
+    return 0;
+  }
+
   initMap() {
     this.map = new mapboxgl.Map({
       accessToken: environment.mapbox.accessToken,
@@ -243,7 +256,11 @@ export class MapaComponent implements OnInit {
         })
       );
       const hull = turf.convex(featureCollection);
-      hull.properties = { cumulo, nodos: nodesByCum[cumulo].length };
+      hull.properties = {
+        cumulo,
+        nodos: nodesByCum[cumulo].length,
+        socio: this.getSocioValue(nodesByCum[cumulo]),
+      };
       return hull;
     });
 
@@ -334,6 +351,30 @@ export class MapaComponent implements OnInit {
       },
       maxzoom: 7,
     });
+
+    this.map.addLayer({
+      id: 'cumulos-socio',
+      type: 'symbol',
+      source: 'cumulos-centroides-src',
+      filter: ['!=', ['get', 'socio'], 0],
+      layout: {
+        'icon-image': 'socio-2',
+        'icon-anchor': 'top-left',
+        'icon-allow-overlap': true,
+        'icon-size': 0.025,
+      },
+      paint: {
+        'icon-color': [
+          'case',
+          ['==', ['get', 'socio'], 2],
+          '#0088cc',
+          ['==', ['get', 'socio'], 1],
+          '#ffff00',
+          '#ff8900',
+        ],
+      },
+      maxzoom: 7,
+    });
   }
 
   showANPLayer(show: boolean) {
@@ -348,6 +389,14 @@ export class MapaComponent implements OnInit {
     const value = show ? 'visible' : 'none';
 
     ['cumulos', 'cumulos-fill', 'cumulos-label', 'cumulos-point', 'cumulos-point-count'].forEach((layer) => {
+      this.map.setLayoutProperty(layer, 'visibility', value);
+    });
+  }
+
+  showSociosLayer(show: boolean) {
+    const value = show ? 'visible' : 'none';
+
+    ['cumulos-socio'].forEach((layer) => {
       this.map.setLayoutProperty(layer, 'visibility', value);
     });
   }

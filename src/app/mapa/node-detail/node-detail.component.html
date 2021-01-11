@@ -22,6 +22,10 @@
           <ion-col class="ion-text-end">{{ node.cat_itegr }}</ion-col>
         </ion-row>
         <ion-row>
+          <ion-col><b>Socio</b></ion-col>
+          <ion-col class="ion-text-end">{{ getSocioText(node.con_socio) }}</ion-col>
+        </ion-row>
+        <ion-row>
           <ion-col class="ion-text-end">
             <b>Latitud:</b> {{ node.latitud }} / <b>Longitud:</b> {{ node.longitud }} / <b>Altitud:</b>
             {{ node.altitud }}m</ion-col

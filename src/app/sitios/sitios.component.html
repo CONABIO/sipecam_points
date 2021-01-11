@@ -10,7 +10,7 @@
       <ion-segment-button value="nodos" routerLink="nodos">
         Nodos
       </ion-segment-button>
-      <ion-segment-button value="cumulos">
+      <ion-segment-button value="cumulos" routerLink="cumulos">
         Cúmulos
       </ion-segment-button>
     </ion-segment>
@@ -81,6 +81,7 @@
       <ion-fab-button><ion-icon name="person"></ion-icon></ion-fab-button>
       <ion-fab-button (click)="addCumulo()"><ion-icon name="pin"></ion-icon></ion-fab-button>
       <ion-fab-button (click)="uploadFile()"><ion-icon name="cloud-upload"></ion-icon></ion-fab-button>
+      <ion-fab-button (click)="downloadFile()"><ion-icon name="cloud-download"></ion-icon></ion-fab-button>
     </ion-fab-list>
   </ion-fab>
 </ion-content>

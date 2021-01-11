@@ -1,0 +1,19 @@
+<ion-content>
+  <ion-card class="ion-text-center">
+    <ion-card-header color="light">
+      <ion-row>
+        <ion-col><b>ID</b></ion-col>
+        <ion-col><b>Nodos</b></ion-col>
+        <ion-col><b>Socio</b></ion-col>
+      </ion-row>
+    </ion-card-header>
+  </ion-card>
+
+  <ion-grid>
+    <ion-row *ngFor="let c of cumulos" class="ion-text-center">
+      <ion-col>{{ c.properties.cumulo }}</ion-col>
+      <ion-col>{{ c.properties.nodos }}</ion-col>
+      <ion-col>{{ c.properties.socio }}</ion-col>
+    </ion-row>
+  </ion-grid>
+</ion-content>

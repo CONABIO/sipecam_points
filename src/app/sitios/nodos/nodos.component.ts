@@ -13,7 +13,7 @@ import gql from 'graphql-tag';
 })
 export class NodosComponent implements OnInit {
   loading: HTMLIonLoadingElement;
-  nodes: Array<any> = [];
+  nodes: any = [];
   currentNodes: Array<any> = [];
 
   constructor(
@@ -24,11 +24,13 @@ export class NodosComponent implements OnInit {
 
   async getNodes() {
     try {
-      this.nodes = await this.dashboardService.allNodes();
+      this.nodes = await this.dashboardService.getAllNodes();
     } catch (error) {}
   }
 
-  ngOnInit() {}
+  ngOnInit() {
+    this.getNodes();
+  }
 
   async presentLoading() {
     this.loading = await this.loadingCtrl.create({ backdropDismiss: false });
