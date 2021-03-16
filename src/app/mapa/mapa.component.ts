@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
-import { ModalController } from '@ionic/angular';
+import { AlertController, ModalController } from '@ionic/angular';
+import { Router } from '@angular/router';
 import { environment } from '@env/environment';
 import { DashboardService } from '../services/dashboard.service';
 import { FiltersService } from '../services/filters.service';
@@ -48,9 +49,11 @@ export class MapaComponent implements OnInit {
   showFilterBar = true;
 
   constructor(
+    private alertController: AlertController,
     private dashboardService: DashboardService,
     public filtersService: FiltersService,
-    private modalCtrl: ModalController
+    private modalCtrl: ModalController,
+    private router: Router
   ) {}
 
   createMapLayers() {
@@ -138,6 +141,24 @@ export class MapaComponent implements OnInit {
     return 0;
   }
 
+  async goToCalendar(id: string = null) {
+    const alert = await this.alertController.create({
+      header: 'Calendario',
+      message: `¿Deseas ir al calendario del cúmulo ${id}?`,
+      buttons: [
+        'Cancelar',
+        {
+          text: 'Ir',
+          handler: () => {
+            this.router.navigate(['/eventos'], { queryParams: { id }, replaceUrl: true });
+          },
+        },
+      ],
+    });
+
+    await alert.present();
+  }
+
   initMap() {
     this.map = new mapboxgl.Map({
       accessToken: environment.mapbox.accessToken,
@@ -203,7 +224,6 @@ export class MapaComponent implements OnInit {
 
       this.map.on('click', 'unclustered-point', (e) => {
         const id = e.features[0].properties.id_sipecam;
-        console.log(e.features[0].properties);
         this.showDetail(id);
       });
     });
@@ -374,6 +394,11 @@ export class MapaComponent implements OnInit {
         ],
       },
       maxzoom: 7,
+    });
+
+    this.map.on('click', 'cumulos-point', (e) => {
+      const cumulo = e.features[0].properties.cumulo;
+      this.goToCalendar(cumulo);
     });
   }
 
