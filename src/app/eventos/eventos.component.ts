@@ -1,12 +1,16 @@
 import { Component, OnInit } from '@angular/core';
-
 import { ViewChild, TemplateRef } from '@angular/core';
+import { ActivatedRoute } from '@angular/router';
 import { addDays, isSameDay, isSameMonth } from 'date-fns';
 import { Subject } from 'rxjs';
 import { CalendarEvent, CalendarView } from 'angular-calendar';
 
 import flatpickr from 'flatpickr';
 import { Spanish } from 'flatpickr/dist/l10n/es';
+
+import { DashboardService } from '../services/dashboard.service';
+
+import * as _ from 'lodash';
 
 const colors: any = {
   red: {
@@ -94,13 +98,17 @@ export class EventosComponent implements OnInit {
 
   calendarEvents: CalendarEvent[] = [];
 
-  degradedNodes = ['3_92_0_1336', '3_92_0_1339', '3_92_0_1341', '3_92_0_1342', '3_92_0_1343'];
+  degradedNodes: any = [];
 
-  notDegradedNodes = ['3_92_1_1334', '3_92_1_1335', '3_92_1_1337', '3_92_1_1338', '3_92_1_1340'];
+  notDegradedNodes: any = [];
 
   activeDayIsOpen: boolean = false;
 
-  constructor() {}
+  cumuloId: string = null;
+
+  constructor(private dashboardService: DashboardService, private route: ActivatedRoute) {
+    this.cumuloId = this.route.snapshot.paramMap.get('id') || null;
+  }
 
   dayClicked({ date, events }: { date: Date; events: CalendarEvent[] }): void {
     if (isSameMonth(date, this.viewDate)) {
@@ -126,8 +134,25 @@ export class EventosComponent implements OnInit {
     return flatpickr;
   }
 
+  async getNodes() {
+    try {
+      const points: any = await this.dashboardService.getAllNodes();
+      const nodesByCum = _.groupBy(points, 'id_cumulo');
+      const nodes = nodesByCum[this.cumuloId];
+      this.degradedNodes = nodes
+        .filter((n) => n.cat_itegr === 'Degradado')
+        .map((n) => ({ id: n.id_sipe, selected: false }));
+      this.notDegradedNodes = nodes
+        .filter((n) => n.cat_itegr === 'Integro')
+        .map((n) => ({ id: n.id_sipe, selected: false }));
+    } catch (error) {
+      console.log(error);
+    }
+  }
+
   ngOnInit() {
     this.flatpickrFactory();
+    this.getNodes();
   }
 
   eventChanged() {
@@ -138,9 +163,12 @@ export class EventosComponent implements OnInit {
       }
 
       if (event.firstVisit) {
+        const visit = new Date(event.firstVisit);
+        visit.setDate(visit.getDate() - 3);
+
         const first: CalendarEvent = {
-          start: event.firstVisit,
-          end: addDays(new Date(event.firstVisit), 29),
+          start: visit,
+          end: addDays(visit, 35),
           title: `${event.title} - Visita seca`,
           color: event.color,
           allDay: true,
@@ -150,9 +178,12 @@ export class EventosComponent implements OnInit {
       }
 
       if (event.secondVisit) {
+        const visit = new Date(event.secondVisit);
+        visit.setDate(visit.getDate() - 3);
+
         const second: CalendarEvent = {
-          start: event.secondVisit,
-          end: addDays(new Date(event.secondVisit), 29),
+          start: visit,
+          end: addDays(visit, 35),
           title: `${event.title} - Visita lluvia`,
           color: event.color,
           allDay: true,
@@ -161,9 +192,24 @@ export class EventosComponent implements OnInit {
         this.calendarEvents.push(second);
       }
     });
+    this.updateNodes();
   }
 
   eventCompleted(event: any) {
     return event.degradedNode && event.notDegradedNode && (event.firstVisit || event.secondVisit);
+  }
+
+  updateNodes() {
+    this.degradedNodes.forEach((node, index) => {
+      const selected = this.events.find((event) => event.degradedNode === node.id);
+      this.degradedNodes[index].selected = !!selected;
+    });
+
+    this.notDegradedNodes.forEach((node, index) => {
+      const selected = this.events.find((event) => event.notDegradedNode === node.id);
+      this.notDegradedNodes[index].selected = !!selected;
+    });
+
+    console.log(this.degradedNodes);
   }
 }

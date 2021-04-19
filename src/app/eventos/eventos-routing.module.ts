@@ -9,7 +9,7 @@ const routes: Routes = [
   Shell.childRoutes(
     [
       { path: '', redirectTo: '/eventos', pathMatch: 'full' },
-      { path: 'eventos', component: EventosComponent, data: { title: extract('Eventos') } },
+      { path: 'eventos/:id', component: EventosComponent, data: { title: extract('Eventos') } },
     ],
     false
   ),

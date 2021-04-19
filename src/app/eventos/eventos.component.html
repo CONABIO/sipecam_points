@@ -11,7 +11,9 @@
     <ion-grid class="ion-padding">
       <ion-row>
         <ion-col>
-          <ion-title class="ion-text-center title" color="primary"><span translate>Cúmulo 92</span></ion-title>
+          <ion-title class="ion-text-center title" color="primary"
+            ><span translate>Cúmulo {{ cumuloId }}</span></ion-title
+          >
         </ion-col>
       </ion-row>
 
@@ -36,7 +38,10 @@
             [(ngModel)]="event.notDegradedNode"
             (ngModelChange)="eventChanged()"
           >
-            <ion-select-option *ngFor="let n of notDegradedNodes" [value]="n">{{ n }}</ion-select-option>
+            <ion-select-option [value]="null">Seleccionar</ion-select-option>
+            <ion-select-option disabled="{{ n.selected }}" *ngFor="let n of notDegradedNodes" [value]="n.id">{{
+              n.id
+            }}</ion-select-option>
           </ion-select>
         </ion-col>
         <ion-col class="ion-text-center">
@@ -48,7 +53,10 @@
             [(ngModel)]="event.degradedNode"
             (ngModelChange)="eventChanged()"
           >
-            <ion-select-option *ngFor="let n of degradedNodes" [value]="n">{{ n }}</ion-select-option>
+            <ion-select-option [value]="null">Seleccionar</ion-select-option>
+            <ion-select-option disabled="{{ n.selected }}" *ngFor="let n of degradedNodes" [value]="n.id">{{
+              n.id
+            }}</ion-select-option>
           </ion-select>
         </ion-col>
         <ion-col class="ion-text-center">

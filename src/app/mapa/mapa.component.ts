@@ -150,7 +150,7 @@ export class MapaComponent implements OnInit {
         {
           text: 'Ir',
           handler: () => {
-            this.router.navigate(['/eventos'], { queryParams: { id }, replaceUrl: true });
+            this.router.navigate(['/eventos', id]);
           },
         },
       ],
