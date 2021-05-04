@@ -5,8 +5,18 @@
     </ion-buttons>
     <ion-title><span translate>Eventos de muestreo</span></ion-title>
   </ion-toolbar>
+  <ion-toolbar>
+    <ion-segment (ionChange)="segmentChanged($event)" value="calendar">
+      <ion-segment-button value="calendar">
+        Calendario
+      </ion-segment-button>
+      <ion-segment-button value="people">
+        Monitores
+      </ion-segment-button>
+    </ion-segment>
+  </ion-toolbar>
 </ion-header>
-<ion-content>
+<ion-content *ngIf="activeSection === 'calendar'">
   <div ion-fixed class="sipecam-background">
     <ion-grid class="ion-padding">
       <ion-row>
@@ -167,5 +177,118 @@
         </ion-grid>
       </ion-card-content>
     </ion-card>
+  </div>
+</ion-content>
+
+<ion-content *ngIf="activeSection === 'people'">
+  <div ion-fixed class="sipecam-background">
+    <ion-grid class="ion-padding">
+      <ion-row>
+        <ion-col>
+          <ion-title class="ion-text-center title" color="primary"
+            ><span translate>Cúmulo {{ cumuloId }}</span></ion-title
+          >
+        </ion-col>
+      </ion-row>
+
+      <ion-row>
+        <ion-col>
+          <ion-title color="secondary"><b>Agregar monitor</b></ion-title>
+        </ion-col>
+      </ion-row>
+
+      <ion-row class="ion-text-center text-bold ion-margin" style="background-color: #0cd1e8;">
+        <ion-col>
+          <ion-item>
+            <ion-label position="floating">Nombre</ion-label>
+            <ion-input></ion-input>
+          </ion-item>
+        </ion-col>
+        <ion-col>
+          <ion-item>
+            <ion-label position="floating">Apellido paterno</ion-label>
+            <ion-input></ion-input>
+          </ion-item>
+        </ion-col>
+        <ion-col>
+          <ion-item>
+            <ion-label position="floating">Apellido materno</ion-label>
+            <ion-input></ion-input>
+          </ion-item>
+        </ion-col>
+        <ion-col>
+          <ion-item>
+            <ion-label position="floating">Contacto</ion-label>
+            <ion-input></ion-input>
+          </ion-item>
+        </ion-col>
+        <ion-col size="2"><ion-button color="light">Agregar</ion-button></ion-col>
+      </ion-row>
+
+      <ion-row>
+        <ion-col size="4">
+          <ion-card>
+            <ion-card-content>
+              <ion-item lines="none">
+                <ion-label class="ion-text-wrap">
+                  <h3>Norma Veronica Trinidad</h3>
+                  <p>ntrinidad@conabio.gob.mx</p>
+                </ion-label>
+                <ion-buttons>
+                  <ion-button size="small" color="secondary">
+                    <ion-icon slot="icon-only" name="create"></ion-icon>
+                  </ion-button>
+                  <ion-button size="small" color="secondary">
+                    <ion-icon slot="icon-only" name="trash"></ion-icon>
+                  </ion-button>
+                </ion-buttons>
+              </ion-item>
+            </ion-card-content>
+          </ion-card>
+        </ion-col>
+
+        <ion-col size="4">
+          <ion-card>
+            <ion-card-content>
+              <ion-item lines="none">
+                <ion-label class="ion-text-wrap">
+                  <h3>Mariana Munguía</h3>
+                  <p>mmunguia@conabio.gob.mx</p>
+                </ion-label>
+                <ion-buttons>
+                  <ion-button size="small" color="secondary">
+                    <ion-icon slot="icon-only" name="create"></ion-icon>
+                  </ion-button>
+                  <ion-button size="small" color="secondary">
+                    <ion-icon slot="icon-only" name="trash"></ion-icon>
+                  </ion-button>
+                </ion-buttons>
+              </ion-item>
+            </ion-card-content>
+          </ion-card>
+        </ion-col>
+
+        <ion-col size="4">
+          <ion-card>
+            <ion-card-content>
+              <ion-item lines="none">
+                <ion-label class="ion-text-wrap">
+                  <h3>Manuel Alcantar Juarez</h3>
+                  <p>525512345678</p>
+                </ion-label>
+                <ion-buttons>
+                  <ion-button size="small" color="secondary">
+                    <ion-icon slot="icon-only" name="create"></ion-icon>
+                  </ion-button>
+                  <ion-button size="small" color="secondary">
+                    <ion-icon slot="icon-only" name="trash"></ion-icon>
+                  </ion-button>
+                </ion-buttons>
+              </ion-item>
+            </ion-card-content>
+          </ion-card>
+        </ion-col>
+      </ion-row>
+    </ion-grid>
   </div>
 </ion-content>

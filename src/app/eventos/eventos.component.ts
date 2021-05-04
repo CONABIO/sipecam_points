@@ -106,6 +106,8 @@ export class EventosComponent implements OnInit {
 
   cumuloId: string = null;
 
+  activeSection = 'calendar';
+
   constructor(private dashboardService: DashboardService, private route: ActivatedRoute) {
     this.cumuloId = this.route.snapshot.paramMap.get('id') || null;
   }
@@ -197,6 +199,10 @@ export class EventosComponent implements OnInit {
 
   eventCompleted(event: any) {
     return event.degradedNode && event.notDegradedNode && (event.firstVisit || event.secondVisit);
+  }
+
+  segmentChanged(event: any) {
+    this.activeSection = event.target.value;
   }
 
   updateNodes() {
