@@ -31,8 +31,8 @@
         <ion-col>Nombre</ion-col>
         <ion-col>Nodo integro</ion-col>
         <ion-col>Nodo degradado</ion-col>
-        <ion-col>Visita seca</ion-col>
-        <ion-col>Visita lluvia</ion-col>
+        <ion-col>Visita temporada Lluvias</ion-col>
+        <ion-col>Visita temporada Seca</ion-col>
         <ion-col>Color</ion-col>
       </ion-row>
       <ion-row *ngFor="let event of events">
@@ -81,6 +81,7 @@
             altFormat="F j, Y"
             placeholder="Especifique"
             (ngModelChange)="eventChanged()"
+            [disabled]="true"
           />
         </ion-col>
         <ion-col class="ion-text-center">
@@ -95,6 +96,7 @@
             altFormat="F j, Y"
             placeholder="Especifique"
             (ngModelChange)="eventChanged()"
+            [disabled]="true"
           />
         </ion-col>
         <ion-col class="ion-text-center">
@@ -201,80 +203,45 @@
         <ion-col>
           <ion-item>
             <ion-label position="floating">Nombre</ion-label>
-            <ion-input></ion-input>
+            <ion-input [(ngModel)]="monitor.nombre"></ion-input>
           </ion-item>
         </ion-col>
         <ion-col>
           <ion-item>
             <ion-label position="floating">Apellido paterno</ion-label>
-            <ion-input></ion-input>
+            <ion-input [(ngModel)]="monitor.apellidoPaterno"></ion-input>
           </ion-item>
         </ion-col>
         <ion-col>
           <ion-item>
             <ion-label position="floating">Apellido materno</ion-label>
-            <ion-input></ion-input>
+            <ion-input [(ngModel)]="monitor.apellidoMaterno"></ion-input>
           </ion-item>
         </ion-col>
         <ion-col>
           <ion-item>
             <ion-label position="floating">Contacto</ion-label>
-            <ion-input></ion-input>
+            <ion-input [(ngModel)]="monitor.contacto"></ion-input>
           </ion-item>
         </ion-col>
-        <ion-col size="2"><ion-button color="light">Agregar</ion-button></ion-col>
+        <ion-col size="2"
+          ><ion-button
+            color="light"
+            (click)="addMonitor()"
+            [disabled]="!monitor.nombre || !monitor.apellidoPaterno || !monitor.apellidoMaterno || !monitor.contacto"
+            >Agregar</ion-button
+          ></ion-col
+        >
       </ion-row>
 
       <ion-row>
-        <ion-col size="4">
+        <ion-col size="4" *ngFor="let m of monitores">
           <ion-card>
             <ion-card-content>
               <ion-item lines="none">
                 <ion-label class="ion-text-wrap">
-                  <h3>Norma Veronica Trinidad</h3>
-                  <p>ntrinidad@conabio.gob.mx</p>
-                </ion-label>
-                <ion-buttons>
-                  <ion-button size="small" color="secondary">
-                    <ion-icon slot="icon-only" name="create"></ion-icon>
-                  </ion-button>
-                  <ion-button size="small" color="secondary">
-                    <ion-icon slot="icon-only" name="trash"></ion-icon>
-                  </ion-button>
-                </ion-buttons>
-              </ion-item>
-            </ion-card-content>
-          </ion-card>
-        </ion-col>
-
-        <ion-col size="4">
-          <ion-card>
-            <ion-card-content>
-              <ion-item lines="none">
-                <ion-label class="ion-text-wrap">
-                  <h3>Mariana Munguía</h3>
-                  <p>mmunguia@conabio.gob.mx</p>
-                </ion-label>
-                <ion-buttons>
-                  <ion-button size="small" color="secondary">
-                    <ion-icon slot="icon-only" name="create"></ion-icon>
-                  </ion-button>
-                  <ion-button size="small" color="secondary">
-                    <ion-icon slot="icon-only" name="trash"></ion-icon>
-                  </ion-button>
-                </ion-buttons>
-              </ion-item>
-            </ion-card-content>
-          </ion-card>
-        </ion-col>
-
-        <ion-col size="4">
-          <ion-card>
-            <ion-card-content>
-              <ion-item lines="none">
-                <ion-label class="ion-text-wrap">
-                  <h3>Manuel Alcantar Juarez</h3>
-                  <p>525512345678</p>
+                  <h3>{{ m.nombre }} {{ m.apellidoPaterno }} {{ m.apellidoMaterno }}</h3>
+                  <p>{{ m.contacto }}</p>
                 </ion-label>
                 <ion-buttons>
                   <ion-button size="small" color="secondary">

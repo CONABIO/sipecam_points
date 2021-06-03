@@ -55,40 +55,40 @@ export class EventosComponent implements OnInit {
 
   events: any[] = [
     {
-      firstVisit: null,
-      secondVisit: null,
+      firstVisit: '2021-06-21T00:00:00-05:00',
+      secondVisit: '2021-12-18T00:00:00-06:00',
       title: 'Par de nodos 1',
       color: colors.red,
       degradedNode: null,
       notDegradedNode: null,
     },
     {
-      firstVisit: null,
-      secondVisit: null,
+      firstVisit: '2021-07-27T00:00:00-05:00',
+      secondVisit: '2022-01-23T00:00:00-06:00',
       title: 'Par de nodos 2',
       color: colors.blue,
       degradedNode: null,
       notDegradedNode: null,
     },
     {
-      firstVisit: null,
-      secondVisit: null,
+      firstVisit: '2021-09-01T00:00:00-05:00',
+      secondVisit: '2022-02-28T00:00:00-06:00',
       title: 'Par de nodos 3',
       color: colors.yellow,
       degradedNode: null,
       notDegradedNode: null,
     },
     {
-      firstVisit: null,
-      secondVisit: null,
+      firstVisit: '2021-10-07T00:00:00-05:00',
+      secondVisit: '2022-04-05T00:00:00-05:00',
       title: 'Par de nodos 4',
       color: colors.green,
       degradedNode: null,
       notDegradedNode: null,
     },
     {
-      firstVisit: null,
-      secondVisit: null,
+      firstVisit: '2021-11-12T00:00:00-06:00',
+      secondVisit: '2022-05-11T00:00:00-05:00',
       title: 'Par de nodos 5',
       color: colors.purple,
       degradedNode: null,
@@ -108,8 +108,27 @@ export class EventosComponent implements OnInit {
 
   activeSection = 'calendar';
 
+  monitores: any = [];
+
+  monitor = {
+    nombre: null,
+    apellidoPaterno: null,
+    apellidoMaterno: null,
+    contacto: null,
+  };
+
   constructor(private dashboardService: DashboardService, private route: ActivatedRoute) {
     this.cumuloId = this.route.snapshot.paramMap.get('id') || null;
+  }
+
+  addMonitor() {
+    this.monitores.push({ ...this.monitor });
+    this.monitor = {
+      nombre: null,
+      apellidoPaterno: null,
+      apellidoMaterno: null,
+      contacto: null,
+    };
   }
 
   dayClicked({ date, events }: { date: Date; events: CalendarEvent[] }): void {
