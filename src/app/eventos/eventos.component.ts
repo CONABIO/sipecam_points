@@ -185,7 +185,7 @@ export class EventosComponent implements OnInit {
 
       if (event.firstVisit) {
         const visit = new Date(event.firstVisit);
-        visit.setDate(visit.getDate() - 3);
+        visit.setDate(visit.getDate());
 
         const first: CalendarEvent = {
           start: visit,
@@ -200,7 +200,7 @@ export class EventosComponent implements OnInit {
 
       if (event.secondVisit) {
         const visit = new Date(event.secondVisit);
-        visit.setDate(visit.getDate() - 3);
+        visit.setDate(visit.getDate());
 
         const second: CalendarEvent = {
           start: visit,
