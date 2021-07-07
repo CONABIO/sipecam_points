@@ -1,0 +1,116 @@
+// Creating tables
+Table users as U {
+  id int [pk, increment] // auto-increment
+  created_at timestamp
+	password varchar 
+	last_login timestampt
+	is_superuser bool 
+	username varchar 
+	first_name varchar 
+	last_name varchar
+	email varchar 
+	is_staff boolean 
+	is_active boolean 
+	date_joined timestampt
+	comments varchar
+  role int
+}
+
+
+Table Node as N {
+  id int [pk, increment] // auto-increment
+  fid int
+  latitude float8
+  longitud float8
+  ecosystem int
+	altitud int4 
+	id_ecosist int4
+	ecosistema varchar
+	id_cumulo int4 
+	cat_itegr varchar 
+	id_sipe varchar 
+	anpmarcelo boolean
+	por_fauna int4 
+	coordsx1 varchar 
+	coordsx2 varchar 
+	id_socio int4 
+	con_socio int4 
+}
+
+Table Cumulus as C {
+  id int [pk, increment] // auto-increment
+  name varchar
+  created_at timestamp
+}
+
+Table Cumulus_criteria as CC {
+  id int [pk, increment] // auto-increment
+  name varchar
+  created_at timestamp
+}
+
+Table Monitors as M {
+  id int [pk, increment] // auto-increment
+  first_name varchar
+  last_name varchar
+  phone_number int
+  email varchar
+  
+  created_at timestamp
+}
+Table Visits as V {
+  id int [pk, increment] // auto-increment
+  full_name varchar
+  created_at timestamp
+  country_code int
+}
+
+Table Partner as P {
+  id int [pk, increment] // auto-increment
+  institution varchar
+	address varchar
+	firstname varchar
+	lastname varchar
+	email varchar
+	phone_number varchar
+	comments varchar
+	grade varchar 
+  created_at timestamp
+  country_code int
+}
+
+Table Role as R {
+  id int [pk, increment] // auto-increment
+  roles varchar
+}
+
+Table Ecosystem as E {
+  id int [pk, increment] // auto-increment
+  name varchar [not null, unique]
+}
+
+Table Devices as D {
+  id int [pk, increment] // auto-increment
+  serial varchar
+  brand varchar
+  type varchar
+  model varchar
+}
+
+Table Calendar as Cal {
+  id int [pk, increment] // auto-increment
+
+}
+
+Table Permissions as Per {
+  id int [pk, increment] // auto-increment
+  edit boolean
+  write boolean
+  create boolean
+}
+
+Ref: U.role < R.id
+Ref: N.ecosystem - E.id
+Ref: Ecosystem.(id, name) - N.(id, ecosystem)
+Ref: M.id > P.(id)
+Ref: P.id - C.(id)
