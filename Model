@@ -1,5 +1,5 @@
 // Creating tables
-Table users as U {
+Table Users as U {
   id int [pk, increment] // auto-increment
   created_at timestamp
 	password varchar 
@@ -17,7 +17,7 @@ Table users as U {
 }
 
 
-Table Node as N {
+Table Nodes as N {
   id int [pk, increment] // auto-increment
   has_parnet boolean
 	ecosystem_id int
@@ -26,29 +26,32 @@ Table Node as N {
 	id_sipe varchar  //?
   fid int
   latitude float8
-  longitud float8
+  longitude float8
 	altitude int4 
 	cat_itegr varchar 
 	anpmarcelo boolean //?
 	by_fauna int4 
-	coordsx1 varchar 
-	coordsx2 varchar 
-  point geometry
+  geometry point
+  integrity boolean
+  created_at timestamp
+  updated_at timestamp
 }
 
-Table Ecosystem as E {
+Table Ecosystems as E {
   id int [pk, increment] // auto-increment
   node_id int
   name varchar [not null, unique]
+  geometry point
   created_at timestamp
+  
 }
 
 Table Cumulus as C {
   id int [pk, increment] // auto-increment
   name varchar
   node_id int
+  geometry polygon
   created_at timestamp
-  polygon geometry
 }
 
 Table Cumulus_criteria as CC {
@@ -60,7 +63,7 @@ Table Cumulus_criteria as CC {
 }
 
 
-Table Partner as P {
+Table Partners as P {
   id int [pk, increment] // auto-increment
   node_id int
   institution varchar
@@ -74,12 +77,7 @@ Table Partner as P {
   created_at timestamp
 }
 
-Ref: N.(id) - E.(node_id)
-Ref: N.(id) - C.(node_id)
-Ref: N.(id) - P.(node_id)
-Ref: N.(id) - D.(node_id)
-Ref: N.(id) - V.(node_id)
-Ref: C.(id) - CC.(cumulus_id)
+
 
 Table Monitors as M {
   id int [pk, increment] // auto-increment
@@ -90,16 +88,19 @@ Table Monitors as M {
   
   created_at timestamp
 }
+
 Table Visits as V {
   id int [pk, increment] // auto-increment
+  device_id int
+  calendar_id int
   node_id int
-  full_name varchar
   created_at timestamp
+  updated_at timestamp
 }
 
 
 
-Table Role as R {
+Table Roles as R {
   id int [pk, increment] // auto-increment
   permission_id int
   roles varchar
@@ -107,18 +108,29 @@ Table Role as R {
 
 
 
-Table Devices as D {
+Table Physical_Devices as D {
   id int [pk, increment] // auto-increment
   node_id int
+  device_id int
   serial varchar
+  created_at timestamp
+}
+
+Table Devices_Catalog as DC {
+  id int [pk, increment] // auto-
+  cumulus_id int
   brand varchar
   type varchar
   model varchar
+    
 }
 
 Table Calendar as Cal {
   id int [pk, increment] // auto-increment
-
+  node_id int
+  date_started date
+  date_finished date
+  created_at timestamp
 }
 
 Table Permissions as Per {
@@ -127,10 +139,41 @@ Table Permissions as Per {
   edit boolean
   write boolean
   create boolean
+  created_at timestamp
 }
 
+Table Deployments as Dep {
+  id int [pk, increment] // auto-increment
+  device_id int
+  date_started date
+  date_finished date
+  latitude float8
+  longitude float8
+  altitude float8
+  notes varchar
+}
 
-Ref: R.id > Per.id
-Ref: U.role < R.id
-Ref: M.id > P.(id)
+// Relaciones uno a uno
+Ref: N.(id) - E.(node_id)
+Ref: N.(id) - P.(node_id)
+Ref: N.(id) - D.(node_id)
+Ref: N.(id) - V.(node_id)
+Ref: C.(id) - CC.(cumulus_id)
+Ref: N.(id) - Cal.(node_id)
 Ref: P.id - C.(id)
+Ref: Dep.(id) - D.(id)
+Ref: C.(id) - DC.(cumulus_id)
+
+// Relaciones Muchos a Uno
+Ref: R.id > Per.id
+Ref: M.id > P.(id)
+Ref: V.id > D.(id)
+Ref: N.(id) > C.(node_id)
+ 
+
+// Relaciones Uno a Muchos
+Ref: U.role < R.id
+Ref: Cal.id < V.id
+Ref: D.(device_id) < DC.id
+
+Ref: "Cumulus_criteria"."id" < "Nodes"."cumululus_id"
