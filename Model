@@ -33,7 +33,7 @@ Table Node as N {
 	by_fauna int4 
 	coordsx1 varchar 
 	coordsx2 varchar 
-
+  point geometry
 }
 
 Table Ecosystem as E {
@@ -48,6 +48,7 @@ Table Cumulus as C {
   name varchar
   node_id int
   created_at timestamp
+  polygon geometry
 }
 
 Table Cumulus_criteria as CC {
