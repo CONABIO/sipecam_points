@@ -19,35 +19,66 @@ Table users as U {
 
 Table Node as N {
   id int [pk, increment] // auto-increment
+  has_parnet boolean
+	ecosystem_id int
+	cumululus_id int
+	partner_id int
+	id_sipe varchar  //?
   fid int
   latitude float8
   longitud float8
-  ecosystem int
-	altitud int4 
-	id_ecosist int4
-	ecosistema varchar
-	id_cumulo int4 
+	altitude int4 
 	cat_itegr varchar 
-	id_sipe varchar 
-	anpmarcelo boolean
-	por_fauna int4 
+	anpmarcelo boolean //?
+	by_fauna int4 
 	coordsx1 varchar 
 	coordsx2 varchar 
-	id_socio int4 
-	con_socio int4 
+
+}
+
+Table Ecosystem as E {
+  id int [pk, increment] // auto-increment
+  node_id int
+  name varchar [not null, unique]
+  created_at timestamp
 }
 
 Table Cumulus as C {
   id int [pk, increment] // auto-increment
   name varchar
+  node_id int
   created_at timestamp
 }
 
 Table Cumulus_criteria as CC {
   id int [pk, increment] // auto-increment
+  cumulus_id int
   name varchar
+  
   created_at timestamp
 }
+
+
+Table Partner as P {
+  id int [pk, increment] // auto-increment
+  node_id int
+  institution varchar
+	address varchar
+	firstname varchar
+	lastname varchar
+	email varchar
+	phone_number varchar
+	comments varchar
+	grade varchar 
+  created_at timestamp
+}
+
+Ref: N.(id) - E.(node_id)
+Ref: N.(id) - C.(node_id)
+Ref: N.(id) - P.(node_id)
+Ref: N.(id) - D.(node_id)
+Ref: N.(id) - V.(node_id)
+Ref: C.(id) - CC.(cumulus_id)
 
 Table Monitors as M {
   id int [pk, increment] // auto-increment
@@ -60,37 +91,24 @@ Table Monitors as M {
 }
 Table Visits as V {
   id int [pk, increment] // auto-increment
+  node_id int
   full_name varchar
   created_at timestamp
-  country_code int
 }
 
-Table Partner as P {
-  id int [pk, increment] // auto-increment
-  institution varchar
-	address varchar
-	firstname varchar
-	lastname varchar
-	email varchar
-	phone_number varchar
-	comments varchar
-	grade varchar 
-  created_at timestamp
-  country_code int
-}
+
 
 Table Role as R {
   id int [pk, increment] // auto-increment
+  permission_id int
   roles varchar
 }
 
-Table Ecosystem as E {
-  id int [pk, increment] // auto-increment
-  name varchar [not null, unique]
-}
+
 
 Table Devices as D {
   id int [pk, increment] // auto-increment
+  node_id int
   serial varchar
   brand varchar
   type varchar
@@ -104,13 +122,14 @@ Table Calendar as Cal {
 
 Table Permissions as Per {
   id int [pk, increment] // auto-increment
+  role_id int
   edit boolean
   write boolean
   create boolean
 }
 
+
+Ref: R.id > Per.id
 Ref: U.role < R.id
-Ref: N.ecosystem - E.id
-Ref: Ecosystem.(id, name) - N.(id, ecosystem)
 Ref: M.id > P.(id)
 Ref: P.id - C.(id)
