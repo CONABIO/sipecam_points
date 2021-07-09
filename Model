@@ -1,24 +1,26 @@
 // Creating tables
 Table Users as U {
   id int [pk, increment] // auto-increment
-  created_at timestamp
+	username varchar
 	password varchar 
 	last_login timestampt
-	is_superuser bool 
-	username varchar 
 	first_name varchar 
 	last_name varchar
+	grade varchar 
 	email varchar 
-	is_staff boolean 
+	address varchar
 	is_active boolean 
 	date_joined timestampt
 	comments varchar
   role int
+  institution_id int
+  created_at timestamp
 }
 
 
 Table Nodes as N {
   id int [pk, increment] // auto-increment
+  user_id int
   has_parnet boolean
 	ecosystem_id int
 	cumululus_id int
@@ -35,6 +37,14 @@ Table Nodes as N {
   integrity boolean
   created_at timestamp
   updated_at timestamp
+}
+
+Table Institutions as I {
+  id int [pk, increment] // auto-increment
+   address varchar
+   name varchar
+   phone_number int
+   
 }
 
 Table Ecosystems as E {
@@ -63,34 +73,11 @@ Table Cumulus_criteria as CC {
 }
 
 
-Table Partners as P {
-  id int [pk, increment] // auto-increment
-  node_id int
-  institution varchar
-	address varchar
-	firstname varchar
-	lastname varchar
-	email varchar
-	phone_number varchar
-	comments varchar
-	grade varchar 
-  created_at timestamp
-}
 
-
-
-Table Monitors as M {
-  id int [pk, increment] // auto-increment
-  first_name varchar
-  last_name varchar
-  phone_number int
-  email varchar
-  
-  created_at timestamp
-}
 
 Table Visits as V {
   id int [pk, increment] // auto-increment
+  user_id int
   device_id int
   calendar_id int
   node_id int
@@ -100,6 +87,11 @@ Table Visits as V {
 
 
 
+// Posibles Roles
+// Monitor
+// Socio
+// Admin
+// 
 Table Roles as R {
   id int [pk, increment] // auto-increment
   permission_id int
@@ -122,7 +114,7 @@ Table Devices_Catalog as DC {
   brand varchar
   type varchar
   model varchar
-    
+  serial_number varchar
 }
 
 Table Calendar as Cal {
@@ -136,7 +128,7 @@ Table Calendar as Cal {
 Table Permissions as Per {
   id int [pk, increment] // auto-increment
   role_id int
-  edit boolean
+  read boolean
   write boolean
   create boolean
   created_at timestamp
@@ -153,27 +145,39 @@ Table Deployments as Dep {
   notes varchar
 }
 
+Table PartnersCumulus as Pacu {
+  id int [pk, increment] // auto-increment
+  user_id int
+  cumulus_id int
+}
+
 // Relaciones uno a uno
 Ref: N.(id) - E.(node_id)
-Ref: N.(id) - P.(node_id)
 Ref: N.(id) - D.(node_id)
 Ref: N.(id) - V.(node_id)
 Ref: C.(id) - CC.(cumulus_id)
 Ref: N.(id) - Cal.(node_id)
-Ref: P.id - C.(id)
+Ref: U.id - C.(id)
 Ref: Dep.(id) - D.(id)
 Ref: C.(id) - DC.(cumulus_id)
 
+
+
 // Relaciones Muchos a Uno
 Ref: R.id > Per.id
-Ref: M.id > P.(id)
 Ref: V.id > D.(id)
 Ref: N.(id) > C.(node_id)
- 
+Ref: D.(device_id) > DC.id
+
 
 // Relaciones Uno a Muchos
 Ref: U.role < R.id
 Ref: Cal.id < V.id
-Ref: D.(device_id) < DC.id
+Ref: Pacu.(user_id) < U.(id)
+Ref: Pacu.(cumulus_id) < C.(id)
+Ref: U.(id) < N.(user_id)
+Ref: V.(user_id) < U.(id)
+Ref: I.(id) < U.(institution_id)
+
 
 Ref: "Cumulus_criteria"."id" < "Nodes"."cumululus_id"
