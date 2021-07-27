@@ -8,10 +8,14 @@ Table Users as U {
 	last_name varchar
 	email varchar 
 	is_active boolean 
-	date_joined timestampt
-  role int
   institution_id int
   created_at timestamp
+}
+
+Table Role_to_User {
+  user_id int
+  role_id int
+  created_at datetime
 }
 
 
@@ -19,25 +23,21 @@ Table Nodes as N {
   id int [pk, increment] // auto-increment
   //ID humano que Pedro usa para identificar 2_14_0_683
   nomenclatura varchar  
-  has_parnet boolean
-	ecosystem_id int
-	cumulus_id int
-	partner_id int
+  has_parner boolean
   fid int
-  latitude float8
-  longitude float8
-	altitude int4 
+  location point
 	cat_itegr varchar // Es una integridad para modulo
-  geometry point
   integrity boolean
+	cumulus_id int
+	ecosystem_id int
   created_at timestamp
   updated_at timestamp
 }
 
 Table Institutions as I {
   id int [pk, increment] // auto-increment
-   address varchar
    name varchar
+   address varchar
    phone_number int
      created_at timestamp
    
@@ -60,7 +60,6 @@ Table Cumulus as C {
 Table Cumulus_criteria as CC {
   id int [pk, increment] // auto-increment
   name varchar
-  
   created_at timestamp
 }
 
@@ -68,7 +67,6 @@ Table Cumulus_criteria as CC {
 Table Visits as V {
   id int [pk, increment] // auto-increment
   user_id int
-  device_id int
   calendar_id int
   node_id int
   cumulus_id int
@@ -84,7 +82,7 @@ Table Visits as V {
 // 
 Table Roles as R {
   id int [pk, increment] // auto-increment
-  roles varchar
+  name varchar
   description varchar
 }
 
@@ -92,9 +90,10 @@ Table Roles as R {
 
 Table Physical_Devices as D {
   id int [pk, increment] // auto-increment
+  serial_number varchar
+  comments varchar
   device_id int
   cumulus_id int
-  serial varchar
   created_at timestamp
 }
 
@@ -102,9 +101,6 @@ Table Devices_Catalog as DC {
   id int [pk, increment] // auto-
   brand varchar
   type varchar
-  model varchar
-  serial_number varchar
-  created_at timestamp
 }
 
 Table Calendar as Cal {
@@ -118,15 +114,15 @@ Table Calendar as Cal {
 
 Table Deployments as Dep {
   id int [pk, increment] // auto-increment
-  device_id int
   date_started date
   date_finished date
   latitude float8
   longitude float8
   altitude float8
-  notes varchar
-  created_at timestamp
+  comments varchar
+  device_id int
   visit_id int
+  created_at timestamp
 }
 
 Table PartnersCumulus as Pacu {
@@ -143,7 +139,7 @@ Table Monitors as Mon {
  cumulus_id int
  first_name varchar
  last_name varchar
- last_name2 varchar
+ second_last_name varchar
  contact varchar
 }
 
@@ -164,7 +160,6 @@ Ref: N.(ecosystem_id) > E.(id)
 Ref: C.(criteria_id) > CC.(id)
 
 // Relaciones Uno a Muchos
-Ref: U.role < R.id
 Ref: Pacu.(user_id) < U.(id)
 Ref: Pacu.(cumulus_id) < C.(id)
 Ref: V.(user_id) < U.(id)
@@ -181,3 +176,9 @@ Ref: "MonitorsDeployment"."deployment_id" < "Deployments"."id"
 Ref: "Visits"."id" < "Deployments"."visit_id"
 
 Ref: "Physical_Devices"."id" < "Deployments"."device_id"
+
+
+
+Ref: "Role_to_User"."user_id" < "Users"."id"
+
+Ref: "Role_to_User"."role_id" < "Roles"."id"
