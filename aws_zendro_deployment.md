@@ -160,12 +160,9 @@ git pull
 cd /home/ubuntu/ZendroStarterPack
 
 cp -r ./seeders ./graphql-server
-```
 
-Delete volume of postgreSQL:
+#delete volume of postgreSQL:
 
-
-```
 docker volume ls | grep zendrostarterpack | awk '{print "docker volume rm " $2}' | sh
 
 #start services
