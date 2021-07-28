@@ -1,4 +1,4 @@
-Instance in AWS: `m5.xlarge` and 250 gb of storage.
+Instance in AWS: `m5.xlarge` and 250 gb of storage in Ubuntu 20.04.
 
 Next bash script helps to tag the instance and install tools such as docker, docker-compose
 
