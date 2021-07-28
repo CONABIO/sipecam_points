@@ -141,12 +141,18 @@ If one wants that DB to be accesible add to `docker-compose-prod.yml`:
 Go to:
 
 ```
-<url>:7000
+<ipv4 of instance>:7000
 
-<url>:8080
+<ipv4 of instance>:8080
+
 ```
-
 using credentials configured.
+
+If `REQUIRE_SIGN_IN` in Zendro config is set to `false` then go to:
+
+```
+<ipv4 of instance>:3000/graphql
+```
 
 If graphql-server needs and update as new seeders were created in fork of Zendro's repo then
 
