@@ -154,7 +154,7 @@ Go to:
 ```
 using credentials configured.
 
-If `REQUIRE_SIGN_IN` in Zendro config is set to `false` then go to:
+If `REQUIRE_SIGN_IN` in Zendro config `docker-compose-prod.yml` is set to `false` then go to:
 
 ```
 <ipv4 of instance>:3000/graphql
