@@ -138,6 +138,12 @@ If one wants that DB to be accesible add to `docker-compose-prod.yml`:
       - 5432:5432
 ```
 
+Deploy:
+
+```
+yarn start
+```
+
 Go to:
 
 ```
