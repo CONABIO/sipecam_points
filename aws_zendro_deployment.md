@@ -160,6 +160,22 @@ If `REQUIRE_SIGN_IN` in Zendro config `docker-compose-prod.yml` is set to `false
 <ipv4 of instance>:3000/graphql
 ```
 
+# In production
+
+If changes were made in fork of Zendro's repo then
+
+```
+cd /home/ubuntu/ZendroStarterPack
+
+git pull
+
+cp -r ./seeders ./graphql-server
+
+```
+
+
+# When testing Zendro's deployment
+
 If graphql-server needs and update as new seeders were created in fork of Zendro's repo then
 
 ```
