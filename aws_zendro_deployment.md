@@ -173,6 +173,26 @@ cp -r ./seeders ./graphql-server
 
 ```
 
+If server needs a restart then
+
+```
+cd /home/ubuntu/ZendroStarterPack
+
+yarn stop prod
+
+yarn start
+```
+
+If fails restart change to `root` or try
+
+```
+cd /home/ubuntu/ZendroStarterPack
+
+bash ./scripts/down.sh prod
+
+bash ./scripts/up.sh prod
+
+```
 
 # When testing Zendro's deployment
 
