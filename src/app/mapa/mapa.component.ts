@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { AlertController, ModalController } from '@ionic/angular';
 import { Router } from '@angular/router';
 import { Apollo } from 'apollo-angular';
-import { cumulus, nodes } from '@api/mapa';
+import { getCumulus, getNodes } from '@api/mapa';
 import { environment } from '@env/environment';
 import { DashboardService } from '../services/dashboard.service';
 import { FiltersService } from '../services/filters.service';
@@ -126,7 +126,7 @@ export class MapaComponent implements OnInit {
     try {
       const { data }: any = await this.apollo
         .query({
-          query: nodes,
+          query: getNodes,
           variables: {
             pagination: {
               limit: 5000,

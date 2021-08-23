@@ -12,7 +12,7 @@ export const getCumulus = gql`
   }
 `;
 
-export const ecosystems = gql`
+export const getEcosystems = gql`
   query ecosystems($search: searchEcosystemInput, $order: [orderEcosystemInput], $pagination: paginationInput!) {
     ecosystems(search: $search, order: $order, pagination: $pagination) {
       id
@@ -21,13 +21,12 @@ export const ecosystems = gql`
   }
 `;
 
-export const nodes = gql`
+export const getNodes = gql`
   query nodes($search: searchNodeInput, $order: [orderNodeInput], $pagination: paginationInput!) {
     nodes(search: $search, order: $order, pagination: $pagination) {
       id
       nomenclatura
       has_partner
-      fid
       location
       cat_integr
       integrity

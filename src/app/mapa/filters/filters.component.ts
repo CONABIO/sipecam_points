@@ -1,7 +1,7 @@
 import { Component, Input, OnInit } from '@angular/core';
 
 import { Apollo } from 'apollo-angular';
-import { ecosystems } from '@api/mapa';
+import { getEcosystems } from '@api/mapa';
 
 import { FiltersService } from '../../services/filters.service';
 
@@ -38,7 +38,7 @@ export class FiltersComponent implements OnInit {
     try {
       const { data }: any = await this.apollo
         .query({
-          query: ecosystems,
+          query: getEcosystems,
           variables: {
             pagination: {
               limit: 50,
