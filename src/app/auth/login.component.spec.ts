@@ -1,4 +1,4 @@
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { TranslateModule } from '@ngx-translate/core';
 import { RouterTestingModule } from '@angular/router/testing';
 import { ReactiveFormsModule } from '@angular/forms';
@@ -16,20 +16,22 @@ describe('LoginComponent', () => {
   let component: LoginComponent;
   let fixture: ComponentFixture<LoginComponent>;
 
-  beforeEach(async(() => {
-    TestBed.configureTestingModule({
-      imports: [
-        BrowserAnimationsModule,
-        SharedModule,
-        RouterTestingModule,
-        TranslateModule.forRoot(),
-        I18nModule,
-        ReactiveFormsModule,
-        CoreModule,
-      ],
-      declarations: [LoginComponent],
-    }).compileComponents();
-  }));
+  beforeEach(
+    waitForAsync(() => {
+      TestBed.configureTestingModule({
+        imports: [
+          BrowserAnimationsModule,
+          SharedModule,
+          RouterTestingModule,
+          TranslateModule.forRoot(),
+          I18nModule,
+          ReactiveFormsModule,
+          CoreModule,
+        ],
+        declarations: [LoginComponent],
+      }).compileComponents();
+    })
+  );
 
   beforeEach(() => {
     fixture = TestBed.createComponent(LoginComponent);
