@@ -1,2 +1,2 @@
-export * from './calendario.mutations';
-export * from './calendario.queries';
+export * from './eventos.mutations';
+export * from './eventos.queries';

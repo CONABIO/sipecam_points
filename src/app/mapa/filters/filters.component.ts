@@ -41,21 +41,20 @@ export class FiltersComponent implements OnInit {
           query: getEcosystems,
           variables: {
             pagination: {
-              limit: 50,
+              limit: 15,
               offset: 0,
             },
           },
         })
         .toPromise();
       this.ecosystems = data?.ecosystems ?? [];
-      this.filters = this.fs.filters;
     } catch (error) {
       console.log(error);
     }
   }
 
-  ngOnInit(): void {
-    // this.filters = this.filtersService.filters;
-    this.getEcosystems();
+  async ngOnInit() {
+    await this.getEcosystems();
+    this.filters = this.fs.filters;
   }
 }

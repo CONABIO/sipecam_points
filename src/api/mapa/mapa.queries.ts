@@ -1,5 +1,8 @@
 import gql from 'graphql-tag';
 
+/**
+ * Cúmulos
+ */
 export const getCumulus = gql`
   query cumulus($search: searchCumulusInput, $order: [orderCumulusInput], $pagination: paginationInput!) {
     cumulus(search: $search, order: $order, pagination: $pagination) {
@@ -12,6 +15,21 @@ export const getCumulus = gql`
   }
 `;
 
+export const getOneCumulus = gql`
+  query readOneCumulus($id: ID!) {
+    readOneCumulus(id: $id) {
+      id
+      name
+      geometry
+      criteria_id
+      user_ids
+    }
+  }
+`;
+
+/**
+ * Ecosistemas
+ */
 export const getEcosystems = gql`
   query ecosystems($search: searchEcosystemInput, $order: [orderEcosystemInput], $pagination: paginationInput!) {
     ecosystems(search: $search, order: $order, pagination: $pagination) {
@@ -21,6 +39,9 @@ export const getEcosystems = gql`
   }
 `;
 
+/**
+ * Nodos
+ */
 export const getNodes = gql`
   query nodes($search: searchNodeInput, $order: [orderNodeInput], $pagination: paginationInput!) {
     nodes(search: $search, order: $order, pagination: $pagination) {
@@ -32,7 +53,21 @@ export const getNodes = gql`
       integrity
       cumulus_id
       ecosystem_id
-      created_at
+    }
+  }
+`;
+
+export const getOneNode = gql`
+  query readOneNode($id: ID!) {
+    readOneNode(id: $id) {
+      id
+      nomenclatura
+      has_partner
+      location
+      cat_integr
+      integrity
+      cumulus_id
+      ecosystem_id
     }
   }
 `;

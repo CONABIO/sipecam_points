@@ -1,5 +1,8 @@
 import gql from 'graphql-tag';
 
+/**
+ * Calendario
+ */
 export const getCalendar = gql`
   query calendars($search: searchCalendarInput, $order: [orderCalendarInput], $pagination: paginationInput!) {
     calendars(search: $search, order: $order, pagination: $pagination) {
@@ -10,6 +13,24 @@ export const getCalendar = gql`
   }
 `;
 
+/**
+ * Monitores
+ */
+export const getMonitores = gql`
+  query monitors($search: searchMonitorInput, $order: [orderMonitorInput], $pagination: paginationInput!) {
+    monitors(search: $search, order: $order, pagination: $pagination) {
+      id
+      first_name
+      last_name
+      second_last_name
+      contact
+    }
+  }
+`;
+
+/**
+ * Visitas
+ */
 export const getVisitas = gql`
   query visits($search: searchVisitInput, $order: [orderVisitInput], $pagination: paginationInput!) {
     visits(search: $search, order: $order, pagination: $pagination) {

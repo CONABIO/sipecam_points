@@ -1,5 +1,5 @@
 ion-content {
-  font-size: 22px;
+  font-size: 20px;
 }
 
 .slider {
@@ -35,8 +35,8 @@ ion-content {
 }
 
 .text-section {
-  color: #777;
-  background-color: white;
+  color: #fff;
+  background-color: #282e34;
   text-align: center;
   padding: 40px 60px;
   text-align: justify;
@@ -67,11 +67,27 @@ ion-content {
   padding: 40px 60px;
   text-align: center;
 
+  ion-card {
+    margin: 0 10px;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+
+    & > h3 {
+      margin: 0.5rem 0;
+    }
+
+    & > p {
+      margin: 0 0 0.5em 0;
+    }
+  }
+
   ion-card-content {
     color: #ddd;
     background-color: #282e34;
     text-align: justify;
     min-height: 170px;
+    flex: 1;
   }
 
   ion-thumbnail,

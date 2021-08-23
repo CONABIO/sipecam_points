@@ -28,7 +28,8 @@ export class MapaComponent implements OnInit {
   ecosystem: string = 'null';
   integrity: string = 'null';
   map: mapboxgl.Map;
-  points: any = [];
+  cumulos: any = [];
+  nodos: any = [];
 
   filters: MapContext = {
     anp: true,
@@ -85,11 +86,11 @@ export class MapaComponent implements OnInit {
   async filterChanged(filters: MapContext) {
     console.log('change', typeof filters.ecosystem, filters);
     try {
-      this.points = await this.dashboardService.getFilteredNodes(filters.ecosystem, filters.integrity);
-      // console.log('points', this.points);
+      this.nodos = await this.dashboardService.getFilteredNodes(filters.ecosystem, filters.integrity);
+
       const data = {
         type: 'FeatureCollection',
-        features: this.points.map((s) => {
+        features: this.nodos.map((s) => {
           const lng = s.longitud != 0 ? Number(s.longitud) : -99.1269;
           const lat = s.latitud != 0 ? Number(s.latitud) : 19.4978;
           return {
@@ -107,22 +108,34 @@ export class MapaComponent implements OnInit {
           };
         }),
       };
-      this.map.getSource('points-src').setData(data);
+      this.map.getSource('nodos-src').setData(data);
       this.updateCentroids();
     } catch (error) {
       console.log(error);
     }
   }
 
-  async getMapInfo() {
+  async getCumulos() {
     try {
-      this.points = await this.dashboardService.getAllNodes();
+      const { data }: any = await this.apollo
+        .query({
+          query: getCumulus,
+          variables: {
+            pagination: {
+              limit: 500,
+              offset: 0,
+            },
+          },
+        })
+        .toPromise();
+
+      this.cumulos = data?.cumulus ?? [];
     } catch (error) {
       console.log(error);
     }
   }
 
-  async getNodes() {
+  async getNodos() {
     try {
       const { data }: any = await this.apollo
         .query({
@@ -136,8 +149,7 @@ export class MapaComponent implements OnInit {
         })
         .toPromise();
 
-      this.points = data.nodes;
-      console.log('DATAAAA', this.points);
+      this.nodos = data?.nodes ?? [];
     } catch (error) {
       console.log(error);
     }
@@ -145,21 +157,17 @@ export class MapaComponent implements OnInit {
 
   getSocioValue(nodes: any) {
     for (const node of nodes) {
-      if (node.con_socio === 2) {
-        return 2;
-      }
-      if (node.con_socio === 1) {
-        return 1;
+      if (node.has_partner) {
+        return true;
       }
     }
-
-    return 0;
+    return false;
   }
 
-  async goToCalendar(id: string = null) {
+  async goToCalendar(id: string = null, name?: string) {
     const alert = await this.alertController.create({
       header: 'Calendario',
-      message: `¿Deseas ir al calendario del cúmulo ${id}?`,
+      message: `¿Deseas ir al calendario del cúmulo ${name}?`,
       buttons: [
         'Cancelar',
         {
@@ -186,67 +194,18 @@ export class MapaComponent implements OnInit {
       this.map.resize();
       this.map.addControl(new mapboxgl.NavigationControl({ showCompass: false }), 'bottom-left');
       this.createMapLayers();
-      // await this.getMapInfo();
-      await this.getNodes();
 
-      // console.log('*****', this.points);
+      await this.getNodos();
+
       this.setCumulosLayers();
-
-      this.map.addSource('points-src', {
-        type: 'geojson',
-        data: {
-          type: 'FeatureCollection',
-          features: this.points.map((s) => {
-            return {
-              type: 'Feature',
-              geometry: s.location,
-              properties: {
-                id: s.nomenclatura,
-                ecosistema: s.ecosystem_id,
-                integridad: s.cat_integr,
-                id_sipecam: s.id_sipe,
-                id_cumulo: s.cumulus_id,
-              },
-            };
-          }),
-        },
-      });
-
-      this.map.addLayer({
-        id: 'unclustered-point',
-        type: 'circle',
-        source: 'points-src',
-        // filter: ['!', ['has', 'point_count']],
-        paint: {
-          'circle-color': [
-            'case',
-            ['==', ['get', 'integridad'], 'Integro'],
-            '#00ff00',
-            ['==', ['get', 'integridad'], 'Degradado'],
-            '#ff0000',
-            '#ff8900',
-          ],
-          'circle-radius': 5,
-          'circle-stroke-width': 1,
-          'circle-stroke-color': '#fff',
-        },
-        minzoom: 7,
-      });
-
-      this.map.on('click', 'unclustered-point', (e) => {
-        const id = e.features[0].properties.id_sipecam;
-        this.showDetail(id);
-      });
+      this.setNodosLayers();
     });
   }
 
   ngOnInit() {
     this.initMap();
-    // console.log('graphql call');
-    // this.dashboardService.graphql();
-    this.filtersService.filtersObservable.subscribe((filters) => {
-      // console.log('FILTERS', this.filters, filters);
 
+    this.filtersService.filtersObservable.subscribe((filters) => {
       if (this.filters.layer) {
         this.map.setLayoutProperty(this.filters.layer, 'visibility', 'none');
       }
@@ -268,28 +227,20 @@ export class MapaComponent implements OnInit {
 
       this.filters = { ...filters };
     });
-
-    // this.getNodes();
   }
 
   setCumulosLayers() {
-    const nodesByCum = _.groupBy(this.points, 'cumulus_id');
+    const nodesByCum = _.groupBy(this.nodos, 'cumulus_id');
     const polygons = Object.keys(nodesByCum).map((cumulo) => {
       const featureCollection = turf.featureCollection(
-        nodesByCum[cumulo].map((s) => {
-          const lng = s.longitud != 0 ? Number(s.longitud) : -99.1269;
-          const lat = s.latitud != 0 ? Number(s.latitud) : 19.4978;
-          return turf.point(s.location.coordinates, {
-            id: s.FID_sipeca,
-            ecosistema: s.Ecosistema,
-            integridad: s.cat_itegr,
-            id_sipecam: s.id_sipe,
-          });
+        nodesByCum[cumulo].map((nodo) => {
+          return turf.point(nodo.location.coordinates);
         })
       );
       const hull = turf.convex(featureCollection);
       hull.properties = {
         cumulo,
+        cumuloName: nodesByCum[cumulo][0].nomenclatura.split('_')[1] ?? '',
         nodos: nodesByCum[cumulo].length,
         socio: this.getSocioValue(nodesByCum[cumulo]),
       };
@@ -336,7 +287,7 @@ export class MapaComponent implements OnInit {
       source: 'cumulos-src',
 
       layout: {
-        'text-field': 'Cúmulo {cumulo}',
+        'text-field': 'Cúmulo {cumuloName}',
         'text-font': ['DIN Offc Pro Medium', 'Arial Unicode MS Bold'],
         'text-size': 16,
       },
@@ -376,7 +327,7 @@ export class MapaComponent implements OnInit {
       type: 'symbol',
       source: 'cumulos-centroides-src',
       layout: {
-        'text-field': '{cumulo}',
+        'text-field': '{cumuloName}',
         'text-font': ['DIN Offc Pro Medium', 'Arial Unicode MS Bold'],
         'text-size': 8,
         'text-allow-overlap': true,
@@ -388,29 +339,67 @@ export class MapaComponent implements OnInit {
       id: 'cumulos-socio',
       type: 'symbol',
       source: 'cumulos-centroides-src',
-      filter: ['!=', ['get', 'socio'], 0],
+      filter: ['!=', ['get', 'socio'], false],
       layout: {
         'icon-image': 'socio-2',
         'icon-anchor': 'top-left',
         'icon-allow-overlap': true,
         'icon-size': 0.025,
       },
-      paint: {
-        'icon-color': [
-          'case',
-          ['==', ['get', 'socio'], 2],
-          '#0088cc',
-          ['==', ['get', 'socio'], 1],
-          '#ffff00',
-          '#ff8900',
-        ],
-      },
       maxzoom: 7,
     });
 
     this.map.on('click', 'cumulos-point', (e) => {
-      const cumulo = e.features[0].properties.cumulo;
-      this.goToCalendar(cumulo);
+      const { cumulo, cumuloName } = e.features[0].properties;
+      this.goToCalendar(cumulo, cumuloName);
+    });
+  }
+
+  setNodosLayers() {
+    this.map.addSource('nodos-src', {
+      type: 'geojson',
+      data: {
+        type: 'FeatureCollection',
+        features: this.nodos.map((nodo) => {
+          return {
+            type: 'Feature',
+            geometry: nodo.location,
+            properties: {
+              id: nodo.id,
+              idSipecam: nodo.nomenclatura,
+              conSocio: nodo.has_partner,
+              integro: nodo.integrity,
+              cumulo: nodo.cumulus_id,
+              ecosistema: nodo.ecosystem_id,
+            },
+          };
+        }),
+      },
+    });
+
+    this.map.addLayer({
+      id: 'nodos',
+      type: 'circle',
+      source: 'nodos-src',
+      paint: {
+        'circle-color': [
+          'case',
+          ['==', ['get', 'integro'], true],
+          '#00ff00',
+          ['==', ['get', 'integro'], false],
+          '#ff0000',
+          '#ff8900',
+        ],
+        'circle-radius': 5,
+        'circle-stroke-width': 1,
+        'circle-stroke-color': '#fff',
+      },
+      minzoom: 7,
+    });
+
+    this.map.on('click', 'nodos', (e) => {
+      const { cumulo, id } = e.features[0].properties;
+      this.showDetail(id, cumulo);
     });
   }
 
@@ -438,17 +427,17 @@ export class MapaComponent implements OnInit {
     });
   }
 
-  async showDetail(id: string) {
+  async showDetail(id: string, cumulo?: string) {
     const modal = await this.modalCtrl.create({
       component: NodeDetailComponent,
-      componentProps: { id },
+      componentProps: { id, cumulo },
     });
 
     modal.present();
   }
 
   updateCentroids() {
-    const nodesByCum = _.groupBy(this.points, 'id_cumulo');
+    const nodesByCum = _.groupBy(this.nodos, 'id_cumulo');
     const centroids = Object.keys(nodesByCum).map((cumulo) => {
       const featureCollection = turf.featureCollection(
         nodesByCum[cumulo].map((s) => {
