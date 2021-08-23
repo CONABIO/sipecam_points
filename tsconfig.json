@@ -16,6 +16,7 @@
     "lib": ["es2018", "dom", "esnext.asynciterable"],
     "baseUrl": "./",
     "paths": {
+      "@api/*": ["src/api/*"],
       "@app/*": ["src/app/*"],
       "@core": ["src/app/@core"],
       "@core/*": ["src/app/@core/*"],

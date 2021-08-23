@@ -14,7 +14,7 @@ export const environment = {
   production: false,
   hmr: true,
   version: env.npm_package_version + '-dev',
-  serverUrl: 'https://snmb.conabio.gob.mx/sipecamapi/v1',
+  serverUrl: 'http://ec2-54-200-75-224.us-west-2.compute.amazonaws.com:3000',
   defaultLanguage: 'en-US',
   supportedLanguages: ['en-US'],
   mapbox: {

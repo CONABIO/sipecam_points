@@ -1,6 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { AlertController, ModalController } from '@ionic/angular';
 import { Router } from '@angular/router';
+import { Apollo } from 'apollo-angular';
+import { cumulus, nodes } from '@api/mapa';
 import { environment } from '@env/environment';
 import { DashboardService } from '../services/dashboard.service';
 import { FiltersService } from '../services/filters.service';
@@ -24,7 +26,6 @@ export interface MapContext {
 })
 export class MapaComponent implements OnInit {
   ecosystem: string = 'null';
-  ecosystems: any = [];
   integrity: string = 'null';
   map: mapboxgl.Map;
   points: any = [];
@@ -50,6 +51,7 @@ export class MapaComponent implements OnInit {
 
   constructor(
     private alertController: AlertController,
+    private apollo: Apollo,
     private dashboardService: DashboardService,
     public filtersService: FiltersService,
     private modalCtrl: ModalController,
@@ -112,17 +114,30 @@ export class MapaComponent implements OnInit {
     }
   }
 
-  async getEcosystems() {
+  async getMapInfo() {
     try {
-      this.ecosystems = await this.dashboardService.getEcosystems();
+      this.points = await this.dashboardService.getAllNodes();
     } catch (error) {
       console.log(error);
     }
   }
 
-  async getMapInfo() {
+  async getNodes() {
     try {
-      this.points = await this.dashboardService.getAllNodes();
+      const { data }: any = await this.apollo
+        .query({
+          query: nodes,
+          variables: {
+            pagination: {
+              limit: 5000,
+              offset: 0,
+            },
+          },
+        })
+        .toPromise();
+
+      this.points = data.nodes;
+      console.log('DATAAAA', this.points);
     } catch (error) {
       console.log(error);
     }
@@ -171,7 +186,8 @@ export class MapaComponent implements OnInit {
       this.map.resize();
       this.map.addControl(new mapboxgl.NavigationControl({ showCompass: false }), 'bottom-left');
       this.createMapLayers();
-      await this.getMapInfo();
+      // await this.getMapInfo();
+      await this.getNodes();
 
       // console.log('*****', this.points);
       this.setCumulosLayers();
@@ -181,20 +197,15 @@ export class MapaComponent implements OnInit {
         data: {
           type: 'FeatureCollection',
           features: this.points.map((s) => {
-            const lng = s.longitud != 0 ? Number(s.longitud) : -99.1269;
-            const lat = s.latitud != 0 ? Number(s.latitud) : 19.4978;
             return {
               type: 'Feature',
-              geometry: {
-                type: 'Point',
-                coordinates: [lng, lat],
-              },
+              geometry: s.location,
               properties: {
-                id: s.fid_sipeca,
-                ecosistema: s.ecosistema,
-                integridad: s.cat_itegr,
+                id: s.nomenclatura,
+                ecosistema: s.ecosystem_id,
+                integridad: s.cat_integr,
                 id_sipecam: s.id_sipe,
-                id_cumulo: s.id_cumulo,
+                id_cumulo: s.cumulus_id,
               },
             };
           }),
@@ -230,7 +241,6 @@ export class MapaComponent implements OnInit {
   }
 
   ngOnInit() {
-    this.getEcosystems();
     this.initMap();
     // console.log('graphql call');
     // this.dashboardService.graphql();
@@ -258,16 +268,18 @@ export class MapaComponent implements OnInit {
 
       this.filters = { ...filters };
     });
+
+    // this.getNodes();
   }
 
   setCumulosLayers() {
-    const nodesByCum = _.groupBy(this.points, 'id_cumulo');
+    const nodesByCum = _.groupBy(this.points, 'cumulus_id');
     const polygons = Object.keys(nodesByCum).map((cumulo) => {
       const featureCollection = turf.featureCollection(
         nodesByCum[cumulo].map((s) => {
           const lng = s.longitud != 0 ? Number(s.longitud) : -99.1269;
           const lat = s.latitud != 0 ? Number(s.latitud) : 19.4978;
-          return turf.point([lng, lat], {
+          return turf.point(s.location.coordinates, {
             id: s.FID_sipeca,
             ecosistema: s.Ecosistema,
             integridad: s.cat_itegr,

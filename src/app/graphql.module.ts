@@ -3,7 +3,9 @@ import { ApolloModule, APOLLO_OPTIONS } from 'apollo-angular';
 import { HttpLinkModule, HttpLink } from 'apollo-angular-link-http';
 import { InMemoryCache } from 'apollo-cache-inmemory';
 
-const uri = 'https://sipecamdata.conabio.gob.mx/graphql/'; // <-- add the URL of the GraphQL server here
+import { environment } from '@env/environment';
+
+const uri = `${environment.serverUrl}/graphql`;
 export function createApollo(httpLink: HttpLink) {
   const defaultOptions = {
     watchQuery: {

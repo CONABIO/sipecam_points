@@ -4,7 +4,10 @@ import { Shell } from '@app/shell/shell.service';
 
 const routes: Routes = [
   Shell.childRoutes(
-    [{ path: 'quienes-somos', loadChildren: () => import('./about/about.module').then((m) => m.AboutModule) }],
+    [
+      { path: 'quienes-somos', loadChildren: () => import('./about/about.module').then((m) => m.AboutModule) },
+      { path: 'zendro', loadChildren: () => import('./zendro/zendro.module').then((m) => m.ZendroModule) },
+    ],
     false
   ),
   // Fallback when no prior route is matched

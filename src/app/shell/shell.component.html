@@ -40,6 +40,12 @@
               <ion-label><span translate>Socios</span></ion-label>
             </ion-item>
           </ion-menu-toggle>
+          <ion-menu-toggle auto-hide="false" *ngIf="isLoggedIn">
+            <ion-item [routerDirection]="'root'" routerLink="/zendro" routerLinkActive="active-link">
+              <ion-icon name="settings" slot="start"></ion-icon>
+              <ion-label><span translate>Zendro</span></ion-label>
+            </ion-item>
+          </ion-menu-toggle>
           <ion-menu-toggle auto-hide="false">
             <ion-item [routerDirection]="'root'" routerLink="/quienes-somos" routerLinkActive="active-link">
               <ion-icon name="information-circle" slot="start"></ion-icon>
