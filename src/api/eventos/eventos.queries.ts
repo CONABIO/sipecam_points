@@ -55,7 +55,16 @@ export const getVisitas = gql`
         id
         name
       }
-      unique_node {
+      pristine_id {
+        id
+        nomenclatura
+        location
+        cat_integr
+        integrity
+        cumulus_id
+        ecosystem_id
+      }
+      disturbed_id {
         id
         nomenclatura
         location

@@ -1,6 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { DomSanitizer } from '@angular/platform-browser';
 
+import { environment } from '@env/environment';
+
 @Component({
   selector: 'app-zendro',
   templateUrl: './zendro.component.html',
@@ -12,6 +14,6 @@ export class ZendroComponent implements OnInit {
   ngOnInit() {}
 
   openURL() {
-    return this.sanitizer.bypassSecurityTrustResourceUrl('https://sipecamdata.conabio.gob.mx/zendro/');
+    return this.sanitizer.bypassSecurityTrustResourceUrl(environment.zendroUrl);
   }
 }

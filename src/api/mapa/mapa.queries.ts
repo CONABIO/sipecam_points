@@ -11,6 +11,7 @@ export const getCumulus = gql`
       geometry
       criteria_id
       user_ids
+      ecosystem_id
     }
   }
 `;
@@ -23,6 +24,7 @@ export const getOneCumulus = gql`
       geometry
       criteria_id
       user_ids
+      ecosystem_id
     }
   }
 `;

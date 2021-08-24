@@ -3,5 +3,6 @@ export interface Visit {
   user_id: number;
   calendar_id: number;
   cumulus_id: number;
-  node_id: number;
+  pristine_id: number;
+  disturbed_id: number;
 }

@@ -2,24 +2,24 @@ import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { IonicModule } from '@ionic/angular';
 
-import { CumulosComponent } from './cumulos.component';
+import { SitiosComponent } from './sitios.component';
 
-describe('CumulosComponent', () => {
-  let component: CumulosComponent;
-  let fixture: ComponentFixture<CumulosComponent>;
+describe('SitiosComponent', () => {
+  let component: SitiosComponent;
+  let fixture: ComponentFixture<SitiosComponent>;
 
   beforeEach(
     waitForAsync(() => {
       TestBed.configureTestingModule({
         imports: [IonicModule.forRoot()],
         schemas: [CUSTOM_ELEMENTS_SCHEMA],
-        declarations: [CumulosComponent],
+        declarations: [SitiosComponent],
       }).compileComponents();
     })
   );
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(CumulosComponent);
+    fixture = TestBed.createComponent(SitiosComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

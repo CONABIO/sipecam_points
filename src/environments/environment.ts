@@ -14,7 +14,7 @@ export const environment = {
   production: false,
   hmr: true,
   version: env.npm_package_version + '-dev',
-  serverUrl: 'http://ec2-54-200-75-224.us-west-2.compute.amazonaws.com:3000',
+  serverUrl: 'http://sipecamdata.conabio.gob.mx:3000',
   defaultLanguage: 'en-US',
   supportedLanguages: ['en-US'],
   mapbox: {
@@ -22,6 +22,7 @@ export const environment = {
       'pk.eyJ1IjoibnRyaW5pZGFkLWNvbmFiaW8iLCJhIjoiY2s1NWc5d3B3MGpsazNkc2JvdDl0dmswOSJ9.7aVSqlGPrLBHjt23HjBgPA',
     style: 'mapbox://styles/ntrinidad-conabio/ckcl6xwth0dky1io6f6t6sb26',
   },
+  zendroUrl: 'https://zendro.sipecamdata.conabio.gob.mx/',
 };
 
 /*

@@ -4,7 +4,6 @@ import { Router } from '@angular/router';
 import { Apollo } from 'apollo-angular';
 import { getCumulus, getNodes } from '@api/mapa';
 import { environment } from '@env/environment';
-import { DashboardService } from '../services/dashboard.service';
 import { FiltersService } from '../services/filters.service';
 import { NodeDetailComponent } from './node-detail/node-detail.component';
 import * as mapboxgl from 'mapbox-gl';
@@ -53,7 +52,6 @@ export class MapaComponent implements OnInit {
   constructor(
     private alertController: AlertController,
     private apollo: Apollo,
-    private dashboardService: DashboardService,
     public filtersService: FiltersService,
     private modalCtrl: ModalController,
     private router: Router
@@ -86,8 +84,7 @@ export class MapaComponent implements OnInit {
   async filterChanged(filters: MapContext) {
     console.log('change', typeof filters.ecosystem, filters);
     try {
-      this.nodos = await this.dashboardService.getFilteredNodes(filters.ecosystem, filters.integrity);
-
+      //llamar be
       const data = {
         type: 'FeatureCollection',
         features: this.nodos.map((s) => {
