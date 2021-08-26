@@ -138,6 +138,196 @@ Do you want to activate backups?
 [2]:
 ```
 
+Another output if we want to expose ports of docker containers
+
+```
+╔════════════════════════════════════════════════════════════════════╗
+║                                                                    ║
+║ Welcome to kobo-install.                                           ║
+║                                                                    ║
+║ You are going to be asked some questions that will determine how   ║
+║ to build the configuration of `KoBoToolBox`.                       ║
+║                                                                    ║
+║ Some questions already have default values (within brackets).      ║
+║ Just press `enter` to accept the default value or enter `-` to     ║
+║ remove previously entered value.                                   ║
+║ Otherwise choose between choices or type your answer.              ║
+║                                                                    ║
+╚════════════════════════════════════════════════════════════════════╝
+Where do you want to install?
+[/home/ubuntu/kobo-docker]:
+Please confirm path [/home/ubuntu/kobo-docker]
+	1) Yes
+	2) No
+[1]:
+Do you want to see advanced options?
+	1) Yes
+	2) No
+[2]: 1
+What kind of installation do you need?
+	1) On your workstation
+	2) On a server
+[2]: 2
+Please choose which network interface you want to use?
+	ens5) <ip>
+	other) Other
+[ens5]:
+Do you want to use separate servers for front end and back end?
+	1) Yes
+	2) No
+[2]:
+Public domain name? [kobo.local]: <my route53 dns>
+KPI sub domain? [kf]:
+KoBoCat sub domain? [kc]:
+Enketo Express sub domain name? [ee]:
+Do you want to use HTTPS?
+	1) Yes
+	2) No
+[1]:
+╔════════════════════════════════════════════════════════════════════╗
+║                                                                    ║
+║ Please note that certificates must be installed on a reverse-proxy ║
+║ or a load balancer.kobo-install can install one, if needed.        ║
+║                                                                    ║
+╚════════════════════════════════════════════════════════════════════╝
+Auto-install HTTPS certificates with Let's Encrypt?
+	1) Yes
+	2) No - Use my own reverse-proxy/load-balancer
+[1]:
+╔════════════════════════════════════════════════════════════════════╗
+║                                                                    ║
+║ WARNING!                                                           ║
+║                                                                    ║
+║ Domain names must be publicly accessible.                          ║
+║ Otherwise Let's Encrypt will not be able to valid your             ║
+║ certificates.                                                      ║
+║                                                                    ║
+╚════════════════════════════════════════════════════════════════════╝
+Email address for Let's Encrypt? [support@kobo.local]:
+Please confirm [support@kobo.local]
+	1) Yes
+	2) No
+[1]:
+Cloning `nginx-certbot` repository to `/home/ubuntu/nginx-certbot`
+Cloning into '/home/ubuntu/nginx-certbot'...
+...
+Internal port used by reverse proxy?
+[8080]:
+SMTP server? []:
+SMTP port? [25]:
+SMTP user? []:
+From email address? [support@<my route53 dns>]:
+Super user's username? [<default>]: <mysuperuser>
+Super user's password? [<random password>]: <mypasswordr>
+Docker Compose prefix? (leave empty for default) []:
+Use staging mode?
+	1) Yes
+	2) No
+[2]:
+KoBoCat PostgreSQL database name?
+[<default>]:
+KPI PostgreSQL database name?
+[<default>]:
+PostgreSQL user's username?
+[<default>]:
+PostgreSQL user's password?
+[<random password>]: <mypostgresqlpassword>
+Do you want to tweak PostgreSQL settings?
+	1) Yes
+	2) No
+[2]:
+MongoDB root's username?
+[<default>]:
+MongoDB root's password?
+[<random password>]: <mymongodbpassword>
+MongoDB user's username?
+[<default>]:
+MongoDB user's password?
+[<random password>]: <mymongodbpassword>
+Redis password?
+[<random password>]: <myredispassword>
+Do you want to expose back-end container ports (`PostgreSQL`, `MongoDB`, `redis`)?
+	1) Yes
+	2) No
+[2]: 1
+╔════════════════════════════════════════════════════════════════════╗
+║                                                                    ║
+║ WARNING!                                                           ║
+║                                                                    ║
+║ When exposing back-end container ports, it is STRONGLY recommended ║
+║ to use a firewall to grant access to front-end containers only.    ║
+║                                                                    ║
+╚════════════════════════════════════════════════════════════════════╝
+Do you want to customize service ports?
+	1) Yes
+	2) No
+[2]:
+Do you want to customize the application secret keys?
+	1) Yes
+	2) No
+[2]:
+Do you want to use AWS S3 storage?
+	1) Yes
+	2) No
+[2]:
+Google Analytics Identifier []:
+Google API Key []:
+Do you want to use Sentry?
+	1) Yes
+	2) No
+[2]:
+Do you want to tweak uWSGI settings?
+	1) Yes
+	2) No
+[2]:
+Do you want to activate backups?
+	1) Yes
+	2) No
+[2]:
+Cloning into '/home/ubuntu/kobo-docker'...
+...
+
+Note: switching to '2.021.30'.
+
+You are in 'detached HEAD' state. You can look around, make experimental
+changes and commit them, and you can discard any commits you make in this
+state without impacting any branches by switching back to a branch.
+
+If you want to create a new branch to retain commits you create, you may
+do so (now or later) by using -c with the switch command. Example:
+
+  git switch -c <new-branch-name>
+
+Or undo this operation with:
+
+  git switch -
+
+Turn off this advice by setting config variable advice.detachedHead to false
+
+HEAD is now at db35e68 Upgrade KPI and KoBoCAT to 2.021.30
+From https://github.com/kobotoolbox/kobo-docker
+ * tag               2.021.30   -> FETCH_HEAD
+Creating network "nginx-certbot_default" with the default driver
+...
+Pulling nginx (nginx:1.15-alpine)...
+...
+Pulling redis_cache (redis:3.2)...
+Pulling mongo (mongo:3.4)...
+Pulling postgres (postgis/postgis:9.5-2.5)...
+...
+Pulling kpi (kobotoolbox/kpi:2.021.30)...
+...
+The PostgreSQL database is running!
+...
+Pulling nginx (nginx:1.19)...
+Pulling enketo_express (kobotoolbox/enketo-express-extra-widgets:2.5.6)...
+Pulling kobocat (kobotoolbox/kobocat:2.021.30)...
+...
+Waiting for environment to be ready. It can take a few minutes.
+........
+
+```
+
 For logs use:
 
 ```bash
