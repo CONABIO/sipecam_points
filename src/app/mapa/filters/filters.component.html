@@ -237,7 +237,7 @@
               (ionChange)="filterChanged('ecosystem', $event)"
             >
               <ion-select-option [value]="null">Todos</ion-select-option>
-              <ion-select-option class="ion-text-wrap" *ngFor="let e of ecosystems" value="{{ e.id }}">{{
+              <ion-select-option class="ion-text-wrap" *ngFor="let e of ecosystems" [value]="e.id">{{
                 e.name
               }}</ion-select-option>
             </ion-select>

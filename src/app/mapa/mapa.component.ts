@@ -82,34 +82,36 @@ export class MapaComponent implements OnInit {
   }
 
   async filterChanged(filters: MapContext) {
-    console.log('change', typeof filters.ecosystem, filters);
     try {
-      //llamar be
-      const data = {
-        type: 'FeatureCollection',
-        features: this.nodos.map((s) => {
-          const lng = s.longitud != 0 ? Number(s.longitud) : -99.1269;
-          const lat = s.latitud != 0 ? Number(s.latitud) : 19.4978;
-          return {
-            type: 'Feature',
-            geometry: {
-              type: 'Point',
-              coordinates: [lng, lat],
-            },
-            properties: {
-              id: s.FID_sipeca,
-              ecosistema: s.Ecosistema,
-              integridad: s.cat_itegr,
-              id_sipecam: s.id_sipe,
-            },
-          };
-        }),
-      };
-      this.map.getSource('nodos-src').setData(data);
-      this.updateCentroids();
+      const filteredNodes = this.filterNodos(this.nodos, filters.ecosystem, filters.integrity);
+      this.updateNodosSrc(filteredNodes);
+      const filteredCumulus = this.filterCumulos(this.cumulos, filters.ecosystem);
+      this.updateCumulosSrc(filteredCumulus);
+      this.updateCentroids(filteredCumulus);
     } catch (error) {
       console.log(error);
     }
+  }
+
+  filterCumulos(cumulos, ecosystemId: string | null) {
+    if (ecosystemId) {
+      cumulos = cumulos.filter((cumulo) => cumulo.ecosystem_id == ecosystemId);
+    }
+
+    return cumulos;
+  }
+
+  filterNodos(nodos, ecosystemId: string | null, integrity: string | null) {
+    if (ecosystemId || integrity) {
+      if (ecosystemId) {
+        nodos = nodos.filter((nodo) => nodo.ecosystem_id == ecosystemId);
+      }
+      if (integrity) {
+        nodos = nodos.filter((nodo) => nodo.cat_integr == integrity);
+      }
+    }
+
+    return nodos;
   }
 
   async getCumulos() {
@@ -193,6 +195,7 @@ export class MapaComponent implements OnInit {
       this.createMapLayers();
 
       await this.getNodos();
+      await this.getCumulos();
 
       this.setCumulosLayers();
       this.setNodosLayers();
@@ -227,21 +230,17 @@ export class MapaComponent implements OnInit {
   }
 
   setCumulosLayers() {
-    const nodesByCum = _.groupBy(this.nodos, 'cumulus_id');
-    const polygons = Object.keys(nodesByCum).map((cumulo) => {
-      const featureCollection = turf.featureCollection(
-        nodesByCum[cumulo].map((nodo) => {
-          return turf.point(nodo.location.coordinates);
-        })
-      );
-      const hull = turf.convex(featureCollection);
-      hull.properties = {
-        cumulo,
-        cumuloName: nodesByCum[cumulo][0].nomenclatura.split('_')[1] ?? '',
-        nodos: nodesByCum[cumulo].length,
-        socio: this.getSocioValue(nodesByCum[cumulo]),
+    const polygons = this.cumulos.map((c: any) => {
+      return {
+        type: 'Feature',
+        geometry: c.geometry,
+        properties: {
+          cumulo: c.id,
+          cumuloName: c.name,
+          ecosystem_id: c.ecosystem_id,
+          socio: false,
+        },
       };
-      return hull;
     });
 
     this.map.addSource('cumulos-src', {
@@ -433,24 +432,75 @@ export class MapaComponent implements OnInit {
     modal.present();
   }
 
-  updateCentroids() {
-    const nodesByCum = _.groupBy(this.nodos, 'id_cumulo');
-    const centroids = Object.keys(nodesByCum).map((cumulo) => {
-      const featureCollection = turf.featureCollection(
-        nodesByCum[cumulo].map((s) => {
-          const lng = s.longitud != 0 ? Number(s.longitud) : -99.1269;
-          const lat = s.latitud != 0 ? Number(s.latitud) : 19.4978;
-          return turf.point([lng, lat]);
-        })
-      );
-      const center = turf.center(featureCollection);
-      center.properties = { cumulo, nodos: nodesByCum[cumulo].length };
-      return center;
+  updateCentroids(cumulos) {
+    const polygons = cumulos.map((c: any) => {
+      return {
+        type: 'Feature',
+        geometry: c.geometry,
+        properties: {
+          cumulo: c.id,
+          cumuloName: c.name,
+          ecosystem_id: c.ecosystem_id,
+          socio: false,
+        },
+      };
+    });
+
+    const centroids = polygons.map((polygon) => {
+      const c = turf.centroid(polygon);
+      c.properties = polygon.properties;
+      return c;
     });
 
     this.map.getSource('cumulos-centroides-src').setData({
       type: 'FeatureCollection',
       features: centroids,
     });
+  }
+
+  updateCumulosSrc(cumulos: Array<any>) {
+    const features = cumulos.map((c: any) => {
+      return {
+        type: 'Feature',
+        geometry: c.geometry,
+        properties: {
+          cumulo: c.id,
+          cumuloName: c.name,
+          ecosystem_id: c.ecosystem_id,
+          socio: false,
+        },
+      };
+    });
+
+    const featureCollection = {
+      type: 'FeatureCollection',
+      features,
+    };
+
+    this.map.getSource('cumulos-src').setData(featureCollection);
+  }
+
+  updateNodosSrc(nodes: Array<any>) {
+    const features = nodes.map((nodo) => {
+      return {
+        type: 'Feature',
+        geometry: nodo.location,
+        properties: {
+          id: nodo.id,
+          idSipecam: nodo.nomenclatura,
+          conSocio: nodo.has_partner,
+          integro: nodo.integrity,
+          cumulo: nodo.cumulus_id,
+          ecosistema: nodo.ecosystem_id,
+        },
+      };
+    });
+
+    const featureCollection = {
+      type: 'FeatureCollection',
+      features,
+    };
+
+    this.map.getSource('nodos-src').setData(featureCollection);
   }
 }
