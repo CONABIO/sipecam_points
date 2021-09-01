@@ -1,7 +1,10 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { ModalController } from '@ionic/angular';
+
+import { Apollo } from 'apollo-angular';
+import { getOneCumulus, getOneNode } from '@api/mapa';
+
 import { environment } from '@env/environment';
-import { DashboardService } from '../../services/dashboard.service';
 import * as mapboxgl from 'mapbox-gl';
 
 @Component({
@@ -11,11 +14,12 @@ import * as mapboxgl from 'mapbox-gl';
 })
 export class NodeDetailComponent implements OnInit {
   @Input() id: string;
+  @Input() cumulo: string;
 
   map: mapboxgl.Map;
   node: any = null;
 
-  constructor(private dashboardService: DashboardService, private modalController: ModalController) {}
+  constructor(private apollo: Apollo, private modalController: ModalController) {}
 
   dismiss() {
     this.modalController.dismiss({
@@ -24,37 +28,29 @@ export class NodeDetailComponent implements OnInit {
   }
 
   async getNodeInfo() {
+    const promises = [
+      this.apollo.query({ query: getOneNode, variables: { id: this.id } }).toPromise(),
+      this.apollo.query({ query: getOneCumulus, variables: { id: this.cumulo } }).toPromise(),
+    ];
     try {
-      this.node = (await this.dashboardService.getNode(this.id))[0];
-      console.log(this.node);
-      this.initMap();
+      const responses = await Promise.all(promises);
+
+      console.log(responses);
     } catch (error) {
       console.log(error);
     }
   }
 
-  getSocioText(value: number) {
-    switch (value) {
-      case 0:
-        return 'Sin socio';
-      case 1:
-        return 'Con socio potencial';
-      case 2:
-        return 'Con socio';
-      default:
-        return '';
-    }
+  getSocioText(value: boolean) {
+    return value ? 'Con socio potencial' : 'Sin socio';
   }
 
   initMap() {
-    const lng = this.node.longitud != 0 ? Number(this.node.longitud) : 0;
-    const lat = this.node.latitud != 0 ? Number(this.node.latitud) : 0;
-
     this.map = new mapboxgl.Map({
       accessToken: environment.mapbox.accessToken,
       container: 'detail-map',
       style: environment.mapbox.style,
-      center: [lng, lat],
+      center: this.node.location,
       zoom: 12,
     });
 
@@ -71,7 +67,7 @@ export class NodeDetailComponent implements OnInit {
               type: 'Feature',
               geometry: {
                 type: 'Point',
-                coordinates: [lng, lat],
+                coordinates: this.node.location,
               },
             },
           ],

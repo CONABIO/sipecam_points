@@ -8,8 +8,6 @@ import { CalendarEvent, CalendarView } from 'angular-calendar';
 import flatpickr from 'flatpickr';
 import { Spanish } from 'flatpickr/dist/l10n/es';
 
-import { DashboardService } from '../services/dashboard.service';
-
 import * as _ from 'lodash';
 
 const colors: any = {
@@ -117,7 +115,7 @@ export class EventosComponent implements OnInit {
     contacto: null,
   };
 
-  constructor(private dashboardService: DashboardService, private route: ActivatedRoute) {
+  constructor(private route: ActivatedRoute) {
     this.cumuloId = this.route.snapshot.paramMap.get('id') || null;
   }
 
@@ -157,8 +155,7 @@ export class EventosComponent implements OnInit {
 
   async getNodes() {
     try {
-      const points: any = await this.dashboardService.getAllNodes();
-      const nodesByCum = _.groupBy(points, 'id_cumulo');
+      const nodesByCum = _.groupBy([], 'id_cumulo');
       const nodes = nodesByCum[this.cumuloId];
       this.degradedNodes = nodes
         .filter((n) => n.cat_itegr === 'Degradado')

@@ -1,5 +1,8 @@
 import { Component, Input, OnInit } from '@angular/core';
-import { DashboardService } from '../../services/dashboard.service';
+
+import { Apollo } from 'apollo-angular';
+import { getEcosystems } from '@api/mapa';
+
 import { FiltersService } from '../../services/filters.service';
 
 export interface MapContext {
@@ -20,7 +23,7 @@ export class FiltersComponent implements OnInit {
   @Input() filters: MapContext;
   @Input() fs: FiltersService;
 
-  constructor(private dashboardService: DashboardService) {}
+  constructor(private apollo: Apollo) {}
 
   filterChanged(param: string, event: any) {
     this.fs.setParam(param, event.target.value || null);
@@ -33,15 +36,25 @@ export class FiltersComponent implements OnInit {
 
   async getEcosystems() {
     try {
-      this.ecosystems = await this.dashboardService.getEcosystems();
-      this.filters = this.fs.filters;
+      const { data }: any = await this.apollo
+        .query({
+          query: getEcosystems,
+          variables: {
+            pagination: {
+              limit: 15,
+              offset: 0,
+            },
+          },
+        })
+        .toPromise();
+      this.ecosystems = data?.ecosystems ?? [];
     } catch (error) {
       console.log(error);
     }
   }
 
-  ngOnInit(): void {
-    // this.filters = this.filtersService.filters;
-    this.getEcosystems();
+  async ngOnInit() {
+    await this.getEcosystems();
+    this.filters = this.fs.filters;
   }
 }

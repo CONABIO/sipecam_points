@@ -1,13 +1,6 @@
 import { Component, OnInit } from '@angular/core';
-import { DashboardService } from '../services/dashboard.service';
-import { AlertController, LoadingController, ModalController, ToastController } from '@ionic/angular';
-import { AddCumuloComponent } from './add-cumulo/add-cumulo.component';
+import { LoadingController, ModalController, ToastController } from '@ionic/angular';
 import { UploadFileComponent } from './upload-file/upload-file.component';
-
-import { Apollo } from 'apollo-angular';
-import gql from 'graphql-tag';
-
-import { environment } from '@env/environment';
 
 import * as XLSX from 'xlsx';
 
@@ -21,77 +14,12 @@ export class SitiosComponent implements OnInit {
   nodes: any = [];
 
   constructor(
-    private alertController: AlertController,
-    private apollo: Apollo,
-    private dashboardService: DashboardService,
     private loadingCtrl: LoadingController,
     private modalController: ModalController,
     private toastController: ToastController
   ) {}
 
-  async deleteCumulo(id: string, idSitio: string) {
-    console.log('id', id);
-    const alert = await this.alertController.create({
-      header: 'Eliminar cúmulo',
-      message: `¿Deseas elimininar el cúmulo ${idSitio}`,
-      buttons: [
-        'Cancelar',
-        {
-          text: 'Eliminar',
-          handler: async () => {
-            try {
-              const result = await this.apollo
-                .mutate({
-                  mutation: gql`
-                    mutation {
-                      deleteCumulus(input: {nodeId: "${id}"}) {
-                        deletedCumulusId
-                      }
-                    }
-                  `,
-                })
-                .toPromise();
-              console.log(result);
-              this.presentToast('Cúmulo eliminado');
-              this.getNodes();
-            } catch (error) {
-              console.log(error);
-              this.presentToast('Ocurrió un error');
-            }
-          },
-        },
-      ],
-    });
-
-    await alert.present();
-  }
-
-  async addCumulo(cumulo?: any) {
-    console.log('EDIT');
-    const modal = await this.modalController.create({
-      component: AddCumuloComponent,
-      componentProps: {
-        cumulo,
-      },
-      // cssClass: 'my-custom-class'
-    });
-    modal.onDidDismiss().then(() => {
-      this.getNodes();
-    });
-    return await modal.present();
-  }
-
-  async getNodes() {
-    try {
-      this.nodes = await this.dashboardService.allNodes();
-    } catch (error) {
-      console.log(error);
-    }
-  }
-
-  ngOnInit() {
-    this.getNodes();
-  }
+  ngOnInit() {}
 
   async presentLoading() {
     this.loading = await this.loadingCtrl.create({ backdropDismiss: false });
@@ -130,9 +58,7 @@ export class SitiosComponent implements OnInit {
       component: UploadFileComponent,
       // cssClass: 'my-custom-class'
     });
-    modal.onDidDismiss().then(() => {
-      this.getNodes();
-    });
+
     return await modal.present();
   }
 }

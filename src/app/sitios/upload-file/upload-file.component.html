@@ -98,15 +98,9 @@
   <ion-content *ngIf="step === 1">
     <ion-toolbar>
       <ion-segment value="added" (ionChange)="nodeType = $event.target.value">
-        <ion-segment-button value="added">
-          Nuevos
-        </ion-segment-button>
-        <ion-segment-button value="edited">
-          Modificados
-        </ion-segment-button>
-        <ion-segment-button value="deleted">
-          Eliminados
-        </ion-segment-button>
+        <ion-segment-button value="added"> Nuevos </ion-segment-button>
+        <ion-segment-button value="edited"> Modificados </ion-segment-button>
+        <ion-segment-button value="deleted"> Eliminados </ion-segment-button>
       </ion-segment>
     </ion-toolbar>
 
@@ -118,7 +112,7 @@
         </ion-button>
       </ion-item>
       <ion-item *ngFor="let n of addedNodes; let i = index">
-        <ion-thumbnail class="ion-text-center ion-align-items-center" style="height: 90px; width: 110px;">
+        <ion-thumbnail class="ion-text-center ion-align-items-center" style="height: 90px; width: 110px">
           <ion-icon name="pin" color="danger" size="large"></ion-icon>
           <br />
           <ion-label
@@ -155,7 +149,7 @@
       <ion-row *ngFor="let n of editedNodes; let i = index" class="ion-align-items-end">
         <ion-col size="6">
           <ion-item>
-            <ion-thumbnail class="ion-text-center ion-align-items-center" style="height: 90px; width: 110px;">
+            <ion-thumbnail class="ion-text-center ion-align-items-center" style="height: 90px; width: 110px">
               <ion-icon name="pin" color="danger" size="large"></ion-icon>
               <br />
               <ion-label
@@ -179,7 +173,7 @@
         </ion-col>
         <ion-col size="6">
           <ion-item>
-            <ion-thumbnail class="ion-text-center ion-align-items-center" style="height: 90px; width: 110px;">
+            <ion-thumbnail class="ion-text-center ion-align-items-center" style="height: 90px; width: 110px">
               <ion-icon name="pin" color="danger" size="large"></ion-icon>
               <br />
               <ion-label
@@ -215,7 +209,7 @@
         </ion-button>
       </ion-item>
       <ion-item *ngFor="let n of deletedNodes; let i = index">
-        <ion-thumbnail class="ion-text-center ion-align-items-center" style="height: 90px; width: 110px;">
+        <ion-thumbnail class="ion-text-center ion-align-items-center" style="height: 90px; width: 110px">
           <ion-icon name="pin" color="danger" size="large"></ion-icon>
           <br />
           <ion-label
@@ -251,7 +245,5 @@
   <ion-button *ngIf="step === 1" fill="solid" expand="block" (click)="saveSites()">
     Guardar cambios ({{ addedNodes.length + editedNodes.length + deletedNodes.length }} sitios)
   </ion-button>
-  <ion-button *ngIf="step === 2" fill="solid" expand="block" (click)="modalCtrl.dismiss()">
-    Cerrar
-  </ion-button>
+  <ion-button *ngIf="step === 2" fill="solid" expand="block" (click)="modalCtrl.dismiss()"> Cerrar </ion-button>
 </ion-footer>
