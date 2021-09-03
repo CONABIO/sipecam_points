@@ -18,6 +18,7 @@ export class NodeDetailComponent implements OnInit {
 
   map: mapboxgl.Map;
   node: any = null;
+  cumulus: any = null;
 
   constructor(private apollo: Apollo, private modalController: ModalController) {}
 
@@ -29,13 +30,22 @@ export class NodeDetailComponent implements OnInit {
 
   async getNodeInfo() {
     const promises = [
-      this.apollo.query({ query: getOneNode, variables: { id: this.id } }).toPromise(),
-      this.apollo.query({ query: getOneCumulus, variables: { id: this.cumulo } }).toPromise(),
+      this.apollo.query<any>({ query: getOneNode, variables: { id: this.id } }).toPromise(),
+      this.apollo.query<any>({ query: getOneCumulus, variables: { id: this.cumulo } }).toPromise(),
     ];
     try {
-      const responses = await Promise.all(promises);
+      const [
+        {
+          data: { readOneNode },
+        },
+        {
+          data: { readOneCumulus },
+        },
+      ] = await Promise.all(promises);
 
-      console.log(responses);
+      this.node = readOneNode;
+      this.cumulus = readOneCumulus;
+      this.initMap();
     } catch (error) {
       console.log(error);
     }
@@ -50,13 +60,26 @@ export class NodeDetailComponent implements OnInit {
       accessToken: environment.mapbox.accessToken,
       container: 'detail-map',
       style: environment.mapbox.style,
-      center: this.node.location,
-      zoom: 12,
+      center: this.node.location.coordinates,
+      zoom: 9,
     });
 
     this.map.on('load', async () => {
       this.map.resize();
       this.map.addControl(new mapboxgl.NavigationControl({ showCompass: false }), 'bottom-left');
+
+      this.map.addSource('cumulo-src', {
+        type: 'geojson',
+        data: {
+          type: 'FeatureCollection',
+          features: [
+            {
+              type: 'Feature',
+              geometry: this.cumulus.geometry,
+            },
+          ],
+        },
+      });
 
       this.map.addSource('point-src', {
         type: 'geojson',
@@ -65,12 +88,23 @@ export class NodeDetailComponent implements OnInit {
           features: [
             {
               type: 'Feature',
-              geometry: {
-                type: 'Point',
-                coordinates: this.node.location,
-              },
+              geometry: this.node.location,
             },
           ],
+        },
+      });
+
+      this.map.addLayer({
+        id: 'cumulo',
+        type: 'line',
+        source: 'cumulo-src',
+        layout: {
+          'line-join': 'round',
+          'line-cap': 'round',
+        },
+        paint: {
+          'line-color': '#ff8900',
+          'line-width': 2,
         },
       });
 

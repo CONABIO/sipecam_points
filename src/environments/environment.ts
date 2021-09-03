@@ -14,7 +14,7 @@ export const environment = {
   production: false,
   hmr: true,
   version: env.npm_package_version + '-dev',
-  serverUrl: 'http://sipecamdata.conabio.gob.mx:3000',
+  serverUrl: 'https://gql.sipecamdata.conabio.gob.mx',
   defaultLanguage: 'en-US',
   supportedLanguages: ['en-US'],
   mapbox: {

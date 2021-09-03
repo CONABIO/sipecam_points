@@ -7,28 +7,28 @@
       <ion-grid *ngIf="node" class="ion-margin-top">
         <ion-row>
           <ion-col><b>ID</b></ion-col>
-          <ion-col class="ion-text-end">{{ node.id_sipe }}</ion-col>
+          <ion-col class="ion-text-end">{{ node.nomenclatura }}</ion-col>
         </ion-row>
         <ion-row>
           <ion-col><b>Ecosistema</b></ion-col>
-          <ion-col class="ion-text-end">{{ node.id_ecosist }} - {{ node.ecosistema }}</ion-col>
+          <ion-col class="ion-text-end">{{ node.ecosystem_id }} - {{ node.ecosistema }}</ion-col>
         </ion-row>
         <ion-row>
           <ion-col><b>Cúmulo</b></ion-col>
-          <ion-col class="ion-text-end">{{ node.id_cumulo }}</ion-col>
+          <ion-col class="ion-text-end">{{ node.cumulus_id }}</ion-col>
         </ion-row>
         <ion-row>
           <ion-col><b>Módulo</b></ion-col>
-          <ion-col class="ion-text-end">{{ node.cat_itegr }}</ion-col>
+          <ion-col class="ion-text-end">{{ node.cat_integr }}</ion-col>
         </ion-row>
         <ion-row>
           <ion-col><b>Socio</b></ion-col>
-          <ion-col class="ion-text-end">{{ getSocioText(node.con_socio) }}</ion-col>
+          <ion-col class="ion-text-end">{{ getSocioText(node.has_partner) }}</ion-col>
         </ion-row>
         <ion-row>
           <ion-col class="ion-text-end">
-            <b>Latitud:</b> {{ node.latitud }} / <b>Longitud:</b> {{ node.longitud }} / <b>Altitud:</b>
-            {{ node.altitud }}m</ion-col
+            <b>Longitud:</b> {{ node.location?.coordinates[0] }} / <b>Latitud:</b> {{ node.location?.coordinates[1] }} /
+            <b>Altitud:</b> {{ node.location?.coordinates[2] }}m</ion-col
           >
         </ion-row>
       </ion-grid>
