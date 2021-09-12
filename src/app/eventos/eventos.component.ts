@@ -5,9 +5,17 @@ import { addDays, isSameDay, isSameMonth } from 'date-fns';
 import { Subject } from 'rxjs';
 import { CalendarEvent, CalendarView } from 'angular-calendar';
 
+import { Apollo } from 'apollo-angular';
+import { getCalendar } from '@api/eventos';
+import { getOneCumulus, getNodes } from '@api/mapa';
+
 import flatpickr from 'flatpickr';
 import { Spanish } from 'flatpickr/dist/l10n/es';
 
+import { environment } from '@env/environment';
+
+import * as mapboxgl from 'mapbox-gl';
+import * as turf from '@turf/turf';
 import * as _ from 'lodash';
 
 const colors: any = {
@@ -51,49 +59,9 @@ export class EventosComponent implements OnInit {
 
   refresh: Subject<any> = new Subject();
 
-  events: any[] = [
-    {
-      firstVisit: '2021-06-21T00:00:00-05:00',
-      secondVisit: '2021-12-18T00:00:00-06:00',
-      title: 'Par de nodos 1',
-      color: colors.red,
-      degradedNode: null,
-      notDegradedNode: null,
-    },
-    {
-      firstVisit: '2021-07-27T00:00:00-05:00',
-      secondVisit: '2022-01-23T00:00:00-06:00',
-      title: 'Par de nodos 2',
-      color: colors.blue,
-      degradedNode: null,
-      notDegradedNode: null,
-    },
-    {
-      firstVisit: '2021-09-01T00:00:00-05:00',
-      secondVisit: '2022-02-28T00:00:00-06:00',
-      title: 'Par de nodos 3',
-      color: colors.yellow,
-      degradedNode: null,
-      notDegradedNode: null,
-    },
-    {
-      firstVisit: '2021-10-07T00:00:00-05:00',
-      secondVisit: '2022-04-05T00:00:00-05:00',
-      title: 'Par de nodos 4',
-      color: colors.green,
-      degradedNode: null,
-      notDegradedNode: null,
-    },
-    {
-      firstVisit: '2021-11-12T00:00:00-06:00',
-      secondVisit: '2022-05-11T00:00:00-05:00',
-      title: 'Par de nodos 5',
-      color: colors.purple,
-      degradedNode: null,
-      notDegradedNode: null,
-    },
-  ];
+  events: any[] = [];
 
+  calendarDates: any[] = [];
   calendarEvents: CalendarEvent[] = [];
 
   degradedNodes: any = [];
@@ -102,9 +70,12 @@ export class EventosComponent implements OnInit {
 
   activeDayIsOpen: boolean = false;
 
+  cumulo: any = null;
   cumuloId: string = null;
 
   activeSection = 'calendar';
+
+  map: mapboxgl.Map;
 
   monitores: any = [];
 
@@ -115,7 +86,9 @@ export class EventosComponent implements OnInit {
     contacto: null,
   };
 
-  constructor(private route: ActivatedRoute) {
+  nodes: any[] = [];
+
+  constructor(private apollo: Apollo, private route: ActivatedRoute) {
     this.cumuloId = this.route.snapshot.paramMap.get('id') || null;
   }
 
@@ -127,6 +100,51 @@ export class EventosComponent implements OnInit {
       apellidoMaterno: null,
       contacto: null,
     };
+  }
+
+  buildCalendarEvents() {
+    this.events = [
+      {
+        firstVisit: this.calendarDates[0].date_started,
+        secondVisit: this.calendarDates[5].date_started,
+        title: 'Par de nodos 1',
+        color: colors.red,
+        degradedNode: null,
+        notDegradedNode: null,
+      },
+      {
+        firstVisit: this.calendarDates[1].date_started,
+        secondVisit: this.calendarDates[6].date_started,
+        title: 'Par de nodos 2',
+        color: colors.blue,
+        degradedNode: null,
+        notDegradedNode: null,
+      },
+      {
+        firstVisit: this.calendarDates[2].date_started,
+        secondVisit: this.calendarDates[7].date_started,
+        title: 'Par de nodos 3',
+        color: colors.yellow,
+        degradedNode: null,
+        notDegradedNode: null,
+      },
+      {
+        firstVisit: this.calendarDates[3].date_started,
+        secondVisit: this.calendarDates[8].date_started,
+        title: 'Par de nodos 4',
+        color: colors.green,
+        degradedNode: null,
+        notDegradedNode: null,
+      },
+      {
+        firstVisit: this.calendarDates[4].date_started,
+        secondVisit: this.calendarDates[9].date_started,
+        title: 'Par de nodos 5',
+        color: colors.purple,
+        degradedNode: null,
+        notDegradedNode: null,
+      },
+    ];
   }
 
   dayClicked({ date, events }: { date: Date; events: CalendarEvent[] }): void {
@@ -153,24 +171,202 @@ export class EventosComponent implements OnInit {
     return flatpickr;
   }
 
-  async getNodes() {
+  async getCalendar() {
     try {
-      const nodesByCum = _.groupBy([], 'id_cumulo');
-      const nodes = nodesByCum[this.cumuloId];
-      this.degradedNodes = nodes
-        .filter((n) => n.cat_itegr === 'Degradado')
-        .map((n) => ({ id: n.id_sipe, selected: false }));
-      this.notDegradedNodes = nodes
-        .filter((n) => n.cat_itegr === 'Integro')
-        .map((n) => ({ id: n.id_sipe, selected: false }));
+      const {
+        data: { calendars },
+      }: any = await this.apollo
+        .query({
+          query: getCalendar,
+          variables: {
+            pagination: {
+              limit: 10,
+              offset: 0,
+            },
+          },
+        })
+        .toPromise();
+
+      this.calendarDates = calendars;
+      this.buildCalendarEvents();
     } catch (error) {
       console.log(error);
     }
   }
 
-  ngOnInit() {
+  async getCumulo() {
+    try {
+      const {
+        data: { readOneCumulus },
+      }: any = await this.apollo
+        .query({
+          query: getOneCumulus,
+          variables: {
+            id: this.cumuloId,
+          },
+        })
+        .toPromise();
+
+      this.cumulo = readOneCumulus;
+    } catch (error) {
+      console.log(error);
+    }
+  }
+
+  async getNodes() {
+    try {
+      const {
+        data: { nodes },
+      }: any = await this.apollo
+        .query({
+          query: getNodes,
+          variables: {
+            search: {
+              field: 'cumulus_id',
+              value: this.cumuloId,
+              operator: 'eq',
+            },
+            pagination: {
+              limit: 50,
+              offset: 0,
+            },
+          },
+        })
+        .toPromise();
+
+      this.nodes = nodes;
+      this.degradedNodes = nodes
+        .filter((n) => n.cat_integr === 'Degradado')
+        .map((n) => ({ id: n.nomenclatura, geometry: n.location, selected: false }));
+      this.notDegradedNodes = nodes
+        .filter((n) => n.cat_integr === 'Integro')
+        .map((n) => ({ id: n.nomenclatura, geometry: n.location, selected: false }));
+    } catch (error) {
+      console.log(error);
+    }
+  }
+
+  initMap() {
+    const {
+      geometry: { coordinates },
+    } = turf.centroid(this.cumulo.geometry);
+
+    this.map = new mapboxgl.Map({
+      accessToken: environment.mapbox.accessToken,
+      container: 'map',
+      style: environment.mapbox.style,
+      center: coordinates,
+      zoom: 7.5,
+    });
+
+    this.map.on('load', () => {
+      this.map.resize();
+      this.map.addControl(new mapboxgl.NavigationControl({ showCompass: false }), 'bottom-left');
+
+      // add Cumulus layers
+      this.map.addSource('cumulos-src', {
+        type: 'geojson',
+        data: {
+          type: 'FeatureCollection',
+          features: [
+            {
+              type: 'Feature',
+              geometry: this.cumulo.geometry,
+            },
+          ],
+        },
+      });
+
+      this.map.addLayer({
+        id: 'cumulos',
+        type: 'line',
+        source: 'cumulos-src',
+        layout: {
+          'line-join': 'round',
+          'line-cap': 'round',
+        },
+        paint: {
+          'line-color': '#ff8900',
+          'line-width': 2,
+        },
+      });
+
+      // add not degraded nodes layers
+      this.map.addSource('nodos-integros-src', {
+        type: 'geojson',
+        data: {
+          type: 'FeatureCollection',
+          features: this.notDegradedNodes.map((node) => {
+            return {
+              type: 'Feature',
+              geometry: node.geometry,
+              properties: {
+                selected: node.selected,
+              },
+            };
+          }),
+        },
+      });
+
+      this.map.addLayer({
+        id: 'nodos-integros',
+        type: 'circle',
+        source: 'nodos-integros-src',
+        paint: {
+          'circle-color': [
+            'case',
+            ['==', ['get', 'selected'], true],
+            '#e3e3e3',
+            ['==', ['get', 'selected'], false],
+            '#00ff00',
+            '#ff8900',
+          ],
+          'circle-radius': 5,
+        },
+      });
+
+      // add degraded nodes layers
+      this.map.addSource('nodos-degradados-src', {
+        type: 'geojson',
+        data: {
+          type: 'FeatureCollection',
+          features: this.degradedNodes.map((node) => {
+            return {
+              type: 'Feature',
+              geometry: node.geometry,
+              properties: {
+                selected: node.selected,
+              },
+            };
+          }),
+        },
+      });
+
+      this.map.addLayer({
+        id: 'nodos-degradados',
+        type: 'circle',
+        source: 'nodos-degradados-src',
+        paint: {
+          'circle-color': [
+            'case',
+            ['==', ['get', 'selected'], true],
+            '#e3e3e3',
+            ['==', ['get', 'selected'], false],
+            '#ff0000',
+            '#ff8900',
+          ],
+          'circle-radius': 5,
+        },
+      });
+    });
+  }
+
+  async ngOnInit() {
     this.flatpickrFactory();
-    this.getNodes();
+    await this.getCalendar();
+    await this.getCumulo();
+    await this.getNodes();
+    this.initMap();
   }
 
   eventChanged() {

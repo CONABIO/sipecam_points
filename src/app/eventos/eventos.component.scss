@@ -20,3 +20,9 @@ pre {
 .sipecam-background {
   min-height: 100%;
 }
+
+#map {
+  display: block;
+  width: 100%;
+  height: max(300px, 30vh);
+}
