@@ -20,3 +20,13 @@ pre {
 .sipecam-background {
   min-height: 100%;
 }
+
+#event-map {
+  display: block;
+  width: 100%;
+  height: max(300px, 30vh);
+}
+
+.hidden {
+  display: none !important;
+}

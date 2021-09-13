@@ -12,92 +12,80 @@
     </ion-segment>
   </ion-toolbar>
 </ion-header>
-<ion-content *ngIf="activeSection === 'calendar'">
+<ion-content [ngClass]="{ hidden: activeSection !== 'calendar' }">
   <div ion-fixed class="sipecam-background">
     <ion-grid class="ion-padding">
       <ion-row>
         <ion-col>
           <ion-title class="ion-text-center title" color="primary"
-            ><span translate>Cúmulo {{ cumuloId }}</span></ion-title
+            ><span>Cúmulo {{ cumulo?.name }}</span></ion-title
           >
         </ion-col>
       </ion-row>
+      <ion-row>
+        <ion-col size="12" size-sm="3">
+          <div id="event-map"></div>
+        </ion-col>
 
-      <ion-row class="ion-text-center text-bold">
-        <ion-col>Nombre</ion-col>
-        <ion-col>Nodo integro</ion-col>
-        <ion-col>Nodo degradado</ion-col>
-        <ion-col>Visita temporada Lluvias</ion-col>
-        <ion-col>Visita temporada Seca</ion-col>
-        <ion-col>Color</ion-col>
+        <ion-col>
+          <ion-row class="ion-text-center text-bold">
+            <ion-col>Nombre</ion-col>
+            <ion-col>Nodo integro</ion-col>
+            <ion-col>Nodo degradado</ion-col>
+            <ion-col>Fecha de inicio visita temporada Lluvias</ion-col>
+            <ion-col>Fecha de inicio visita temporada Seca</ion-col>
+            <ion-col>Color</ion-col>
+          </ion-row>
+          <ion-row *ngFor="let event of events" class="ion-align-items-center">
+            <ion-col class="ion-text-center"
+              ><ion-text>{{ event.title }}</ion-text></ion-col
+            >
+            <ion-col class="ion-text-center">
+              <ion-select
+                interface="popover"
+                cancelText="Cancelar"
+                okText="Seleccionar"
+                placeholder="Seleccionar"
+                [(ngModel)]="event.notDegradedNode"
+                (ngModelChange)="eventChanged()"
+              >
+                <ion-select-option [value]="null">Seleccionar</ion-select-option>
+                <ion-select-option disabled="{{ n.selected }}" *ngFor="let n of notDegradedNodes" [value]="n.id">{{
+                  n.name
+                }}</ion-select-option>
+              </ion-select>
+            </ion-col>
+            <ion-col class="ion-text-center">
+              <ion-select
+                interface="popover"
+                cancelText="Cancelar"
+                okText="Seleccionar"
+                placeholder="Seleccionar"
+                [(ngModel)]="event.degradedNode"
+                (ngModelChange)="eventChanged()"
+              >
+                <ion-select-option [value]="null">Seleccionar</ion-select-option>
+                <ion-select-option disabled="{{ n.selected }}" *ngFor="let n of degradedNodes" [value]="n.id">{{
+                  n.name
+                }}</ion-select-option>
+              </ion-select>
+            </ion-col>
+            <ion-col class="ion-text-center">
+              <ion-label>{{ event.firstVisit | date: 'dd/MM/yyyy' }}</ion-label>
+            </ion-col>
+            <ion-col class="ion-text-center">
+              <ion-label>{{ event.secondVisit | date: 'dd/MM/yyyy' }}</ion-label>
+            </ion-col>
+            <ion-col class="ion-text-center">
+              <input type="color" [(ngModel)]="event.color.primary" (ngModelChange)="eventChanged()" />
+              <input type="color" [(ngModel)]="event.color.secondary" (ngModelChange)="eventChanged()" />
+            </ion-col>
+          </ion-row>
+        </ion-col>
       </ion-row>
-      <ion-row *ngFor="let event of events">
-        <ion-col class="ion-text-center"
-          ><ion-text>{{ event.title }}</ion-text></ion-col
-        >
-        <ion-col class="ion-text-center">
-          <ion-select
-            interface="popover"
-            cancelText="Cancelar"
-            okText="Seleccionar"
-            placeholder="Seleccionar"
-            [(ngModel)]="event.notDegradedNode"
-            (ngModelChange)="eventChanged()"
-          >
-            <ion-select-option [value]="null">Seleccionar</ion-select-option>
-            <ion-select-option disabled="{{ n.selected }}" *ngFor="let n of notDegradedNodes" [value]="n.id">{{
-              n.id
-            }}</ion-select-option>
-          </ion-select>
-        </ion-col>
-        <ion-col class="ion-text-center">
-          <ion-select
-            interface="popover"
-            cancelText="Cancelar"
-            okText="Seleccionar"
-            placeholder="Seleccionar"
-            [(ngModel)]="event.degradedNode"
-            (ngModelChange)="eventChanged()"
-          >
-            <ion-select-option [value]="null">Seleccionar</ion-select-option>
-            <ion-select-option disabled="{{ n.selected }}" *ngFor="let n of degradedNodes" [value]="n.id">{{
-              n.id
-            }}</ion-select-option>
-          </ion-select>
-        </ion-col>
-        <ion-col class="ion-text-center">
-          <input
-            type="text"
-            mwlFlatpickr
-            [(ngModel)]="event.firstVisit"
-            [altInput]="true"
-            [convertModelValue]="true"
-            [defaultValue]="'today'"
-            dateFormat="Y-m-d"
-            altFormat="F j, Y"
-            placeholder="Especifique"
-            (ngModelChange)="eventChanged()"
-            [disabled]="true"
-          />
-        </ion-col>
-        <ion-col class="ion-text-center">
-          <input
-            type="text"
-            mwlFlatpickr
-            [(ngModel)]="event.secondVisit"
-            [altInput]="true"
-            [convertModelValue]="true"
-            [defaultValue]="'today'"
-            dateFormat="Y-m-dT"
-            altFormat="F j, Y"
-            placeholder="Especifique"
-            (ngModelChange)="eventChanged()"
-            [disabled]="true"
-          />
-        </ion-col>
-        <ion-col class="ion-text-center">
-          <input type="color" [(ngModel)]="event.color.primary" (ngModelChange)="eventChanged()" />
-          <input type="color" [(ngModel)]="event.color.secondary" (ngModelChange)="eventChanged()" />
+      <ion-row>
+        <ion-col class="ion-text-right">
+          <ion-button>Guardar cambios</ion-button>
         </ion-col>
       </ion-row>
     </ion-grid>
@@ -176,7 +164,7 @@
   </div>
 </ion-content>
 
-<ion-content *ngIf="activeSection === 'people'">
+<ion-content [ngClass]="{ hidden: activeSection !== 'people' }">
   <div ion-fixed class="sipecam-background">
     <ion-grid class="ion-padding">
       <ion-row>
@@ -197,32 +185,32 @@
         <ion-col>
           <ion-item>
             <ion-label position="floating">Nombre</ion-label>
-            <ion-input [(ngModel)]="monitor.nombre"></ion-input>
+            <ion-input [(ngModel)]="monitor.first_name"></ion-input>
           </ion-item>
         </ion-col>
         <ion-col>
           <ion-item>
             <ion-label position="floating">Apellido paterno</ion-label>
-            <ion-input [(ngModel)]="monitor.apellidoPaterno"></ion-input>
+            <ion-input [(ngModel)]="monitor.last_name"></ion-input>
           </ion-item>
         </ion-col>
         <ion-col>
           <ion-item>
             <ion-label position="floating">Apellido materno</ion-label>
-            <ion-input [(ngModel)]="monitor.apellidoMaterno"></ion-input>
+            <ion-input [(ngModel)]="monitor.second_last_name"></ion-input>
           </ion-item>
         </ion-col>
         <ion-col>
           <ion-item>
             <ion-label position="floating">Contacto</ion-label>
-            <ion-input [(ngModel)]="monitor.contacto"></ion-input>
+            <ion-input [(ngModel)]="monitor.contact"></ion-input>
           </ion-item>
         </ion-col>
         <ion-col size="2"
           ><ion-button
             color="light"
             (click)="addMonitor()"
-            [disabled]="!monitor.nombre || !monitor.apellidoPaterno || !monitor.apellidoMaterno || !monitor.contacto"
+            [disabled]="!monitor.first_name || !monitor.last_name || !monitor.second_last_name || !monitor.contact"
             >Agregar</ion-button
           ></ion-col
         >
@@ -234,8 +222,8 @@
             <ion-card-content>
               <ion-item lines="none">
                 <ion-label class="ion-text-wrap">
-                  <h3>{{ m.nombre }} {{ m.apellidoPaterno }} {{ m.apellidoMaterno }}</h3>
-                  <p>{{ m.contacto }}</p>
+                  <h3>{{ m.first_name }} {{ m.last_name }} {{ m.second_last_name }}</h3>
+                  <p>{{ m.contact }}</p>
                 </ion-label>
                 <ion-buttons>
                   <ion-button size="small" color="secondary">

@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { Observable, from, of } from 'rxjs';
-import { tap } from 'rxjs/operators';
 import { HttpClient } from '@angular/common/http';
+import jwtDecode, { JwtPayload } from 'jwt-decode';
 
 import { Credentials, CredentialsService } from './credentials.service';
 import { environment } from '@env/environment';
@@ -42,9 +42,11 @@ export class AuthenticationService {
         })
         .toPromise()
         .then((data) => {
+          const decoded = jwtDecode<JwtPayload>(data.token);
           credentials = {
             username: context.username,
             token: data.token,
+            decoded,
           };
           this.credentialsService.setCredentials(credentials, context.remember);
           return credentials;

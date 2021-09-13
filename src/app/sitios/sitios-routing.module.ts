@@ -7,7 +7,6 @@ import { Shell } from '@app/shell/shell.service';
 
 const routes: Routes = [
   Shell.childRoutes([
-    { path: '', redirectTo: '/sitios', pathMatch: 'full' },
     {
       path: 'sitios',
       component: SitiosComponent,
