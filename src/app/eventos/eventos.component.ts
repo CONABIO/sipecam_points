@@ -102,49 +102,27 @@ export class EventosComponent implements OnInit {
     };
   }
 
+  formatDate(dateString: string) {
+    return new Date(`${dateString} 00:00:00`).toISOString();
+  }
+
   buildCalendarEvents() {
-    this.events = [
-      {
-        firstVisit: this.calendarDates[0].date_started,
-        secondVisit: this.calendarDates[5].date_started,
-        title: 'Par de nodos 1',
-        color: colors.red,
+    const pairs = 5;
+    const colorNames = ['red', 'blue', 'yellow', 'green', 'purple'];
+    this.events = [];
+
+    for (let i = 0; i < pairs; i++) {
+      this.events.push({
+        firstVisit: this.formatDate(this.calendarDates[i].date_started),
+        secondVisit: this.formatDate(this.calendarDates[i + pairs].date_started),
+        title: `Par de nodos ${i + 1}`,
+        color: colors[colorNames[i]],
         degradedNode: null,
         notDegradedNode: null,
-      },
-      {
-        firstVisit: this.calendarDates[1].date_started,
-        secondVisit: this.calendarDates[6].date_started,
-        title: 'Par de nodos 2',
-        color: colors.blue,
-        degradedNode: null,
-        notDegradedNode: null,
-      },
-      {
-        firstVisit: this.calendarDates[2].date_started,
-        secondVisit: this.calendarDates[7].date_started,
-        title: 'Par de nodos 3',
-        color: colors.yellow,
-        degradedNode: null,
-        notDegradedNode: null,
-      },
-      {
-        firstVisit: this.calendarDates[3].date_started,
-        secondVisit: this.calendarDates[8].date_started,
-        title: 'Par de nodos 4',
-        color: colors.green,
-        degradedNode: null,
-        notDegradedNode: null,
-      },
-      {
-        firstVisit: this.calendarDates[4].date_started,
-        secondVisit: this.calendarDates[9].date_started,
-        title: 'Par de nodos 5',
-        color: colors.purple,
-        degradedNode: null,
-        notDegradedNode: null,
-      },
-    ];
+        firstVisitId: this.calendarDates[i].id,
+        secondVisitId: this.calendarDates[i + pairs].id,
+      });
+    }
   }
 
   dayClicked({ date, events }: { date: Date; events: CalendarEvent[] }): void {
@@ -237,10 +215,10 @@ export class EventosComponent implements OnInit {
       this.nodes = nodes;
       this.degradedNodes = nodes
         .filter((n) => n.cat_integr === 'Degradado')
-        .map((n) => ({ id: n.nomenclatura, geometry: n.location, selected: false }));
+        .map((n) => ({ id: n.id, name: n.nomenclatura, geometry: n.location, selected: false }));
       this.notDegradedNodes = nodes
         .filter((n) => n.cat_integr === 'Integro')
-        .map((n) => ({ id: n.nomenclatura, geometry: n.location, selected: false }));
+        .map((n) => ({ id: n.id, name: n.nomenclatura, geometry: n.location, selected: false }));
     } catch (error) {
       console.log(error);
     }
@@ -256,7 +234,7 @@ export class EventosComponent implements OnInit {
       container: 'map',
       style: environment.mapbox.style,
       center: coordinates,
-      zoom: 7.5,
+      zoom: 8,
     });
 
     this.map.on('load', () => {
@@ -301,6 +279,7 @@ export class EventosComponent implements OnInit {
               type: 'Feature',
               geometry: node.geometry,
               properties: {
+                name: node.name,
                 selected: node.selected,
               },
             };
@@ -335,6 +314,7 @@ export class EventosComponent implements OnInit {
               type: 'Feature',
               geometry: node.geometry,
               properties: {
+                name: node.name,
                 selected: node.selected,
               },
             };
@@ -357,6 +337,36 @@ export class EventosComponent implements OnInit {
           ],
           'circle-radius': 5,
         },
+      });
+    });
+
+    const popup = new mapboxgl.Popup({
+      closeButton: true,
+      closeOnClick: true,
+    });
+
+    const layers = ['nodos-integros', 'nodos-degradados'];
+
+    layers.map((layer) => {
+      this.map.on('mouseenter', layer, (e) => {
+        this.map.getCanvas().style.cursor = 'pointer';
+
+        const coordinates = e.features[0].geometry.coordinates.slice();
+        const nodeName = e.features[0].properties.name;
+
+        // Ensure that if the map is zoomed out such that multiple
+        // copies of the feature are visible, the popup appears
+        // over the copy being pointed to.
+        while (Math.abs(e.lngLat.lng - coordinates[0]) > 180) {
+          coordinates[0] += e.lngLat.lng > coordinates[0] ? 360 : -360;
+        }
+
+        popup.setLngLat(coordinates).setHTML(nodeName).addTo(this.map);
+      });
+
+      this.map.on('mouseleave', 'places', () => {
+        this.map.getCanvas().style.cursor = '';
+        popup.remove();
       });
     });
   }
@@ -428,6 +438,32 @@ export class EventosComponent implements OnInit {
       this.notDegradedNodes[index].selected = !!selected;
     });
 
-    console.log(this.degradedNodes);
+    this.map.getSource('nodos-integros-src').setData({
+      type: 'FeatureCollection',
+      features: this.notDegradedNodes.map((node) => {
+        return {
+          type: 'Feature',
+          geometry: node.geometry,
+          properties: {
+            name: node.name,
+            selected: node.selected,
+          },
+        };
+      }),
+    });
+
+    this.map.getSource('nodos-degradados-src').setData({
+      type: 'FeatureCollection',
+      features: this.degradedNodes.map((node) => {
+        return {
+          type: 'Feature',
+          geometry: node.geometry,
+          properties: {
+            name: node.name,
+            selected: node.selected,
+          },
+        };
+      }),
+    });
   }
 }

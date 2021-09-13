@@ -12,7 +12,7 @@
     </ion-segment>
   </ion-toolbar>
 </ion-header>
-<ion-content *ngIf="activeSection === 'calendar'">
+<ion-content [ngClass]="{ hidden: activeSection !== 'calendar' }">
   <div ion-fixed class="sipecam-background">
     <ion-grid class="ion-padding">
       <ion-row>
@@ -51,7 +51,7 @@
               >
                 <ion-select-option [value]="null">Seleccionar</ion-select-option>
                 <ion-select-option disabled="{{ n.selected }}" *ngFor="let n of notDegradedNodes" [value]="n.id">{{
-                  n.id
+                  n.name
                 }}</ion-select-option>
               </ion-select>
             </ion-col>
@@ -66,7 +66,7 @@
               >
                 <ion-select-option [value]="null">Seleccionar</ion-select-option>
                 <ion-select-option disabled="{{ n.selected }}" *ngFor="let n of degradedNodes" [value]="n.id">{{
-                  n.id
+                  n.name
                 }}</ion-select-option>
               </ion-select>
             </ion-col>
@@ -81,6 +81,11 @@
               <input type="color" [(ngModel)]="event.color.secondary" (ngModelChange)="eventChanged()" />
             </ion-col>
           </ion-row>
+        </ion-col>
+      </ion-row>
+      <ion-row>
+        <ion-col class="ion-text-right">
+          <ion-button>Guardar cambios</ion-button>
         </ion-col>
       </ion-row>
     </ion-grid>
@@ -159,7 +164,7 @@
   </div>
 </ion-content>
 
-<ion-content *ngIf="activeSection === 'people'">
+<ion-content [ngClass]="{ hidden: activeSection !== 'people' }">
   <div ion-fixed class="sipecam-background">
     <ion-grid class="ion-padding">
       <ion-row>

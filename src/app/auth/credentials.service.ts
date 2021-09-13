@@ -1,9 +1,11 @@
 import { Injectable } from '@angular/core';
+import { JwtPayload } from 'jwt-decode';
 
 export interface Credentials {
   // Customize received credentials here
   username: string;
   token: string;
+  decoded: JwtPayload;
 }
 
 const credentialsKey = 'credentials';
