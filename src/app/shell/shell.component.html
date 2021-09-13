@@ -47,6 +47,12 @@
             </ion-item>
           </ion-menu-toggle>
           <ion-menu-toggle auto-hide="false">
+            <ion-item [routerDirection]="'root'" routerLink="/manual" routerLinkActive="active-link">
+              <ion-icon name="document" slot="start"></ion-icon>
+              <ion-label><span translate>Manual</span></ion-label>
+            </ion-item>
+          </ion-menu-toggle>
+          <ion-menu-toggle auto-hide="false">
             <ion-item [routerDirection]="'root'" routerLink="/quienes-somos" routerLinkActive="active-link">
               <ion-icon name="information-circle" slot="start"></ion-icon>
               <ion-label><span translate>¿Quiénes somos?</span></ion-label>

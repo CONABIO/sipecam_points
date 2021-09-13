@@ -5,6 +5,7 @@ import { Shell } from '@app/shell/shell.service';
 const routes: Routes = [
   Shell.childRoutes(
     [
+      { path: 'manual', loadChildren: () => import('./manual/manual.module').then((m) => m.ManualModule) },
       { path: 'quienes-somos', loadChildren: () => import('./about/about.module').then((m) => m.AboutModule) },
       { path: 'zendro', loadChildren: () => import('./zendro/zendro.module').then((m) => m.ZendroModule) },
     ],
