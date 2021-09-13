@@ -24,7 +24,7 @@
       </ion-row>
       <ion-row>
         <ion-col size="12" size-sm="3">
-          <div id="map"></div>
+          <div id="event-map"></div>
         </ion-col>
 
         <ion-col>
@@ -185,32 +185,32 @@
         <ion-col>
           <ion-item>
             <ion-label position="floating">Nombre</ion-label>
-            <ion-input [(ngModel)]="monitor.nombre"></ion-input>
+            <ion-input [(ngModel)]="monitor.first_name"></ion-input>
           </ion-item>
         </ion-col>
         <ion-col>
           <ion-item>
             <ion-label position="floating">Apellido paterno</ion-label>
-            <ion-input [(ngModel)]="monitor.apellidoPaterno"></ion-input>
+            <ion-input [(ngModel)]="monitor.last_name"></ion-input>
           </ion-item>
         </ion-col>
         <ion-col>
           <ion-item>
             <ion-label position="floating">Apellido materno</ion-label>
-            <ion-input [(ngModel)]="monitor.apellidoMaterno"></ion-input>
+            <ion-input [(ngModel)]="monitor.second_last_name"></ion-input>
           </ion-item>
         </ion-col>
         <ion-col>
           <ion-item>
             <ion-label position="floating">Contacto</ion-label>
-            <ion-input [(ngModel)]="monitor.contacto"></ion-input>
+            <ion-input [(ngModel)]="monitor.contact"></ion-input>
           </ion-item>
         </ion-col>
         <ion-col size="2"
           ><ion-button
             color="light"
             (click)="addMonitor()"
-            [disabled]="!monitor.nombre || !monitor.apellidoPaterno || !monitor.apellidoMaterno || !monitor.contacto"
+            [disabled]="!monitor.first_name || !monitor.last_name || !monitor.second_last_name || !monitor.contact"
             >Agregar</ion-button
           ></ion-col
         >
@@ -222,8 +222,8 @@
             <ion-card-content>
               <ion-item lines="none">
                 <ion-label class="ion-text-wrap">
-                  <h3>{{ m.nombre }} {{ m.apellidoPaterno }} {{ m.apellidoMaterno }}</h3>
-                  <p>{{ m.contacto }}</p>
+                  <h3>{{ m.first_name }} {{ m.last_name }} {{ m.second_last_name }}</h3>
+                  <p>{{ m.contact }}</p>
                 </ion-label>
                 <ion-buttons>
                   <ion-button size="small" color="secondary">

@@ -4,14 +4,14 @@ import gql from 'graphql-tag';
  * Monitores
  */
 export const addMonitor = gql`
-  mutation addMonior(
+  mutation addMonitor(
     $first_name: String
     $last_name: String
     $second_last_name: String
     $contact: String
     $addCumulus_monitor: ID
   ) {
-    addMonior(
+    addMonitor(
       first_name: $first_name
       last_name: $last_name
       second_last_name: $second_last_name
@@ -29,13 +29,13 @@ export const addMonitor = gql`
 `;
 
 export const deleteMonitor = gql`
-  mutation deleteMonior($id: ID) {
-    addMonior(id: $id)
+  mutation deleteMonitor($id: ID) {
+    addMonitor(id: $id)
   }
 `;
 
 export const updateMonitor = gql`
-  mutation updateMonior(
+  mutation updateMonitor(
     $id: ID!
     $first_name: String
     $last_name: String
@@ -44,7 +44,7 @@ export const updateMonitor = gql`
     $addCumulus_monitor: ID
     $removeCumulus_monitor: ID
   ) {
-    addMonior(
+    addMonitor(
       id: $id
       first_name: $first_name
       last_name: $last_name

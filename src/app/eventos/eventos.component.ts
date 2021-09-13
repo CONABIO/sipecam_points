@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, AfterViewInit } from '@angular/core';
 import { ViewChild, TemplateRef } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { addDays, isSameDay, isSameMonth } from 'date-fns';
@@ -6,7 +6,7 @@ import { Subject } from 'rxjs';
 import { CalendarEvent, CalendarView } from 'angular-calendar';
 
 import { Apollo } from 'apollo-angular';
-import { getCalendar } from '@api/eventos';
+import { addMonitor, addVisit, getCalendar, getMonitores } from '@api/eventos';
 import { getOneCumulus, getNodes } from '@api/mapa';
 
 import flatpickr from 'flatpickr';
@@ -46,7 +46,7 @@ const colors: any = {
   templateUrl: './eventos.component.html',
   styleUrls: ['./eventos.component.scss'],
 })
-export class EventosComponent implements OnInit {
+export class EventosComponent implements OnInit, AfterViewInit {
   @ViewChild('modalContent', { static: true }) modalContent: TemplateRef<any>;
 
   locale: string = 'es';
@@ -80,10 +80,10 @@ export class EventosComponent implements OnInit {
   monitores: any = [];
 
   monitor = {
-    nombre: null,
-    apellidoPaterno: null,
-    apellidoMaterno: null,
-    contacto: null,
+    first_name: null,
+    last_name: null,
+    second_last_name: null,
+    contact: null,
   };
 
   nodes: any[] = [];
@@ -92,14 +92,41 @@ export class EventosComponent implements OnInit {
     this.cumuloId = this.route.snapshot.paramMap.get('id') || null;
   }
 
-  addMonitor() {
-    this.monitores.push({ ...this.monitor });
-    this.monitor = {
-      nombre: null,
-      apellidoPaterno: null,
-      apellidoMaterno: null,
-      contacto: null,
-    };
+  async addMonitor() {
+    try {
+      const result = await this.apollo
+        .mutate({
+          mutation: addMonitor,
+          variables: {
+            ...this.monitor,
+            addCumulus_monitor: this.cumuloId,
+          },
+        })
+        .toPromise();
+
+      this.monitores.push({ ...this.monitor });
+      this.monitor = {
+        first_name: null,
+        last_name: null,
+        second_last_name: null,
+        contact: null,
+      };
+    } catch (error) {
+      console.log(error);
+    }
+  }
+
+  async addVisit() {
+    try {
+      const result = await this.apollo
+        .mutate({
+          mutation: addVisit,
+          variables: {},
+        })
+        .toPromise();
+    } catch (error) {
+      console.log(error);
+    }
   }
 
   formatDate(dateString: string) {
@@ -191,6 +218,33 @@ export class EventosComponent implements OnInit {
     }
   }
 
+  async getMonitors() {
+    try {
+      const {
+        data: { monitors },
+      }: any = await this.apollo
+        .query({
+          query: getMonitores,
+          variables: {
+            search: {
+              field: 'cumulus_id',
+              value: this.cumuloId,
+              operator: 'eq',
+            },
+            pagination: {
+              limit: 100,
+              offset: 0,
+            },
+          },
+        })
+        .toPromise();
+      console.log('mon', monitors);
+      this.monitores = monitors;
+    } catch (error) {
+      console.log(error);
+    }
+  }
+
   async getNodes() {
     try {
       const {
@@ -231,7 +285,7 @@ export class EventosComponent implements OnInit {
 
     this.map = new mapboxgl.Map({
       accessToken: environment.mapbox.accessToken,
-      container: 'map',
+      container: 'event-map',
       style: environment.mapbox.style,
       center: coordinates,
       zoom: 8,
@@ -371,12 +425,16 @@ export class EventosComponent implements OnInit {
     });
   }
 
-  async ngOnInit() {
-    this.flatpickrFactory();
+  async ngAfterViewInit() {
     await this.getCalendar();
     await this.getCumulo();
     await this.getNodes();
+    await this.getMonitors();
     this.initMap();
+  }
+
+  async ngOnInit() {
+    this.flatpickrFactory();
   }
 
   eventChanged() {
