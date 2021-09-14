@@ -29,8 +29,8 @@ export const addMonitor = gql`
 `;
 
 export const deleteMonitor = gql`
-  mutation deleteMonitor($id: ID) {
-    addMonitor(id: $id)
+  mutation deleteMonitor($id: ID!) {
+    deleteMonitor(id: $id)
   }
 `;
 
@@ -44,7 +44,7 @@ export const updateMonitor = gql`
     $addCumulus_monitor: ID
     $removeCumulus_monitor: ID
   ) {
-    addMonitor(
+    updateMonitor(
       id: $id
       first_name: $first_name
       last_name: $last_name
@@ -93,7 +93,7 @@ export const addVisit = gql`
 `;
 
 export const deleteVisit = gql`
-  mutation deleteVisit($id: ID) {
+  mutation deleteVisit($id: ID!) {
     addVisit(id: $id)
   }
 `;

@@ -1,0 +1,42 @@
+<ion-content>
+  <ion-toolbar color="dark">
+    <ion-title>Editar Monitor</ion-title>
+  </ion-toolbar>
+
+  <ion-grid class="ion-padding">
+    <ion-row class="ion-text-center text-bold ion-margin ion-align-items-center form-background">
+      <ion-col size="12">
+        <ion-item>
+          <ion-label position="floating">Nombre</ion-label>
+          <ion-input [(ngModel)]="monitor.first_name"></ion-input>
+        </ion-item>
+      </ion-col>
+      <ion-col size="12">
+        <ion-item>
+          <ion-label position="floating">Apellido paterno</ion-label>
+          <ion-input [(ngModel)]="monitor.last_name"></ion-input>
+        </ion-item>
+      </ion-col>
+      <ion-col size="12">
+        <ion-item>
+          <ion-label position="floating">Apellido materno</ion-label>
+          <ion-input [(ngModel)]="monitor.second_last_name"></ion-input>
+        </ion-item>
+      </ion-col>
+      <ion-col size="12">
+        <ion-item>
+          <ion-label position="floating">Contacto</ion-label>
+          <ion-input [(ngModel)]="monitor.contact"></ion-input>
+        </ion-item>
+      </ion-col>
+      <ion-col size="12"
+        ><ion-button
+          color="light"
+          (click)="updateMonitor()"
+          [disabled]="!monitor.first_name || !monitor.last_name || !monitor.second_last_name || !monitor.contact"
+          >Guardar Cambios</ion-button
+        ></ion-col
+      >
+    </ion-row>
+  </ion-grid>
+</ion-content>

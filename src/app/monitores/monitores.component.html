@@ -1,0 +1,65 @@
+<ion-grid class="ion-padding">
+  <ion-row>
+    <ion-col>
+      <ion-title color="dark"><b>Agregar monitor</b></ion-title>
+    </ion-col>
+  </ion-row>
+
+  <ion-row class="ion-text-center text-bold ion-margin ion-align-items-center form-background">
+    <ion-col>
+      <ion-item>
+        <ion-label position="floating">Nombre</ion-label>
+        <ion-input [(ngModel)]="monitor.first_name"></ion-input>
+      </ion-item>
+    </ion-col>
+    <ion-col>
+      <ion-item>
+        <ion-label position="floating">Apellido paterno</ion-label>
+        <ion-input [(ngModel)]="monitor.last_name"></ion-input>
+      </ion-item>
+    </ion-col>
+    <ion-col>
+      <ion-item>
+        <ion-label position="floating">Apellido materno</ion-label>
+        <ion-input [(ngModel)]="monitor.second_last_name"></ion-input>
+      </ion-item>
+    </ion-col>
+    <ion-col>
+      <ion-item>
+        <ion-label position="floating">Contacto</ion-label>
+        <ion-input [(ngModel)]="monitor.contact"></ion-input>
+      </ion-item>
+    </ion-col>
+    <ion-col size="2"
+      ><ion-button
+        color="light"
+        (click)="addMonitor()"
+        [disabled]="!monitor.first_name || !monitor.last_name || !monitor.second_last_name || !monitor.contact"
+        >Agregar</ion-button
+      ></ion-col
+    >
+  </ion-row>
+
+  <ion-row>
+    <ion-col size="4" *ngFor="let m of monitores; let i = index">
+      <ion-card>
+        <ion-card-content>
+          <ion-item lines="none">
+            <ion-label class="ion-text-wrap">
+              <h3 class="text-bold">{{ m.first_name }} {{ m.last_name }} {{ m.second_last_name }}</h3>
+              <p>{{ m.contact }}</p>
+            </ion-label>
+            <ion-buttons>
+              <ion-button size="small" color="primary" (click)="editMonitorModal(m, i)">
+                <ion-icon slot="icon-only" name="create"></ion-icon>
+              </ion-button>
+              <ion-button size="small" color="primary" (click)="deleteMonitorAlert(m, i)">
+                <ion-icon slot="icon-only" name="trash"></ion-icon>
+              </ion-button>
+            </ion-buttons>
+          </ion-item>
+        </ion-card-content>
+      </ion-card>
+    </ion-col>
+  </ion-row>
+</ion-grid>
