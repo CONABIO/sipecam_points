@@ -14,6 +14,7 @@ registerLocaleData(localeEs);
 
 import { EventosRoutingModule } from './eventos-routing.module';
 import { EventosComponent } from './eventos.component';
+import { MonitoresComponent } from '@app/monitores/monitores.component';
 
 @NgModule({
   imports: [
@@ -30,7 +31,6 @@ import { EventosComponent } from './eventos.component';
     }),
     EventosRoutingModule,
   ],
-  declarations: [EventosComponent],
-  entryComponents: [],
+  declarations: [EventosComponent, MonitoresComponent],
 })
 export class EventosModule {}

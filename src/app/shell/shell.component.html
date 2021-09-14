@@ -5,10 +5,10 @@
         <ion-title>SiPeCaM</ion-title>
         <ion-buttons slot="end">
           <ion-button *ngIf="!isLoggedIn" (click)="login()">
-            <ion-icon slot="icon-only" name="log-in"></ion-icon>
+            <small>Iniciar sesión</small> <ion-icon slot="end" name="log-in"></ion-icon>
           </ion-button>
           <ion-button *ngIf="isLoggedIn" (click)="logout()">
-            <ion-icon slot="icon-only" name="log-out"></ion-icon>
+            <small>Cerrar sesión</small> <ion-icon slot="end" name="log-out"></ion-icon>
           </ion-button>
         </ion-buttons>
       </ion-toolbar>
