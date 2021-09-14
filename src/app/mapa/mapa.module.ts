@@ -14,6 +14,5 @@ import { FiltersComponent } from './filters/filters.component';
 @NgModule({
   imports: [CommonModule, TranslateModule, FormsModule, CoreModule, SharedModule, IonicModule, MapaRoutingModule],
   declarations: [MapaComponent, NodeDetailComponent, FiltersComponent],
-  entryComponents: [NodeDetailComponent],
 })
 export class MapaModule {}

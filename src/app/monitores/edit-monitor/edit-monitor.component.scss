@@ -1,0 +1,36 @@
+.logo {
+  width: 200px;
+  margin: 0 auto;
+}
+
+.filter-bar {
+  display: block;
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  z-index: 5;
+}
+
+ion-toolbar.filter-bar {
+  /* --background: rgba($color: #000000, $alpha: 1.0);*/
+  --background: rgba(220, 220, 220, 0.4);
+}
+
+.detail-card {
+  height: 100%;
+  overflow: auto;
+
+  ion-grid,
+  ion-col,
+  ion-row {
+    border: solid var(--ion-color-light-shade) 0.5px;
+  }
+}
+
+#detail-map {
+  width: 100%;
+  height: 240px;
+  border: solid var(--ion-color-dark) 1px;
+  margin: 10px 0;
+}

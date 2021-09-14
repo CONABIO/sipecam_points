@@ -1,9 +1,11 @@
 import { Component, OnInit } from '@angular/core';
-import { AlertController } from '@ionic/angular';
+import { AlertController, ModalController } from '@ionic/angular';
 import { ActivatedRoute } from '@angular/router';
 import { Apollo } from 'apollo-angular';
 import { addMonitor, deleteMonitor, getMonitores, updateMonitor } from '@api/eventos';
 import { getOneCumulus } from '@api/mapa';
+
+import { EditMonitorComponent } from './edit-monitor/edit-monitor.component';
 
 export interface Monitor {
   id: string;
@@ -31,7 +33,12 @@ export class MonitoresComponent implements OnInit {
     contact: null,
   };
 
-  constructor(private alertController: AlertController, private apollo: Apollo, private route: ActivatedRoute) {
+  constructor(
+    private alertController: AlertController,
+    private apollo: Apollo,
+    private route: ActivatedRoute,
+    private modalController: ModalController
+  ) {
     this.cumuloId = this.route.snapshot.paramMap.get('id') || null;
   }
 
@@ -94,6 +101,16 @@ export class MonitoresComponent implements OnInit {
     await alert.present();
   }
 
+  async editMonitorModal(monitor: Monitor, index: number) {
+    const modal = await this.modalController.create({
+      component: EditMonitorComponent,
+      componentProps: {
+        monitor,
+      },
+    });
+    return await modal.present();
+  }
+
   async getCumulo() {
     try {
       const {
@@ -143,5 +160,22 @@ export class MonitoresComponent implements OnInit {
   async ngOnInit() {
     await this.getCumulo();
     await this.getMonitors();
+  }
+
+  async updateMonitor(monitor: Monitor, index: number) {
+    try {
+      const { data } = await this.apollo
+        .mutate<any>({
+          mutation: updateMonitor,
+          variables: {
+            ...monitor,
+          },
+        })
+        .toPromise();
+      console.log(data);
+      this.monitores[index] = data.updateMonitor;
+    } catch (error) {
+      console.log(error);
+    }
   }
 }

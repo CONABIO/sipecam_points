@@ -50,7 +50,7 @@
               <p>{{ m.contact }}</p>
             </ion-label>
             <ion-buttons>
-              <ion-button size="small" color="primary">
+              <ion-button size="small" color="primary" (click)="editMonitorModal(m, i)">
                 <ion-icon slot="icon-only" name="create"></ion-icon>
               </ion-button>
               <ion-button size="small" color="primary" (click)="deleteMonitorAlert(m, i)">
