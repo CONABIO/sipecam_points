@@ -9,10 +9,12 @@ import { EditMonitorComponent } from './edit-monitor/edit-monitor.component';
 
 export interface Monitor {
   id: string;
-  first_name: string;
-  last_name: string;
-  second_last_name: string;
-  contact: string;
+  first_name?: string;
+  last_name?: string;
+  second_last_name?: string;
+  contact?: string;
+  addCumulus_monitor?: string;
+  removeCumulus_monitor?: string;
 }
 
 @Component({
@@ -68,6 +70,7 @@ export class MonitoresComponent implements OnInit {
 
   async deleteMonitor(monitor: Monitor, index: number) {
     try {
+      await this.updateMonitor({ ...monitor, removeCumulus_monitor: this.cumuloId }, index);
       await this.apollo
         .mutate<any>({
           mutation: deleteMonitor,
