@@ -11,7 +11,7 @@
         </ion-row>
         <ion-row>
           <ion-col><b>Ecosistema</b></ion-col>
-          <ion-col class="ion-text-end">{{ node.ecosystem_id }} - {{ node.ecosistema }}</ion-col>
+          <ion-col class="ion-text-end">{{ node.ecosystem_id }} - {{ getEcosystemText(node.ecosystem_id) }}</ion-col>
         </ion-row>
         <ion-row>
           <ion-col><b>Cúmulo</b></ion-col>
@@ -23,7 +23,7 @@
         </ion-row>
         <ion-row>
           <ion-col><b>Socio</b></ion-col>
-          <ion-col class="ion-text-end">{{ getSocioText(node.has_partner) }}</ion-col>
+          <ion-col class="ion-text-end">{{ getSocioText(node.con_socio) }}</ion-col>
         </ion-row>
         <ion-row>
           <ion-col class="ion-text-end">

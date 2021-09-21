@@ -154,15 +154,6 @@ export class MapaComponent implements OnInit {
     }
   }
 
-  getSocioValue(nodes: any) {
-    for (const node of nodes) {
-      if (node.has_partner) {
-        return true;
-      }
-    }
-    return false;
-  }
-
   async goToCalendar(id: string = null, name?: string) {
     const alert = await this.alertController.create({
       header: 'Calendario',
@@ -335,7 +326,7 @@ export class MapaComponent implements OnInit {
       id: 'cumulos-socio',
       type: 'symbol',
       source: 'cumulos-centroides-src',
-      filter: ['!=', ['get', 'socio'], false],
+      filter: ['!=', ['get', 'conSocio'], 0],
       layout: {
         'icon-image': 'socio-2',
         'icon-anchor': 'top-left',
@@ -363,8 +354,8 @@ export class MapaComponent implements OnInit {
             properties: {
               id: nodo.id,
               idSipecam: nodo.nomenclatura,
-              conSocio: nodo.has_partner,
-              integro: nodo.integrity,
+              conSocio: nodo.con_socio,
+              integridad: nodo.cat_integr,
               cumulo: nodo.cumulus_id,
               ecosistema: nodo.ecosystem_id,
             },
@@ -380,9 +371,9 @@ export class MapaComponent implements OnInit {
       paint: {
         'circle-color': [
           'case',
-          ['==', ['get', 'integro'], true],
+          ['==', ['get', 'integridad'], 'Integro'],
           '#00ff00',
-          ['==', ['get', 'integro'], false],
+          ['==', ['get', 'integridad'], 'Degradado'],
           '#ff0000',
           '#ff8900',
         ],
@@ -488,8 +479,8 @@ export class MapaComponent implements OnInit {
         properties: {
           id: nodo.id,
           idSipecam: nodo.nomenclatura,
-          conSocio: nodo.has_partner,
-          integro: nodo.integrity,
+          conSocio: nodo.con_socio,
+          integridad: nodo.cat_integr,
           cumulo: nodo.cumulus_id,
           ecosistema: nodo.ecosystem_id,
         },

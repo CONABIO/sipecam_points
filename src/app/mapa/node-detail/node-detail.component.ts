@@ -2,7 +2,7 @@ import { Component, Input, OnInit } from '@angular/core';
 import { ModalController } from '@ionic/angular';
 
 import { Apollo } from 'apollo-angular';
-import { getOneCumulus, getOneNode } from '@api/mapa';
+import { getEcosystems, getOneCumulus, getOneNode } from '@api/mapa';
 
 import { environment } from '@env/environment';
 import * as mapboxgl from 'mapbox-gl';
@@ -19,6 +19,7 @@ export class NodeDetailComponent implements OnInit {
   map: mapboxgl.Map;
   node: any = null;
   cumulus: any = null;
+  ecosystems: any = [];
 
   constructor(private apollo: Apollo, private modalController: ModalController) {}
 
@@ -26,6 +27,27 @@ export class NodeDetailComponent implements OnInit {
     this.modalController.dismiss({
       dismissed: true,
     });
+  }
+
+  async getEcosystems() {
+    try {
+      const {
+        data: { ecosystems },
+      }: any = await this.apollo
+        .query({
+          query: getEcosystems,
+          variables: {
+            pagination: {
+              limit: 15,
+              offset: 0,
+            },
+          },
+        })
+        .toPromise();
+      this.ecosystems = ecosystems ?? [];
+    } catch (error) {
+      console.log(error);
+    }
   }
 
   async getNodeInfo() {
@@ -51,8 +73,21 @@ export class NodeDetailComponent implements OnInit {
     }
   }
 
-  getSocioText(value: boolean) {
-    return value ? 'Con socio potencial' : 'Sin socio';
+  getEcosystemText(id: number) {
+    return this.ecosystems.find((e: any) => e.id == id)?.name ?? '';
+  }
+
+  getSocioText(value: number) {
+    switch (value) {
+      case 0:
+        return 'Sin socio';
+      case 1:
+        return 'Con socio potencial';
+      case 2:
+        return 'Con socio';
+      default:
+        return 'Sin información';
+    }
   }
 
   initMap() {
@@ -122,7 +157,8 @@ export class NodeDetailComponent implements OnInit {
     });
   }
 
-  ngOnInit() {
-    this.getNodeInfo();
+  async ngOnInit() {
+    await this.getEcosystems();
+    await this.getNodeInfo();
   }
 }
