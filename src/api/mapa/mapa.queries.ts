@@ -49,10 +49,9 @@ export const getNodes = gql`
     nodes(search: $search, order: $order, pagination: $pagination) {
       id
       nomenclatura
-      has_partner
+      con_socio
       location
       cat_integr
-      integrity
       cumulus_id
       ecosystem_id
     }
@@ -64,10 +63,9 @@ export const getOneNode = gql`
     readOneNode(id: $id) {
       id
       nomenclatura
-      has_partner
+      con_socio
       location
       cat_integr
-      integrity
       cumulus_id
       ecosystem_id
     }

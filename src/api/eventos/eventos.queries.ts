@@ -60,7 +60,6 @@ export const getVisitas = gql`
         nomenclatura
         location
         cat_integr
-        integrity
         cumulus_id
         ecosystem_id
       }
@@ -69,7 +68,6 @@ export const getVisitas = gql`
         nomenclatura
         location
         cat_integr
-        integrity
         cumulus_id
         ecosystem_id
       }
