@@ -229,7 +229,7 @@ export class MapaComponent implements OnInit {
           cumulo: c.id,
           cumuloName: c.name,
           ecosystem_id: c.ecosystem_id,
-          socio: false,
+          conSocio: c.con_socio,
         },
       };
     });

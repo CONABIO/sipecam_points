@@ -12,6 +12,7 @@ export const getCumulus = gql`
       criteria_id
       user_ids
       ecosystem_id
+      con_socio
     }
   }
 `;
@@ -25,6 +26,7 @@ export const getOneCumulus = gql`
       criteria_id
       user_ids
       ecosystem_id
+      con_socio
     }
   }
 `;
