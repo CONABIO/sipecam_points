@@ -194,6 +194,12 @@ bash ./scripts/up.sh prod
 
 ```
 
+Make some queries within docker container using `psql`:
+
+```
+docker-compose -f docker-compose-prod.yml run --rm zendro_postgres psql -h zendro_postgres -U zendro -W zendro_development
+```
+
 # When testing Zendro's deployment
 
 If graphql-server needs and update as new seeders were created in fork of Zendro's repo then
