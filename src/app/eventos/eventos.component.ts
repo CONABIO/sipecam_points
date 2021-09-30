@@ -184,6 +184,11 @@ export class EventosComponent implements OnInit, AfterViewInit {
         .query({
           query: getCalendar,
           variables: {
+            search: {
+              field: 'sipecam_year',
+              value: `${new Date().getFullYear()}`,
+              operator: 'eq',
+            },
             pagination: {
               limit: 10,
               offset: 0,
@@ -192,7 +197,7 @@ export class EventosComponent implements OnInit, AfterViewInit {
         })
         .toPromise();
 
-      this.calendarDates = calendars;
+      this.calendarDates = calendars.sort((a, b) => a.order - b.order);
       this.buildCalendarEvents();
     } catch (error) {
       console.log(error);
@@ -238,7 +243,7 @@ export class EventosComponent implements OnInit, AfterViewInit {
           },
         })
         .toPromise();
-      console.log('mon', monitors);
+
       this.monitores = monitors;
     } catch (error) {
       console.log(error);
