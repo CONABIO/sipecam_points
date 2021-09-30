@@ -9,6 +9,7 @@ export const getCalendar = gql`
       id
       date_started
       date_finished
+      order
     }
   }
 `;
