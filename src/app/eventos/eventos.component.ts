@@ -529,6 +529,7 @@ export class EventosComponent implements OnInit, AfterViewInit {
     await this.getVisits();
     await this.getCalendar();
     this.initMap();
+    // this.deleteVisit({removeUnique_node_pristine: '1976', removeUnique_node_disturbed: '1979', id: '18'});
   }
 
   async ngOnInit() {
@@ -593,6 +594,8 @@ export class EventosComponent implements OnInit, AfterViewInit {
           event.secondVisitId = null;
         }
       }
+
+      await this.getVisits();
     }
 
     const alert = await this.alertController.create({

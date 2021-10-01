@@ -9,6 +9,7 @@
     <ion-segment (ionChange)="segmentChanged($event)" value="calendar">
       <ion-segment-button value="calendar"> Calendario </ion-segment-button>
       <ion-segment-button value="people"> Monitores </ion-segment-button>
+      <ion-segment-button value="visits"> Visitas </ion-segment-button>
     </ion-segment>
   </ion-toolbar>
 </ion-header>
@@ -177,5 +178,21 @@
     </ion-grid>
 
     <app-monitores></app-monitores>
+  </div>
+</ion-content>
+
+<ion-content *ngIf="activeSection === 'visits'">
+  <div ion-fixed class="sipecam-background">
+    <ion-grid class="ion-padding">
+      <ion-row>
+        <ion-col>
+          <ion-title class="ion-text-center title" color="primary">
+            <span>Cúmulo {{ cumulo?.name }}</span>
+          </ion-title>
+        </ion-col>
+      </ion-row>
+    </ion-grid>
+
+    <app-visitas></app-visitas>
   </div>
 </ion-content>

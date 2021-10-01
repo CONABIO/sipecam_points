@@ -41,6 +41,9 @@
   </ion-row>
 
   <ion-row>
+    <ion-col *ngIf="!monitores?.length" class="ion-text-center">
+      <ion-title color="dark">No hay monitores registrados para este cúmulo</ion-title>
+    </ion-col>
     <ion-col size-xs="12" size-md="6" size-lg="4" *ngFor="let m of monitores; let i = index">
       <ion-card>
         <ion-card-content>
