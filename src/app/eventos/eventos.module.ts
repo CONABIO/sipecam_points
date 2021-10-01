@@ -16,6 +16,7 @@ import { EventosRoutingModule } from './eventos-routing.module';
 import { EventosComponent } from './eventos.component';
 import { EditMonitorComponent } from '@app/monitores/edit-monitor/edit-monitor.component';
 import { MonitoresComponent } from '@app/monitores/monitores.component';
+import { VisitasComponent } from '@app/visitas/visitas.component';
 
 @NgModule({
   imports: [
@@ -32,6 +33,6 @@ import { MonitoresComponent } from '@app/monitores/monitores.component';
     }),
     EventosRoutingModule,
   ],
-  declarations: [EventosComponent, EditMonitorComponent, MonitoresComponent],
+  declarations: [EventosComponent, EditMonitorComponent, MonitoresComponent, VisitasComponent],
 })
 export class EventosModule {}

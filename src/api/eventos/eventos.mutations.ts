@@ -94,13 +94,13 @@ export const addVisit = gql`
 
 export const deleteVisit = gql`
   mutation deleteVisit($id: ID!) {
-    addVisit(id: $id)
+    deleteVisit(id: $id)
   }
 `;
 
 export const updateVisit = gql`
-  mutation addVisit(
-    $id: ID
+  mutation updateVisit(
+    $id: ID!
     $addCalendar: ID
     $removeCalendar: ID
     $addUser_visit: ID
@@ -112,7 +112,7 @@ export const updateVisit = gql`
     $addUnique_node_disturbed: ID
     $removeUnique_node_disturbed: ID
   ) {
-    addVisit(
+    updateVisit(
       id: $id
       addCalendar: $addCalendar
       removeCalendar: $removeCalendar

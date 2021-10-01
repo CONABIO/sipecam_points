@@ -1,13 +1,15 @@
 import { Component, OnInit, AfterViewInit } from '@angular/core';
 import { ViewChild, TemplateRef } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
+import { AlertController } from '@ionic/angular';
 import { addDays, isSameDay, isSameMonth } from 'date-fns';
 import { Subject } from 'rxjs';
 import { CalendarEvent, CalendarView } from 'angular-calendar';
 
 import { Apollo } from 'apollo-angular';
-import { addMonitor, addVisit, getCalendar, getMonitores } from '@api/eventos';
+import { addVisit, deleteVisit, getCalendar, getVisits, updateVisit } from '@api/eventos';
 import { getOneCumulus, getNodes } from '@api/mapa';
+import { CredentialsService } from '@app/auth';
 
 import flatpickr from 'flatpickr';
 import { Spanish } from 'flatpickr/dist/l10n/es';
@@ -17,6 +19,46 @@ import { environment } from '@env/environment';
 import * as mapboxgl from 'mapbox-gl';
 import * as turf from '@turf/turf';
 import * as _ from 'lodash';
+
+export interface Visit {
+  id: string;
+  user_id: number;
+  calendar_id: number;
+  cumulus_id: number;
+  pristine_id: number;
+  disturbed_id: number;
+  calendar: {
+    id: string;
+    date_started: string;
+    date_finished: string;
+  };
+  user_visit: {
+    first_name: string;
+    last_name: string;
+    email: string;
+    username: string;
+  };
+  cumulus_visit: {
+    id: string;
+    name: string;
+  };
+  unique_node_pristine: {
+    id: string;
+    nomenclatura: string;
+    location: any;
+    cat_integr: string;
+    cumulus_id: number;
+    ecosystem_id: number;
+  };
+  unique_node_disturbed: {
+    id: string;
+    nomenclatura: string;
+    location: any;
+    cat_integr: string;
+    cumulus_id: number;
+    ecosystem_id: number;
+  };
+}
 
 const colors: any = {
   red: {
@@ -77,60 +119,32 @@ export class EventosComponent implements OnInit, AfterViewInit {
 
   map: mapboxgl.Map;
 
-  monitores: any = [];
-
-  monitor = {
-    first_name: null,
-    last_name: null,
-    second_last_name: null,
-    contact: null,
-  };
-
   nodes: any[] = [];
 
-  constructor(private apollo: Apollo, private route: ActivatedRoute) {
+  visits: Visit[] = [];
+
+  constructor(
+    private alertController: AlertController,
+    private apollo: Apollo,
+    private credentialsService: CredentialsService,
+    private route: ActivatedRoute
+  ) {
     this.cumuloId = this.route.snapshot.paramMap.get('id') || null;
   }
 
-  async addMonitor() {
+  async addOrUpdateVisit(variables) {
     try {
-      const result = await this.apollo
+      const { data }: any = await this.apollo
         .mutate({
-          mutation: addMonitor,
-          variables: {
-            ...this.monitor,
-            addCumulus_monitor: this.cumuloId,
-          },
+          mutation: variables.id ? updateVisit : addVisit,
+          variables,
         })
         .toPromise();
-
-      this.monitores.push({ ...this.monitor });
-      this.monitor = {
-        first_name: null,
-        last_name: null,
-        second_last_name: null,
-        contact: null,
-      };
+      return variables.id ? data?.updateVisit : data?.addVisit;
     } catch (error) {
       console.log(error);
+      return null;
     }
-  }
-
-  async addVisit() {
-    try {
-      const result = await this.apollo
-        .mutate({
-          mutation: addVisit,
-          variables: {},
-        })
-        .toPromise();
-    } catch (error) {
-      console.log(error);
-    }
-  }
-
-  formatDate(dateString: string) {
-    return new Date(`${dateString} 00:00:00`).toISOString();
   }
 
   buildCalendarEvents() {
@@ -139,17 +153,37 @@ export class EventosComponent implements OnInit, AfterViewInit {
     this.events = [];
 
     for (let i = 0; i < pairs; i++) {
+      const currentVisits = this.visits.filter(
+        (v) => v.calendar_id == this.calendarDates[i].id || v.calendar_id == this.calendarDates[i + pairs].id
+      );
+
+      let degradedNode = null;
+      let notDegradedNode = null;
+      if (currentVisits.length) {
+        degradedNode = currentVisits[0].unique_node_disturbed?.id ?? null;
+        notDegradedNode = currentVisits[0].unique_node_pristine?.id ?? null;
+      }
+
+      const firstVisit = currentVisits.find((v) => v.calendar_id == this.calendarDates[i].id);
+      const secondVisit = currentVisits.find((v) => v.calendar_id == this.calendarDates[i + pairs].id);
+
       this.events.push({
         firstVisit: this.formatDate(this.calendarDates[i].date_started),
         secondVisit: this.formatDate(this.calendarDates[i + pairs].date_started),
         title: `Par de nodos ${i + 1}`,
         color: colors[colorNames[i]],
-        degradedNode: null,
-        notDegradedNode: null,
-        firstVisitId: this.calendarDates[i].id,
-        secondVisitId: this.calendarDates[i + pairs].id,
+        degradedNode,
+        notDegradedNode,
+        firstVisitCalendarId: this.calendarDates[i].id,
+        secondVisitCalendarId: this.calendarDates[i + pairs].id,
+        firstVisitId: firstVisit?.id ?? null,
+        secondVisitId: secondVisit?.id ?? null,
       });
     }
+  }
+
+  closeOpenMonthViewDay() {
+    this.activeDayIsOpen = false;
   }
 
   dayClicked({ date, events }: { date: Date; events: CalendarEvent[] }): void {
@@ -163,17 +197,73 @@ export class EventosComponent implements OnInit, AfterViewInit {
     }
   }
 
-  setView(view: CalendarView) {
-    this.view = view;
+  async deleteVisit(variables) {
+    try {
+      await this.addOrUpdateVisit(variables);
+      await this.apollo
+        .mutate<any>({
+          mutation: deleteVisit,
+          variables: {
+            id: variables.id,
+          },
+        })
+        .toPromise();
+    } catch (error) {
+      console.log(error);
+    }
   }
 
-  closeOpenMonthViewDay() {
-    this.activeDayIsOpen = false;
+  eventChanged() {
+    this.calendarEvents = [];
+    this.events.forEach((event) => {
+      if (!this.eventCompleted(event)) {
+        return;
+      }
+
+      if (event.firstVisit) {
+        const visit = new Date(event.firstVisit);
+        visit.setDate(visit.getDate());
+
+        const first: CalendarEvent = {
+          start: visit,
+          end: addDays(visit, 35),
+          title: `${event.title} - Visita seca`,
+          color: event.color,
+          allDay: true,
+        };
+
+        this.calendarEvents.push(first);
+      }
+
+      if (event.secondVisit) {
+        const visit = new Date(event.secondVisit);
+        visit.setDate(visit.getDate());
+
+        const second: CalendarEvent = {
+          start: visit,
+          end: addDays(visit, 35),
+          title: `${event.title} - Visita lluvia`,
+          color: event.color,
+          allDay: true,
+        };
+
+        this.calendarEvents.push(second);
+      }
+    });
+    this.updateNodes();
+  }
+
+  eventCompleted(event: any) {
+    return event.degradedNode && event.notDegradedNode && (event.firstVisit || event.secondVisit);
   }
 
   flatpickrFactory() {
     flatpickr.localize(Spanish);
     return flatpickr;
+  }
+
+  formatDate(dateString: string) {
+    return new Date(`${dateString} 00:00:00`).toISOString();
   }
 
   async getCalendar() {
@@ -223,33 +313,6 @@ export class EventosComponent implements OnInit, AfterViewInit {
     }
   }
 
-  async getMonitors() {
-    try {
-      const {
-        data: { monitors },
-      }: any = await this.apollo
-        .query({
-          query: getMonitores,
-          variables: {
-            search: {
-              field: 'cumulus_id',
-              value: this.cumuloId,
-              operator: 'eq',
-            },
-            pagination: {
-              limit: 100,
-              offset: 0,
-            },
-          },
-        })
-        .toPromise();
-
-      this.monitores = monitors;
-    } catch (error) {
-      console.log(error);
-    }
-  }
-
   async getNodes() {
     try {
       const {
@@ -278,6 +341,33 @@ export class EventosComponent implements OnInit, AfterViewInit {
       this.notDegradedNodes = nodes
         .filter((n) => n.cat_integr === 'Integro')
         .map((n) => ({ id: n.id, name: n.nomenclatura, geometry: n.location, selected: false }));
+    } catch (error) {
+      console.log(error);
+    }
+  }
+
+  async getVisits() {
+    try {
+      const {
+        data: { visits },
+      }: any = await this.apollo
+        .query({
+          query: getVisits,
+          variables: {
+            search: {
+              field: 'cumulus_id',
+              value: this.cumuloId,
+              operator: 'eq',
+            },
+            pagination: {
+              limit: 100,
+              offset: 0,
+            },
+          },
+        })
+        .toPromise();
+
+      this.visits = visits;
     } catch (error) {
       console.log(error);
     }
@@ -397,97 +487,131 @@ export class EventosComponent implements OnInit, AfterViewInit {
           'circle-radius': 5,
         },
       });
-    });
 
-    const popup = new mapboxgl.Popup({
-      closeButton: true,
-      closeOnClick: true,
-    });
-
-    const layers = ['nodos-integros', 'nodos-degradados'];
-
-    layers.map((layer) => {
-      this.map.on('mouseenter', layer, (e) => {
-        this.map.getCanvas().style.cursor = 'pointer';
-
-        const coordinates = e.features[0].geometry.coordinates.slice();
-        const nodeName = e.features[0].properties.name;
-
-        // Ensure that if the map is zoomed out such that multiple
-        // copies of the feature are visible, the popup appears
-        // over the copy being pointed to.
-        while (Math.abs(e.lngLat.lng - coordinates[0]) > 180) {
-          coordinates[0] += e.lngLat.lng > coordinates[0] ? 360 : -360;
-        }
-
-        popup.setLngLat(coordinates).setHTML(nodeName).addTo(this.map);
+      const popup = new mapboxgl.Popup({
+        closeButton: true,
+        closeOnClick: true,
       });
 
-      this.map.on('mouseleave', 'places', () => {
-        this.map.getCanvas().style.cursor = '';
-        popup.remove();
+      const layers = ['nodos-integros', 'nodos-degradados'];
+
+      layers.map((layer) => {
+        this.map.on('mouseenter', layer, (e) => {
+          this.map.getCanvas().style.cursor = 'pointer';
+
+          const coordinates = e.features[0].geometry.coordinates.slice();
+          const nodeName = e.features[0].properties.name;
+
+          // Ensure that if the map is zoomed out such that multiple
+          // copies of the feature are visible, the popup appears
+          // over the copy being pointed to.
+          while (Math.abs(e.lngLat.lng - coordinates[0]) > 180) {
+            coordinates[0] += e.lngLat.lng > coordinates[0] ? 360 : -360;
+          }
+
+          popup.setLngLat(coordinates).setHTML(nodeName).addTo(this.map);
+        });
+
+        this.map.on('mouseleave', 'places', () => {
+          this.map.getCanvas().style.cursor = '';
+          popup.remove();
+        });
       });
+
+      this.updateNodes();
+      this.eventChanged();
     });
   }
 
   async ngAfterViewInit() {
-    await this.getCalendar();
     await this.getCumulo();
     await this.getNodes();
-    await this.getMonitors();
+    await this.getVisits();
+    await this.getCalendar();
     this.initMap();
+    // this.deleteVisit({removeUnique_node_pristine: '1976', removeUnique_node_disturbed: '1979', id: '18'});
   }
 
   async ngOnInit() {
     this.flatpickrFactory();
   }
 
-  eventChanged() {
-    this.calendarEvents = [];
-    this.events.forEach((event) => {
-      if (!this.eventCompleted(event)) {
-        return;
-      }
-
-      if (event.firstVisit) {
-        const visit = new Date(event.firstVisit);
-        visit.setDate(visit.getDate());
-
-        const first: CalendarEvent = {
-          start: visit,
-          end: addDays(visit, 35),
-          title: `${event.title} - Visita seca`,
-          color: event.color,
-          allDay: true,
+  async saveCalendar() {
+    for (let event of this.events) {
+      if (this.eventCompleted(event)) {
+        const visit = {
+          addUser_visit: this.credentialsService.credentials.decoded?.id,
+          addCumulus_visit: this.cumuloId,
+          addUnique_node_pristine: event.notDegradedNode,
+          addUnique_node_disturbed: event.degradedNode,
         };
 
-        this.calendarEvents.push(first);
-      }
+        //add or update first visit
+        if (event.firstVisitId) {
+          await this.addOrUpdateVisit({ ...visit, addCalendar: event.firstVisitCalendarId, id: event.firstVisitId });
+        } else {
+          const { id } = await this.addOrUpdateVisit({ ...visit, addCalendar: event.firstVisitCalendarId });
+          event.firstVisitId = id;
+        }
 
-      if (event.secondVisit) {
-        const visit = new Date(event.secondVisit);
-        visit.setDate(visit.getDate());
-
-        const second: CalendarEvent = {
-          start: visit,
-          end: addDays(visit, 35),
-          title: `${event.title} - Visita lluvia`,
-          color: event.color,
-          allDay: true,
+        //add or update second visit
+        if (event.secondVisitId) {
+          await this.addOrUpdateVisit({ ...visit, addCalendar: event.secondVisitCalendarId, id: event.secondVisitId });
+        } else {
+          const { id } = await this.addOrUpdateVisit({ ...visit, addCalendar: event.secondVisitCalendarId });
+          event.secondVisitId = id;
+        }
+      } else {
+        // delete visits
+        const visit = {
+          removeUser_visit: this.credentialsService.credentials.decoded?.id,
+          removeCumulus_visit: this.cumuloId,
         };
 
-        this.calendarEvents.push(second);
+        if (event.firstVisitId) {
+          const originalVisit = this.visits.find((v) => v.id === event.firstVisitId);
+
+          await this.deleteVisit({
+            ...visit,
+            removeCalendar: event.firstVisitCalendarId,
+            removeUnique_node_pristine: originalVisit?.unique_node_pristine?.id,
+            removeUnique_node_disturbed: originalVisit?.unique_node_disturbed?.id,
+            id: event.firstVisitId,
+          });
+          event.firstVisitId = null;
+        }
+
+        if (event.secondVisitId) {
+          const originalVisit = this.visits.find((v) => v.id === event.secondVisitId);
+
+          await this.deleteVisit({
+            ...visit,
+            removeCalendar: event.secondVisitCalendarId,
+            removeUnique_node_pristine: originalVisit?.unique_node_pristine?.id,
+            removeUnique_node_disturbed: originalVisit?.unique_node_disturbed?.id,
+            id: event.secondVisitId,
+          });
+          event.secondVisitId = null;
+        }
       }
+
+      await this.getVisits();
+    }
+
+    const alert = await this.alertController.create({
+      header: `Calendario actualizado`,
+      buttons: ['Aceptar'],
     });
-    this.updateNodes();
-  }
 
-  eventCompleted(event: any) {
-    return event.degradedNode && event.notDegradedNode && (event.firstVisit || event.secondVisit);
+    await alert.present();
   }
 
   segmentChanged(event: any) {
     this.activeSection = event.target.value;
+  }
+
+  setView(view: CalendarView) {
+    this.view = view;
   }
 
   updateNodes() {

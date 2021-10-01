@@ -6,7 +6,7 @@ import { EventosComponent } from './eventos.component';
 import { Shell } from '@app/shell/shell.service';
 
 const routes: Routes = [
-  Shell.childRoutes([{ path: 'eventos/:id', component: EventosComponent, data: { title: extract('Eventos') } }], false),
+  Shell.childRoutes([{ path: 'eventos/:id', component: EventosComponent, data: { title: extract('Eventos') } }], true),
 ];
 @NgModule({
   imports: [RouterModule.forChild(routes)],

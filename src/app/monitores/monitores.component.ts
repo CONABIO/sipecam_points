@@ -153,7 +153,7 @@ export class MonitoresComponent implements OnInit {
           },
         })
         .toPromise();
-      console.log('mon', monitors);
+
       this.monitores = monitors;
     } catch (error) {
       console.log(error);
