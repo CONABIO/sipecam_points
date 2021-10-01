@@ -1,5 +1,6 @@
 import gql from 'graphql-tag';
 
+// https://gqlauth.sipecamdata.conabio.gob.mx/
 /**
  * Cúmulos
  */

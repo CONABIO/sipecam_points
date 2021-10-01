@@ -32,7 +32,7 @@ export const getMonitores = gql`
 /**
  * Visitas
  */
-export const getVisitas = gql`
+export const getVisits = gql`
   query visits($search: searchVisitInput, $order: [orderVisitInput], $pagination: paginationInput!) {
     visits(search: $search, order: $order, pagination: $pagination) {
       id
@@ -40,7 +40,6 @@ export const getVisitas = gql`
       calendar_id
       created_at
       cumulus_id
-      node_id
       calendar {
         id
         date_started
@@ -56,7 +55,7 @@ export const getVisitas = gql`
         id
         name
       }
-      pristine_id {
+      unique_node_pristine {
         id
         nomenclatura
         location
@@ -64,7 +63,7 @@ export const getVisitas = gql`
         cumulus_id
         ecosystem_id
       }
-      disturbed_id {
+      unique_node_disturbed {
         id
         nomenclatura
         location

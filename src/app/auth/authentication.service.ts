@@ -1,9 +1,9 @@
 import { Injectable } from '@angular/core';
 import { Observable, from, of } from 'rxjs';
 import { HttpClient } from '@angular/common/http';
-import jwtDecode, { JwtPayload } from 'jwt-decode';
+import jwtDecode from 'jwt-decode';
 
-import { Credentials, CredentialsService } from './credentials.service';
+import { Credentials, CredentialsService, CustomJwtPayload } from './credentials.service';
 import { environment } from '@env/environment';
 
 export interface LoginContext {
@@ -42,7 +42,7 @@ export class AuthenticationService {
         })
         .toPromise()
         .then((data) => {
-          const decoded = jwtDecode<JwtPayload>(data.token);
+          const decoded = jwtDecode<CustomJwtPayload>(data.token);
           credentials = {
             username: context.username,
             token: data.token,

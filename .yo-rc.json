@@ -8,7 +8,7 @@
       "skipQuickstart": false,
       "initGit": true,
       "usePrefix": true,
-      "appName": "sipecam_points",
+      "appName": "sipecam",
       "target": ["web"],
       "pwa": false,
       "ui": "ionic",
@@ -20,7 +20,7 @@
       "tools": ["prettier"],
       "utility": [],
       "deploy": "none",
-      "projectName": "sipecam-points",
+      "projectName": "sipecam",
       "packageManager": "npm",
       "mobile": [],
       "desktop": []
