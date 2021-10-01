@@ -6,31 +6,31 @@
   </ion-row>
 
   <ion-row class="ion-text-center text-bold ion-margin ion-align-items-center form-background">
-    <ion-col>
+    <ion-col size-xs="12" size-md="6" size-lg="3">
       <ion-item>
         <ion-label position="floating">Nombre</ion-label>
         <ion-input [(ngModel)]="monitor.first_name"></ion-input>
       </ion-item>
     </ion-col>
-    <ion-col>
+    <ion-col size-xs="12" size-md="6" size-lg="2">
       <ion-item>
         <ion-label position="floating">Apellido paterno</ion-label>
         <ion-input [(ngModel)]="monitor.last_name"></ion-input>
       </ion-item>
     </ion-col>
-    <ion-col>
+    <ion-col size-xs="12" size-md="6" size-lg="2">
       <ion-item>
         <ion-label position="floating">Apellido materno</ion-label>
         <ion-input [(ngModel)]="monitor.second_last_name"></ion-input>
       </ion-item>
     </ion-col>
-    <ion-col>
+    <ion-col size-xs="12" size-md="6" size-lg="3">
       <ion-item>
         <ion-label position="floating">Contacto</ion-label>
         <ion-input [(ngModel)]="monitor.contact"></ion-input>
       </ion-item>
     </ion-col>
-    <ion-col size="2"
+    <ion-col size-xs="12" size-lg="2"
       ><ion-button
         color="light"
         (click)="addMonitor()"
@@ -41,7 +41,7 @@
   </ion-row>
 
   <ion-row>
-    <ion-col size="4" *ngFor="let m of monitores; let i = index">
+    <ion-col size-xs="12" size-md="6" size-lg="4" *ngFor="let m of monitores; let i = index">
       <ion-card>
         <ion-card-content>
           <ion-item lines="none">
