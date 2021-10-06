@@ -3,6 +3,7 @@ import { AlertController, ModalController } from '@ionic/angular';
 import { Router } from '@angular/router';
 import { Apollo } from 'apollo-angular';
 import { getCumulus, getNodes } from '@api/mapa';
+import { CredentialsService } from '@app/auth';
 import { environment } from '@env/environment';
 import { FiltersService } from '../services/filters.service';
 import { NodeDetailComponent } from './node-detail/node-detail.component';
@@ -49,13 +50,18 @@ export class MapaComponent implements OnInit {
 
   showFilterBar = true;
 
+  userAuthenticated = false;
+
   constructor(
     private alertController: AlertController,
     private apollo: Apollo,
+    private credentialsService: CredentialsService,
     public filtersService: FiltersService,
     private modalCtrl: ModalController,
     private router: Router
-  ) {}
+  ) {
+    this.userAuthenticated = this.credentialsService.isAuthenticated();
+  }
 
   createMapLayers() {
     Object.keys(this.layers).forEach((layer) => {
@@ -155,21 +161,30 @@ export class MapaComponent implements OnInit {
   }
 
   async goToCalendar(id: string = null, name?: string) {
-    const alert = await this.alertController.create({
-      header: 'Calendario',
-      message: `¿Deseas ir al calendario del cúmulo ${name}?`,
-      buttons: [
-        'Cancelar',
-        {
-          text: 'Ir',
-          handler: () => {
-            this.router.navigate(['/eventos', id]);
-          },
-        },
-      ],
-    });
+    if (this.userAuthenticated) {
+      const isUserAssociated = this.credentialsService.cumulus.indexOf(Number(id)) > -1;
+      if (this.credentialsService.isAdmin() || (this.credentialsService.isPartner() && isUserAssociated)) {
+        const alert = await this.alertController.create({
+          header: 'Calendario',
+          message: `¿Deseas ir al calendario del cúmulo ${name}?`,
+          buttons: [
+            'Cancelar',
+            {
+              text: 'Ir',
+              handler: () => {
+                this.router.navigate(['/eventos', id]);
+              },
+            },
+          ],
+        });
 
-    await alert.present();
+        await alert.present();
+      } else {
+        this.showSimpleAlert('Calendario', 'No tienes permisos para acceder al calendario de este cúmulo');
+      }
+    } else {
+      this.showSimpleAlert('Calendario', 'Inicia sesión para acceder al calendario del cúmulo');
+    }
   }
 
   initMap() {
@@ -388,6 +403,16 @@ export class MapaComponent implements OnInit {
       const { cumulo, id } = e.features[0].properties;
       this.showDetail(id, cumulo);
     });
+  }
+
+  async showSimpleAlert(header: string, message: string) {
+    const alert = await this.alertController.create({
+      header,
+      message,
+      buttons: ['Aceptar'],
+    });
+
+    await alert.present();
   }
 
   showANPLayer(show: boolean) {

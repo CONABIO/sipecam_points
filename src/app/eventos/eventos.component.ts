@@ -1,6 +1,6 @@
 import { Component, OnInit, AfterViewInit } from '@angular/core';
 import { ViewChild, TemplateRef } from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { AlertController } from '@ionic/angular';
 import { addDays, isSameDay, isSameMonth } from 'date-fns';
 import { Subject } from 'rxjs';
@@ -123,13 +123,22 @@ export class EventosComponent implements OnInit, AfterViewInit {
 
   visits: Visit[] = [];
 
+  userAssociated = false;
+
   constructor(
     private alertController: AlertController,
     private apollo: Apollo,
     private credentialsService: CredentialsService,
-    private route: ActivatedRoute
+    private route: ActivatedRoute,
+    private router: Router
   ) {
     this.cumuloId = this.route.snapshot.paramMap.get('id') || null;
+    if (!this.credentialsService.isAdmin() && this.credentialsService.isPartner()) {
+      const isUserAssociated = this.credentialsService.cumulus.indexOf(Number(this.cumuloId)) > -1;
+      if (!isUserAssociated) {
+        this.router.navigate(['/'], { replaceUrl: true });
+      }
+    }
   }
 
   async addOrUpdateVisit(variables) {

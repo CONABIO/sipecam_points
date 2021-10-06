@@ -59,6 +59,7 @@
             </ion-item>
           </ion-menu-toggle>
         </ion-list>
+        <ion-label *ngIf="isLoggedIn" class="user-label">Bienvenido usuario {{ username }}</ion-label>
       </div>
     </ion-content>
   </ion-menu>

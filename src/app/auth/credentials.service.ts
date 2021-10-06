@@ -1,8 +1,14 @@
 import { Injectable } from '@angular/core';
 import { JwtPayload } from 'jwt-decode';
 
+export interface Cumulus {
+  id: number;
+  name: string;
+}
+
 export interface CustomJwtPayload extends JwtPayload {
   id: number;
+  cumulus: Cumulus[];
   roles: string[];
 }
 
@@ -33,6 +39,14 @@ export class CredentialsService {
   }
 
   /**
+   * Checks is the user has the admin role.
+   * @return True if the user has an admin role.
+   */
+  isAdmin(): boolean {
+    return !!this.credentials.decoded?.roles?.find((role) => role === 'admin');
+  }
+
+  /**
    * Checks is the user is authenticated.
    * @return True if the user is authenticated.
    */
@@ -41,11 +55,27 @@ export class CredentialsService {
   }
 
   /**
+   * Checks is the user has the partner role.
+   * @return True if the user has a partner role.
+   */
+  isPartner(): boolean {
+    return !!this.credentials.decoded?.roles?.find((role) => role === 'partner');
+  }
+
+  /**
    * Gets the user credentials.
    * @return The user credentials or null if the user is not authenticated.
    */
   get credentials(): Credentials | null {
     return this._credentials;
+  }
+
+  /**
+   * Gets the user associated cumulus.
+   * @return The cumulus that are associated with the user.
+   */
+  get cumulus(): number[] {
+    return this.credentials.decoded?.cumulus?.map((c) => c.id);
   }
 
   /**
