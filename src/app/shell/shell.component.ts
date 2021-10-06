@@ -15,6 +15,7 @@ import { I18nService } from '@app/i18n';
 })
 export class ShellComponent {
   isLoggedIn = false;
+  username: string | null = null;
 
   constructor(
     private router: Router,
@@ -26,6 +27,9 @@ export class ShellComponent {
     private i18nService: I18nService
   ) {
     this.isLoggedIn = this.credentialsService.isAuthenticated();
+    if (this.isLoggedIn) {
+      this.username = this.credentialsService.credentials.username;
+    }
   }
 
   get isWeb(): boolean {
@@ -66,7 +70,12 @@ export class ShellComponent {
     this.authenticationService.logout().subscribe((success) => {
       if (success) {
         this.isLoggedIn = false;
-        this.router.navigate(['/'], { replaceUrl: true });
+        this.username = null;
+        if (this.router.url === '/' || this.router.url === '/mapa') {
+          window.location.reload();
+        } else {
+          this.router.navigate(['/'], { replaceUrl: true });
+        }
       }
     });
   }
