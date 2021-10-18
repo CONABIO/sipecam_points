@@ -23,15 +23,13 @@ Table Nodes as N {
   id int [pk, increment] // auto-increment
   //ID humano que Pedro usa para identificar 2_14_0_683
   nomenclatura varchar  
-  has_parner boolean
+  con_socio int
   fid int
   location point
 	cat_itegr varchar // Es una integridad para modulo
-  integrity boolean
 	cumulus_id int
 	ecosystem_id int
   created_at timestamp
-  updated_at timestamp
 }
 
 Table Institutions as I {
@@ -53,6 +51,8 @@ Table Cumulus as C {
   id int [pk, increment] // auto-increment
   name varchar
   geometry polygon
+  ecosystem_id int
+  con_socio int
   criteria_id id
   created_at timestamp
 }
@@ -68,10 +68,14 @@ Table Visits as V {
   id int [pk, increment] // auto-increment
   user_id int
   calendar_id int
-  node_id int
+  comments varchar
+  date_started_pristine Date
+  date_finished_pristine Date
+  date_started_disturbed Date
+  date_finished_disturbed Date
   cumulus_id int
-  created_at timestamp
-  updated_at timestamp
+  pristine_id int
+  disturbed_id int
 }
 
 
@@ -108,6 +112,8 @@ Table Calendar as Cal {
   date_started date
   date_finished date
   created_at timestamp
+  sipecam_year varchar
+  order int
 }
 
 
@@ -150,7 +156,6 @@ Table MonitorsDeployment {
 }
 
 // Relaciones uno a uno
-Ref: N.(id) - V.(node_id)
 Ref: V.(calendar_id) - Cal.(id)
 
 // Relaciones Muchos a Uno
@@ -182,3 +187,9 @@ Ref: "Physical_Devices"."id" < "Deployments"."device_id"
 Ref: "Role_to_User"."user_id" < "Users"."id"
 
 Ref: "Role_to_User"."role_id" < "Roles"."id"
+
+Ref: "Nodes"."id" < "Visits"."pristine_id"
+
+Ref: "Nodes"."id" < "Visits"."disturbed_id"
+
+Ref: "Ecosystems"."id" < "Cumulus"."ecosystem_id"
