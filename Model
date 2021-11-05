@@ -126,9 +126,19 @@ Table Deployments as Dep {
   longitude float8
   altitude float8
   comments varchar
+  metadata json
   device_id int
   visit_id int
   created_at timestamp
+}
+
+Table Files {
+  id uuid
+  url varchar
+  metadata json
+  date Date
+  storage varchar
+  deployment_id int
 }
 
 Table PartnersCumulus as Pacu {
@@ -193,3 +203,5 @@ Ref: "Nodes"."id" < "Visits"."pristine_id"
 Ref: "Nodes"."id" < "Visits"."disturbed_id"
 
 Ref: "Ecosystems"."id" < "Cumulus"."ecosystem_id"
+
+Ref: "Files"."deployment_id" < "Deployments"."id"
