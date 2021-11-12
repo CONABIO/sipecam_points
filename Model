@@ -69,10 +69,12 @@ Table Visits as V {
   user_id int
   calendar_id int
   comments varchar
-  date_started_pristine Date
-  date_finished_pristine Date
-  date_started_disturbed Date
-  date_finished_disturbed Date
+  date_sipecam_first_season Date
+  date_sipecam_second_season Date
+  date_first_season Date
+  date_second_season Date
+  report_first_season varchar
+  report_second_season varchar
   cumulus_id int
   pristine_id int
   disturbed_id int
@@ -120,15 +122,16 @@ Table Calendar as Cal {
 
 Table Deployments as Dep {
   id int [pk, increment] // auto-increment
-  date_started date
-  date_finished date
+  date_deployment date
   latitude float8
   longitude float8
   altitude float8
   comments varchar
   metadata json
+  kobo_url varchar
   device_id int
-  visit_id int
+  node_id int
+  cumulus_id int
   created_at timestamp
 }
 
@@ -188,8 +191,6 @@ Ref: "MonitorsDeployment"."monitor_id" < "Monitors"."id"
 
 Ref: "MonitorsDeployment"."deployment_id" < "Deployments"."id"
 
-Ref: "Visits"."id" < "Deployments"."visit_id"
-
 Ref: "Physical_Devices"."id" < "Deployments"."device_id"
 
 
@@ -205,3 +206,7 @@ Ref: "Nodes"."id" < "Visits"."disturbed_id"
 Ref: "Ecosystems"."id" < "Cumulus"."ecosystem_id"
 
 Ref: "Files"."deployment_id" < "Deployments"."id"
+
+Ref: "Cumulus"."id" < "Deployments"."cumulus_id"
+
+Ref: "Nodes"."id" < "Deployments"."node_id"
