@@ -14,6 +14,7 @@ import { I18nService } from '@app/i18n';
   styleUrls: ['./shell.component.scss'],
 })
 export class ShellComponent {
+  isAdmin = false;
   isLoggedIn = false;
   username: string | null = null;
 
@@ -28,6 +29,7 @@ export class ShellComponent {
   ) {
     this.isLoggedIn = this.credentialsService.isAuthenticated();
     if (this.isLoggedIn) {
+      this.isAdmin = this.credentialsService.isAdmin();
       this.username = this.credentialsService.credentials.username;
     }
   }

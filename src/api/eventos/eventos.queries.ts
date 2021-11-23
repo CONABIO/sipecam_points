@@ -36,21 +36,7 @@ export const getVisits = gql`
   query visits($search: searchVisitInput, $order: [orderVisitInput], $pagination: paginationInput!) {
     visits(search: $search, order: $order, pagination: $pagination) {
       id
-      user_id
-      calendar_id
-      created_at
       cumulus_id
-      calendar {
-        id
-        date_started
-        date_finished
-      }
-      user_visit {
-        first_name
-        last_name
-        email
-        username
-      }
       cumulus_visit {
         id
         name
@@ -71,6 +57,13 @@ export const getVisits = gql`
         cumulus_id
         ecosystem_id
       }
+      comments
+      date_sipecam_first_season
+      date_sipecam_second_season
+      date_first_season
+      date_second_season
+      report_first_season
+      report_second_season
     }
   }
 `;

@@ -236,6 +236,7 @@ export class MapaComponent implements OnInit {
   }
 
   setCumulosLayers() {
+    const userCumulus = this.credentialsService.cumulus;
     const polygons = this.cumulos.map((c: any) => {
       return {
         type: 'Feature',
@@ -262,7 +263,12 @@ export class MapaComponent implements OnInit {
       type: 'fill',
       source: 'cumulos-src',
       paint: {
-        'fill-color': '#ff8900',
+        'fill-color': [
+          'case',
+          ['in', ['to-number', ['get', 'cumulo']], ['literal', userCumulus]],
+          '#FF5733',
+          '#ff8900',
+        ],
         'fill-opacity': 0.6,
       },
       minzoom: 7,
@@ -277,7 +283,12 @@ export class MapaComponent implements OnInit {
         'line-cap': 'round',
       },
       paint: {
-        'line-color': '#ff8900',
+        'line-color': [
+          'case',
+          ['in', ['to-number', ['get', 'cumulo']], ['literal', userCumulus]],
+          '#FF5733',
+          '#ff8900',
+        ],
         'line-width': 2,
       },
       minzoom: 7,
@@ -318,7 +329,12 @@ export class MapaComponent implements OnInit {
       type: 'circle',
       source: 'cumulos-centroides-src',
       paint: {
-        'circle-color': '#ff8900',
+        'circle-color': [
+          'case',
+          ['in', ['to-number', ['get', 'cumulo']], ['literal', userCumulus]],
+          '#FF5733',
+          '#ff8900',
+        ],
         'circle-radius': 10,
       },
       maxzoom: 7,

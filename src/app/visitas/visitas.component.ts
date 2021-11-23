@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { Apollo } from 'apollo-angular';
 import { getVisits } from '@api/eventos';
+import { visit } from 'graphql';
 
 export interface Visit {
   id: string;
@@ -41,6 +42,11 @@ export interface Visit {
     cumulus_id: number;
     ecosystem_id: number;
   };
+  comments: string;
+  date_started_pristine: string;
+  date_finished_pristine: string;
+  date_started_disturbed: string;
+  date_finished_disturbed: string;
 }
 
 @Component({
@@ -78,8 +84,8 @@ export class VisitasComponent implements OnInit {
           },
         })
         .toPromise();
-
-      this.visits = visits;
+      console.log('visits', visits);
+      this.visits = visits.sort((a, b) => a.calendar.date_started.localeCompare(b.calendar.date_started));
     } catch (error) {
       console.log(error);
     }

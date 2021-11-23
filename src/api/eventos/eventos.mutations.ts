@@ -68,26 +68,33 @@ export const updateMonitor = gql`
  */
 export const addVisit = gql`
   mutation addVisit(
-    $addCalendar: ID
-    $addUser_visit: ID
+    $comments: String
+    $date_sipecam_first_season: Date
+    $date_sipecam_second_season: Date
+    $date_first_season: Date
+    $date_second_season: Date
+    $report_first_season: String
+    $report_second_season: String
     $addCumulus_visit: ID
     $addUnique_node_pristine: ID
     $addUnique_node_disturbed: ID
+    $addMonitors: [ID]
   ) {
     addVisit(
-      addCalendar: $addCalendar
-      addUser_visit: $addUser_visit
+      comments: $comments
+      date_sipecam_first_season: $date_sipecam_first_season
+      date_sipecam_second_season: $date_sipecam_second_season
+      date_first_season: $date_first_season
+      date_second_season: $date_second_season
+      report_first_season: $report_first_season
+      report_second_season: $report_second_season
       addCumulus_visit: $addCumulus_visit
       addUnique_node_pristine: $addUnique_node_pristine
       addUnique_node_disturbed: $addUnique_node_disturbed
+      addMonitors: $addMonitors
     ) {
       id
-      user_id
-      calendar_id
       cumulus_id
-      calendar_id
-      pristine_id
-      disturbed_id
     }
   }
 `;
@@ -101,37 +108,42 @@ export const deleteVisit = gql`
 export const updateVisit = gql`
   mutation updateVisit(
     $id: ID!
-    $addCalendar: ID
-    $removeCalendar: ID
-    $addUser_visit: ID
-    $removeUser_visit: ID
+    $comments: String
+    $date_sipecam_first_season: Date
+    $date_sipecam_second_season: Date
+    $date_first_season: Date
+    $date_second_season: Date
+    $report_first_season: String
+    $report_second_season: String
     $addCumulus_visit: ID
     $removeCumulus_visit: ID
     $addUnique_node_pristine: ID
     $removeUnique_node_pristine: ID
     $addUnique_node_disturbed: ID
     $removeUnique_node_disturbed: ID
+    $addMonitors: [ID]
+    $removeMonitors: [ID]
   ) {
     updateVisit(
       id: $id
-      addCalendar: $addCalendar
-      removeCalendar: $removeCalendar
-      addUser_visit: $addUser_visit
-      removeUser_visit: $removeUser_visit
+      comments: $comments
+      date_sipecam_first_season: $date_sipecam_first_season
+      date_sipecam_second_season: $date_sipecam_second_season
+      date_first_season: $date_first_season
+      date_second_season: $date_second_season
+      report_first_season: $report_first_season
+      report_second_season: $report_second_season
       addCumulus_visit: $addCumulus_visit
       removeCumulus_visit: $removeCumulus_visit
       addUnique_node_pristine: $addUnique_node_pristine
       removeUnique_node_pristine: $removeUnique_node_pristine
       addUnique_node_disturbed: $addUnique_node_disturbed
       removeUnique_node_disturbed: $removeUnique_node_disturbed
+      addMonitors: $addMonitors
+      removeMonitors: $removeMonitors
     ) {
       id
-      user_id
-      calendar_id
       cumulus_id
-      calendar_id
-      pristine_id
-      disturbed_id
     }
   }
 `;

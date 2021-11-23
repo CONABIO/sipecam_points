@@ -36,13 +36,20 @@ export function createApollo(httpLink: HttpLink): ApolloClientOptions<any> {
         const { message, locations, path } = err;
         console.log(`[GraphQL error]: Message: ${message}, Location: ${locations}, Path: ${path}`);
 
-        switch (err.extensions?.code) {
+        switch (message) {
           // when an AuthenticationError is thrown in a resolver
-          case 'Unauthorized':
-            return fromPromise(getNewToken()).flatMap((res) => {
+          case 'TokenExpiredError: jwt expired':
+            sessionStorage.removeItem('credentials');
+            localStorage.removeItem('credentials');
+            alert('Tu sesión ha expirado');
+            window.location.replace('/');
+
+            break;
+          /* return fromPromise(getNewToken()).flatMap((res) => {
               // retry the request, returning the new observable
               return forward(operation);
             });
+            */
         }
       }
     }

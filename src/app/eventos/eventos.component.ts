@@ -22,22 +22,17 @@ import * as _ from 'lodash';
 
 export interface Visit {
   id: string;
-  user_id: number;
-  calendar_id: number;
+  comments: string;
+  date_sipecam_first_season: string;
+  date_sipecam_second_season: string;
+  date_first_season: string;
+  date_second_season: string;
+  report_first_season: string;
+  report_second_season: string;
   cumulus_id: number;
   pristine_id: number;
   disturbed_id: number;
-  calendar: {
-    id: string;
-    date_started: string;
-    date_finished: string;
-  };
-  user_visit: {
-    first_name: string;
-    last_name: string;
-    email: string;
-    username: string;
-  };
+  monitor_ids: number[];
   cumulus_visit: {
     id: string;
     name: string;
@@ -163,7 +158,9 @@ export class EventosComponent implements OnInit, AfterViewInit {
 
     for (let i = 0; i < pairs; i++) {
       const currentVisits = this.visits.filter(
-        (v) => v.calendar_id == this.calendarDates[i].id || v.calendar_id == this.calendarDates[i + pairs].id
+        (v) =>
+          v.date_sipecam_first_season == this.calendarDates[i].date_started ||
+          v.date_sipecam_second_season == this.calendarDates[i + pairs].date_started
       );
 
       let degradedNode = null;
@@ -173,20 +170,31 @@ export class EventosComponent implements OnInit, AfterViewInit {
         notDegradedNode = currentVisits[0].unique_node_pristine?.id ?? null;
       }
 
-      const firstVisit = currentVisits.find((v) => v.calendar_id == this.calendarDates[i].id);
-      const secondVisit = currentVisits.find((v) => v.calendar_id == this.calendarDates[i + pairs].id);
+      const visit = currentVisits.find(
+        (v) =>
+          v.date_sipecam_first_season == this.calendarDates[i].date_started &&
+          v.date_sipecam_second_season == this.calendarDates[i + pairs].date_started
+      );
+
+      const myFirstVisitSipecamDate = visit?.date_sipecam_first_season ?? this.calendarDates[i].date_started;
+      const mySecondVisitSipecamDate = visit?.date_sipecam_second_season ?? this.calendarDates[i + pairs].date_started;
 
       this.events.push({
         firstVisit: this.formatDate(this.calendarDates[i].date_started),
         secondVisit: this.formatDate(this.calendarDates[i + pairs].date_started),
+        firstVisitString: this.calendarDates[i].date_started,
+        secondVisitString: this.calendarDates[i + pairs].date_started,
         title: `Par de nodos ${i + 1}`,
         color: colors[colorNames[i]],
         degradedNode,
         notDegradedNode,
-        firstVisitCalendarId: this.calendarDates[i].id,
-        secondVisitCalendarId: this.calendarDates[i + pairs].id,
-        firstVisitId: firstVisit?.id ?? null,
-        secondVisitId: secondVisit?.id ?? null,
+        myFirstVisit: visit?.date_first_season ?? null,
+        mySecondVisit: visit?.date_second_season ?? null,
+        myFirstVisitSipecam: this.formatDate(myFirstVisitSipecamDate),
+        mySecondVisitSipecam: this.formatDate(mySecondVisitSipecamDate),
+        myFirstVisitSipecamString: myFirstVisitSipecamDate,
+        mySecondVisitSipecamString: mySecondVisitSipecamDate,
+        visitId: visit?.id ?? null,
       });
     }
   }
@@ -236,7 +244,7 @@ export class EventosComponent implements OnInit, AfterViewInit {
         const first: CalendarEvent = {
           start: visit,
           end: addDays(visit, 35),
-          title: `${event.title} - Visita seca`,
+          title: `${event.title} - Primera estación`,
           color: event.color,
           allDay: true,
         };
@@ -251,7 +259,7 @@ export class EventosComponent implements OnInit, AfterViewInit {
         const second: CalendarEvent = {
           start: visit,
           end: addDays(visit, 35),
-          title: `${event.title} - Visita lluvia`,
+          title: `${event.title} - Segunda estación`,
           color: event.color,
           allDay: true,
         };
@@ -263,7 +271,7 @@ export class EventosComponent implements OnInit, AfterViewInit {
   }
 
   eventCompleted(event: any) {
-    return event.degradedNode && event.notDegradedNode && (event.firstVisit || event.secondVisit);
+    return event.degradedNode && event.notDegradedNode;
   }
 
   flatpickrFactory() {
@@ -538,7 +546,6 @@ export class EventosComponent implements OnInit, AfterViewInit {
     await this.getVisits();
     await this.getCalendar();
     this.initMap();
-    // this.deleteVisit({removeUnique_node_pristine: '1976', removeUnique_node_disturbed: '1979', id: '18'});
   }
 
   async ngOnInit() {
@@ -549,58 +556,41 @@ export class EventosComponent implements OnInit, AfterViewInit {
     for (let event of this.events) {
       if (this.eventCompleted(event)) {
         const visit = {
-          addUser_visit: this.credentialsService.credentials.decoded?.id,
+          // addUser_visit: this.credentialsService?.credentials.decoded?.id,
           addCumulus_visit: this.cumuloId,
           addUnique_node_pristine: event.notDegradedNode,
           addUnique_node_disturbed: event.degradedNode,
+          date_sipecam_first_season: event.firstVisitString,
+          date_sipecam_second_season: event.secondVisitString,
+          date_first_season: event.myFirstVisit?.length ? event.myFirstVisit : null,
+          date_second_season: event.mySecondVisit?.length ? event.mySecondVisit : null,
         };
 
-        //add or update first visit
-        if (event.firstVisitId) {
-          await this.addOrUpdateVisit({ ...visit, addCalendar: event.firstVisitCalendarId, id: event.firstVisitId });
+        //add or update visit (a visit contains both dates)
+        if (event.visitId) {
+          await this.addOrUpdateVisit({ ...visit, id: event.visitId });
         } else {
-          const { id } = await this.addOrUpdateVisit({ ...visit, addCalendar: event.firstVisitCalendarId });
-          event.firstVisitId = id;
-        }
-
-        //add or update second visit
-        if (event.secondVisitId) {
-          await this.addOrUpdateVisit({ ...visit, addCalendar: event.secondVisitCalendarId, id: event.secondVisitId });
-        } else {
-          const { id } = await this.addOrUpdateVisit({ ...visit, addCalendar: event.secondVisitCalendarId });
-          event.secondVisitId = id;
+          const { id } = await this.addOrUpdateVisit({ ...visit });
+          event.visitId = id;
         }
       } else {
         // delete visits
         const visit = {
-          removeUser_visit: this.credentialsService.credentials.decoded?.id,
           removeCumulus_visit: this.cumuloId,
         };
 
-        if (event.firstVisitId) {
-          const originalVisit = this.visits.find((v) => v.id === event.firstVisitId);
+        if (event.visitId) {
+          const originalVisit = this.visits.find((v) => v.id === event.visitId);
 
           await this.deleteVisit({
             ...visit,
-            removeCalendar: event.firstVisitCalendarId,
             removeUnique_node_pristine: originalVisit?.unique_node_pristine?.id,
             removeUnique_node_disturbed: originalVisit?.unique_node_disturbed?.id,
-            id: event.firstVisitId,
+            id: event.visitId,
           });
-          event.firstVisitId = null;
-        }
-
-        if (event.secondVisitId) {
-          const originalVisit = this.visits.find((v) => v.id === event.secondVisitId);
-
-          await this.deleteVisit({
-            ...visit,
-            removeCalendar: event.secondVisitCalendarId,
-            removeUnique_node_pristine: originalVisit?.unique_node_pristine?.id,
-            removeUnique_node_disturbed: originalVisit?.unique_node_disturbed?.id,
-            id: event.secondVisitId,
-          });
-          event.secondVisitId = null;
+          event.myFirstVisit = null;
+          event.mySecondVisit = null;
+          event.visitId = null;
         }
       }
 

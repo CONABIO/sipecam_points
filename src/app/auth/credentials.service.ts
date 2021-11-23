@@ -43,7 +43,7 @@ export class CredentialsService {
    * @return True if the user has an admin role.
    */
   isAdmin(): boolean {
-    return !!this.credentials.decoded?.roles?.find((role) => role === 'admin');
+    return !!this.credentials?.decoded?.roles?.find((role) => role === 'admin');
   }
 
   /**
@@ -59,7 +59,7 @@ export class CredentialsService {
    * @return True if the user has a partner role.
    */
   isPartner(): boolean {
-    return !!this.credentials.decoded?.roles?.find((role) => role === 'partner');
+    return !!this.credentials?.decoded?.roles?.find((role) => role === 'partner');
   }
 
   /**
@@ -75,7 +75,7 @@ export class CredentialsService {
    * @return The cumulus that are associated with the user.
    */
   get cumulus(): number[] {
-    return this.credentials.decoded?.cumulus?.map((c) => c.id);
+    return this.credentials?.decoded?.cumulus?.map((c) => c.id) ?? [];
   }
 
   /**
