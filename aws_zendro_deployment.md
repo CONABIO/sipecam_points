@@ -138,6 +138,12 @@ If one wants that DB to be accesible add to `docker-compose-prod.yml`:
       - 5432:5432
 ```
 
+Deploy:
+
+```
+yarn start
+```
+
 Go to:
 
 ```
@@ -148,11 +154,53 @@ Go to:
 ```
 using credentials configured.
 
-If `REQUIRE_SIGN_IN` in Zendro config is set to `false` then go to:
+If `REQUIRE_SIGN_IN` in Zendro config `docker-compose-prod.yml` is set to `false` then go to:
 
 ```
 <ipv4 of instance>:3000/graphql
 ```
+
+# In production
+
+If changes were made in fork of Zendro's repo then
+
+```
+cd /home/ubuntu/ZendroStarterPack
+
+git pull
+
+cp -r ./seeders ./graphql-server
+
+```
+
+If server needs a restart then
+
+```
+cd /home/ubuntu/ZendroStarterPack
+
+yarn stop prod
+
+yarn start
+```
+
+If fails restart change to `root` or try
+
+```
+cd /home/ubuntu/ZendroStarterPack
+
+bash ./scripts/down.sh prod
+
+bash ./scripts/up.sh prod
+
+```
+
+Make some queries within docker container using `psql`:
+
+```
+docker-compose -f docker-compose-prod.yml run --rm zendro_postgres psql -h zendro_postgres -U zendro -W zendro_development
+```
+
+# When testing Zendro's deployment
 
 If graphql-server needs and update as new seeders were created in fork of Zendro's repo then
 
