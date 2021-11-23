@@ -9,13 +9,15 @@ Table Users as U {
 	email varchar 
 	is_active boolean 
   institution_id int
-  created_at timestamp
+  updatedAt timestamp
+  createdAt timestamp
 }
 
 Table Role_to_User {
   user_id int
   role_id int
-  created_at datetime
+  updatedAt timestamp
+  createdAt timestamp
 }
 
 
@@ -29,22 +31,24 @@ Table Nodes as N {
 	cat_itegr varchar // Es una integridad para modulo
 	cumulus_id int
 	ecosystem_id int
-  created_at timestamp
+  updatedAt timestamp
+  createdAt timestamp
 }
 
 Table Institutions as I {
   id int [pk, increment] // auto-increment
-   name varchar
-   address varchar
-   phone_number int
-     created_at timestamp
-   
+  name varchar
+  address varchar
+  phone_number int
+  updatedAt timestamp
+  createdAt timestamp
 }
 
 Table Ecosystems as E {
   id int [pk, increment] // auto-increment
   name varchar [not null, unique]
-  
+  updatedAt timestamp
+  createdAt timestamp
 }
 
 Table Cumulus as C {
@@ -54,13 +58,15 @@ Table Cumulus as C {
   ecosystem_id int
   con_socio int
   criteria_id id
-  created_at timestamp
+  updatedAt timestamp
+  createdAt timestamp
 }
 
 Table Cumulus_criteria as CC {
   id int [pk, increment] // auto-increment
   name varchar
-  created_at timestamp
+  updatedAt timestamp
+  createdAt timestamp
 }
 
 
@@ -78,6 +84,9 @@ Table Visits as V {
   cumulus_id int
   pristine_id int
   disturbed_id int
+  monitor_ids [int]
+  updatedAt timestamp
+  createdAt timestamp
 }
 
 
@@ -90,6 +99,8 @@ Table Roles as R {
   id int [pk, increment] // auto-increment
   name varchar
   description varchar
+  updatedAt timestamp
+  createdAt timestamp
 }
 
 
@@ -100,7 +111,8 @@ Table Physical_Devices as D {
   comments varchar
   device_id int
   cumulus_id int
-  created_at timestamp
+  updatedAt timestamp
+  createdAt timestamp
 }
 
 Table Devices_Catalog as DC {
@@ -113,9 +125,10 @@ Table Calendar as Cal {
   id int [pk, increment] // auto-increment
   date_started date
   date_finished date
-  created_at timestamp
   sipecam_year varchar
   order int
+  updatedAt timestamp
+  createdAt timestamp
 }
 
 
@@ -132,8 +145,10 @@ Table Deployments as Dep {
   device_id int
   node_id int
   cumulus_id int
-  created_at timestamp
+  updatedAt timestamp
+  createdAt timestamp
 }
+
 
 Table Files {
   id uuid
@@ -142,12 +157,34 @@ Table Files {
   date Date
   storage varchar
   deployment_id int
+  updatedAt timestamp
+  createdAt timestamp
 }
+
+Table Individual as Ind {
+  id int [pk, increment] // auto-increment
+  date_trap date
+  latitude float8
+  longitude float8
+  altitude float8
+  comments varchar
+  metadata json //morfometría de roedor
+  kobo_url varchar
+  clave_posicion_malla varchar
+  arete int
+  node_id int
+  cumulus_id int
+  updatedAt timestamp
+  createdAt timestamp
+}
+
 
 Table PartnersCumulus as Pacu {
   id int [pk, increment] // auto-increment
   user_id int
   cumulus_id int
+  updatedAt timestamp
+  createdAt timestamp
 }
 
 // Establecer Relaciones
@@ -160,13 +197,11 @@ Table Monitors as Mon {
  last_name varchar
  second_last_name varchar
  contact varchar
+ visit_ids [int]
+  updatedAt timestamp
+  createdAt timestamp
 }
 
-Table MonitorsDeployment {
- id int [pk, increment]
- monitor_id int
- deployment_id int
-}
 
 // Relaciones uno a uno
 Ref: V.(calendar_id) - Cal.(id)
@@ -187,10 +222,6 @@ Ref: C.(id) < V.(cumulus_id)
 Ref: C.(id) < D.(cumulus_id)
 
 
-Ref: "MonitorsDeployment"."monitor_id" < "Monitors"."id"
-
-Ref: "MonitorsDeployment"."deployment_id" < "Deployments"."id"
-
 Ref: "Physical_Devices"."id" < "Deployments"."device_id"
 
 
@@ -210,3 +241,13 @@ Ref: "Files"."deployment_id" < "Deployments"."id"
 Ref: "Cumulus"."id" < "Deployments"."cumulus_id"
 
 Ref: "Nodes"."id" < "Deployments"."node_id"
+
+Ref: "Nodes"."id" < "Ind"."node_id"
+
+Ref: "Cumulus"."id" < "Ind"."cumulus_id"
+
+
+
+Ref: "Visits"."monitor_ids" < "Monitors"."id"
+
+Ref: "Monitors"."visit_ids" < "Visits"."id"
