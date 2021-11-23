@@ -1,27 +1,22 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { Apollo } from 'apollo-angular';
-import { getVisits } from '@api/eventos';
-import { visit } from 'graphql';
+import { getVisits, updateVisit } from '@api/eventos';
+import { AlertController } from '@ionic/angular';
 
 export interface Visit {
   id: string;
-  user_id: number;
-  calendar_id: number;
+  comments: string;
+  date_sipecam_first_season: string;
+  date_sipecam_second_season: string;
+  date_first_season: string;
+  date_second_season: string;
+  report_first_season: string;
+  report_second_season: string;
   cumulus_id: number;
   pristine_id: number;
   disturbed_id: number;
-  calendar: {
-    id: string;
-    date_started: string;
-    date_finished: string;
-  };
-  user_visit: {
-    first_name: string;
-    last_name: string;
-    email: string;
-    username: string;
-  };
+  monitor_ids: number[];
   cumulus_visit: {
     id: string;
     name: string;
@@ -42,11 +37,6 @@ export interface Visit {
     cumulus_id: number;
     ecosystem_id: number;
   };
-  comments: string;
-  date_started_pristine: string;
-  date_finished_pristine: string;
-  date_started_disturbed: string;
-  date_finished_disturbed: string;
 }
 
 @Component({
@@ -60,7 +50,7 @@ export class VisitasComponent implements OnInit {
 
   visits: Visit[] = [];
 
-  constructor(private apollo: Apollo, private route: ActivatedRoute) {
+  constructor(private alertController: AlertController, private apollo: Apollo, private route: ActivatedRoute) {
     this.cumuloId = this.route.snapshot.paramMap.get('id') || null;
   }
 
@@ -85,7 +75,9 @@ export class VisitasComponent implements OnInit {
         })
         .toPromise();
       console.log('visits', visits);
-      this.visits = visits.sort((a, b) => a.calendar.date_started.localeCompare(b.calendar.date_started));
+      this.visits = visits
+        .filter((v) => v.date_sipecam_first_season)
+        .sort((a, b) => a.date_sipecam_first_season?.localeCompare(b.date_sipecam_first_season));
     } catch (error) {
       console.log(error);
     }
@@ -93,5 +85,25 @@ export class VisitasComponent implements OnInit {
 
   async ngOnInit() {
     await this.getVisits();
+  }
+
+  async saveReports(variables: any) {
+    try {
+      const { data }: any = await this.apollo
+        .mutate({
+          mutation: updateVisit,
+          variables,
+        })
+        .toPromise();
+      const alert = await this.alertController.create({
+        header: `Reporte actualizado`,
+        buttons: ['Aceptar'],
+      });
+
+      await alert.present();
+    } catch (error) {
+      console.log(error);
+      return null;
+    }
   }
 }

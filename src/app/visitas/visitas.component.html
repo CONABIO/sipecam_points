@@ -1,29 +1,63 @@
 <ion-grid class="ion-padding">
   <ion-row>
     <ion-col>
-      <ion-title color="dark"><b>Visitas agendadas</b></ion-title>
+      <p>
+        Descarga el formato de reporte
+        <a href="https://docs.google.com/document/d/1hkOyhobWFwtT8cg9NHQMuJlQdE-0jZ76Pc701D6bhWI/edit" target="_blank"
+          >aquí</a
+        >
+      </p>
     </ion-col>
   </ion-row>
-
-  <ion-row>
+  <ion-row class="ion-justify-content-center">
     <ion-col *ngIf="!visits.length" class="ion-text-center">
       <ion-title color="dark">Sin información</ion-title>
     </ion-col>
-    <ion-col size="4" *ngFor="let v of visits; let i = index">
-      <ion-card>
-        <ion-card-content>
-          <ion-item lines="none">
-            <ion-label class="ion-text-wrap">
-              <h2 class="text-bold ion-text-center">
-                Del {{ v.calendar?.date_started }} al {{ v.calendar?.date_finished }}
-              </h2>
-              <br />
-              <p>Nodo integro: {{ v.unique_node_pristine?.nomenclatura }}</p>
-              <p>Nodo degradado: {{ v.unique_node_disturbed?.nomenclatura }}</p>
-            </ion-label>
+    <ion-col size-xs="12">
+      <ion-row class="ion-text-center text-bold">
+        <ion-col>Nodo integro</ion-col>
+        <ion-col>Nodo degradado</ion-col>
+        <ion-col>Fecha de inicio primera estación</ion-col>
+        <ion-col>Fecha de inicio segunda estación</ion-col>
+        <ion-col>Reporte visita primera estación</ion-col>
+        <ion-col>Reporte visita segunda estación</ion-col>
+        <ion-col></ion-col>
+      </ion-row>
+      <ion-row *ngFor="let v of visits" class="ion-align-items-center">
+        <ion-col class="ion-text-center"
+          ><ion-text>{{ v.unique_node_pristine?.nomenclatura }}</ion-text></ion-col
+        >
+        <ion-col class="ion-text-center"
+          ><ion-text>{{ v.unique_node_disturbed?.nomenclatura }}</ion-text></ion-col
+        >
+        <ion-col class="ion-text-center">
+          <ion-label>{{ v.date_first_season | date: 'dd/MM/yyyy' }}</ion-label>
+        </ion-col>
+        <ion-col class="ion-text-center">
+          <ion-label>{{ v.date_second_season | date: 'dd/MM/yyyy' }}</ion-label>
+        </ion-col>
+        <ion-col class="ion-text-center">
+          <ion-item>
+            <ion-textarea
+              placeholder="Agregue el URL del reporte"
+              [disabled]="!v.date_first_season"
+              [(ngModel)]="v.report_first_season"
+            ></ion-textarea>
           </ion-item>
-        </ion-card-content>
-      </ion-card>
+        </ion-col>
+        <ion-col class="ion-text-center">
+          <ion-item>
+            <ion-textarea
+              placeholder="Agregue el URL del reporte"
+              [disabled]="!v.date_second_season"
+              [(ngModel)]="v.report_second_season"
+            ></ion-textarea>
+          </ion-item>
+        </ion-col>
+        <ion-col class="ion-text-right">
+          <ion-button (click)="saveReports(v)">Guardar reporte</ion-button>
+        </ion-col>
+      </ion-row>
     </ion-col>
   </ion-row>
 </ion-grid>
