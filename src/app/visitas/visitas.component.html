@@ -13,7 +13,7 @@
     <ion-col *ngIf="!visits.length" class="ion-text-center">
       <ion-title color="dark">Sin información</ion-title>
     </ion-col>
-    <ion-col size-xs="12">
+    <ion-col *ngIf="visits.length" size-xs="12">
       <ion-row class="ion-text-center text-bold">
         <ion-col>Nodo integro</ion-col>
         <ion-col>Nodo degradado</ion-col>

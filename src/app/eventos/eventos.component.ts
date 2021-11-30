@@ -157,44 +157,31 @@ export class EventosComponent implements OnInit, AfterViewInit {
     this.events = [];
 
     for (let i = 0; i < pairs; i++) {
-      const currentVisits = this.visits.filter(
-        (v) =>
-          v.date_sipecam_first_season == this.calendarDates[i].date_started ||
-          v.date_sipecam_second_season == this.calendarDates[i + pairs].date_started
-      );
+      const currentVisit = this.visits.length ? this.visits[i] : null;
 
       let degradedNode = null;
       let notDegradedNode = null;
-      if (currentVisits.length) {
-        degradedNode = currentVisits[0].unique_node_disturbed?.id ?? null;
-        notDegradedNode = currentVisits[0].unique_node_pristine?.id ?? null;
+      if (currentVisit) {
+        degradedNode = currentVisit.unique_node_disturbed?.id ?? null;
+        notDegradedNode = currentVisit.unique_node_pristine?.id ?? null;
       }
 
-      const visit = currentVisits.find(
-        (v) =>
-          v.date_sipecam_first_season == this.calendarDates[i].date_started &&
-          v.date_sipecam_second_season == this.calendarDates[i + pairs].date_started
-      );
-
-      const myFirstVisitSipecamDate = visit?.date_sipecam_first_season ?? this.calendarDates[i].date_started;
-      const mySecondVisitSipecamDate = visit?.date_sipecam_second_season ?? this.calendarDates[i + pairs].date_started;
+      const myFirstVisitSipecamDate = currentVisit?.date_sipecam_first_season ?? this.calendarDates[i].date_started;
+      const mySecondVisitSipecamDate =
+        currentVisit?.date_sipecam_second_season ?? this.calendarDates[i + pairs].date_started;
 
       this.events.push({
-        firstVisit: this.formatDate(this.calendarDates[i].date_started),
-        secondVisit: this.formatDate(this.calendarDates[i + pairs].date_started),
-        firstVisitString: this.calendarDates[i].date_started,
-        secondVisitString: this.calendarDates[i + pairs].date_started,
         title: `Par de nodos ${i + 1}`,
         color: colors[colorNames[i]],
         degradedNode,
         notDegradedNode,
-        myFirstVisit: visit?.date_first_season ?? null,
-        mySecondVisit: visit?.date_second_season ?? null,
+        myFirstVisit: currentVisit?.date_first_season ?? null,
+        mySecondVisit: currentVisit?.date_second_season ?? null,
         myFirstVisitSipecam: this.formatDate(myFirstVisitSipecamDate),
         mySecondVisitSipecam: this.formatDate(mySecondVisitSipecamDate),
         myFirstVisitSipecamString: myFirstVisitSipecamDate,
         mySecondVisitSipecamString: mySecondVisitSipecamDate,
-        visitId: visit?.id ?? null,
+        visitId: currentVisit?.id ?? null,
       });
     }
   }
@@ -237,8 +224,8 @@ export class EventosComponent implements OnInit, AfterViewInit {
         return;
       }
 
-      if (event.firstVisit) {
-        const visit = new Date(event.firstVisit);
+      if (event.myFirstVisit) {
+        const visit = new Date(this.formatDate(event.myFirstVisit));
         visit.setDate(visit.getDate());
 
         const first: CalendarEvent = {
@@ -252,8 +239,8 @@ export class EventosComponent implements OnInit, AfterViewInit {
         this.calendarEvents.push(first);
       }
 
-      if (event.secondVisit) {
-        const visit = new Date(event.secondVisit);
+      if (event.mySecondVisit) {
+        const visit = new Date(this.formatDate(event.mySecondVisit));
         visit.setDate(visit.getDate());
 
         const second: CalendarEvent = {
@@ -305,7 +292,6 @@ export class EventosComponent implements OnInit, AfterViewInit {
         .toPromise();
 
       this.calendarDates = calendars.sort((a, b) => a.order - b.order);
-      this.buildCalendarEvents();
     } catch (error) {
       console.log(error);
     }
@@ -384,7 +370,9 @@ export class EventosComponent implements OnInit, AfterViewInit {
         })
         .toPromise();
 
-      this.visits = visits;
+      this.visits = visits.filter((v) => v.date_sipecam_first_season && v.date_sipecam_second_season);
+      // .sort((a, b) => a.date_sipecam_first_season.localeCompare(b.date_sipecam_second_season));
+      this.buildCalendarEvents();
     } catch (error) {
       console.log(error);
     }
@@ -543,8 +531,8 @@ export class EventosComponent implements OnInit, AfterViewInit {
   async ngAfterViewInit() {
     await this.getCumulo();
     await this.getNodes();
-    await this.getVisits();
     await this.getCalendar();
+    await this.getVisits();
     this.initMap();
   }
 
@@ -553,49 +541,51 @@ export class EventosComponent implements OnInit, AfterViewInit {
   }
 
   async saveCalendar() {
-    for (let event of this.events) {
+    if (this.visits.length) {
+      for (let event of this.events) {
+        // update visits
+        if (this.eventCompleted(event)) {
+          const visit = {
+            addUnique_node_pristine: event.notDegradedNode ?? null,
+            addUnique_node_disturbed: event.degradedNode ?? null,
+            date_first_season: event.myFirstVisit?.length ? event.myFirstVisit : null,
+            date_second_season: event.mySecondVisit?.length ? event.mySecondVisit : null,
+          };
+
+          if (event.visitId) {
+            await this.addOrUpdateVisit({ ...visit, id: event.visitId });
+          }
+        } else {
+          const visit = {
+            removeUnique_node_pristine: null, // send node id
+            removeUnique_node_disturbed: null,
+            date_first_season: null,
+            date_second_season: null,
+          };
+
+          if (event.visitId) {
+            await this.addOrUpdateVisit({ ...visit, id: event.visitId });
+          }
+        }
+      }
+    } else {
+      // add only the first visit
+      const event = this.events[0];
       if (this.eventCompleted(event)) {
         const visit = {
-          // addUser_visit: this.credentialsService?.credentials.decoded?.id,
           addCumulus_visit: this.cumuloId,
           addUnique_node_pristine: event.notDegradedNode,
           addUnique_node_disturbed: event.degradedNode,
-          date_sipecam_first_season: event.firstVisitString,
-          date_sipecam_second_season: event.secondVisitString,
           date_first_season: event.myFirstVisit?.length ? event.myFirstVisit : null,
           date_second_season: event.mySecondVisit?.length ? event.mySecondVisit : null,
         };
 
-        //add or update visit (a visit contains both dates)
-        if (event.visitId) {
-          await this.addOrUpdateVisit({ ...visit, id: event.visitId });
-        } else {
-          const { id } = await this.addOrUpdateVisit({ ...visit });
-          event.visitId = id;
-        }
-      } else {
-        // delete visits
-        const visit = {
-          removeCumulus_visit: this.cumuloId,
-        };
-
-        if (event.visitId) {
-          const originalVisit = this.visits.find((v) => v.id === event.visitId);
-
-          await this.deleteVisit({
-            ...visit,
-            removeUnique_node_pristine: originalVisit?.unique_node_pristine?.id,
-            removeUnique_node_disturbed: originalVisit?.unique_node_disturbed?.id,
-            id: event.visitId,
-          });
-          event.myFirstVisit = null;
-          event.mySecondVisit = null;
-          event.visitId = null;
-        }
+        const { id } = await this.addOrUpdateVisit({ ...visit });
+        this.events[0].visitId = id;
       }
-
-      await this.getVisits();
     }
+
+    await this.getVisits();
 
     const alert = await this.alertController.create({
       header: `Calendario actualizado`,
