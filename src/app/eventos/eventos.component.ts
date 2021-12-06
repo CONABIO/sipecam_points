@@ -217,7 +217,7 @@ export class EventosComponent implements OnInit, AfterViewInit {
     }
   }
 
-  eventChanged() {
+  async eventChanged() {
     this.calendarEvents = [];
     this.events.forEach((event) => {
       if (!this.eventCompleted(event)) {
@@ -526,6 +526,18 @@ export class EventosComponent implements OnInit, AfterViewInit {
       this.updateNodes();
       this.eventChanged();
     });
+  }
+
+  isFirstColumnCompleted() {
+    let completed = false;
+
+    completed = this.events.reduce((prev, current) => {
+      return (
+        prev && current.degradedNode && current.notDegradedNode && current.myFirstVisit && current.myFirstVisit.length
+      );
+    }, true);
+
+    return completed;
   }
 
   async ngAfterViewInit() {

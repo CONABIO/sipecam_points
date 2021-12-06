@@ -95,14 +95,16 @@
                   [(ngModel)]="event.myFirstVisit"
                   [disabled]="!event.degradedNode || !event.notDegradedNode"
                   (ngModelChange)="eventChanged()"
+                  min="2021-01-01"
                 />
               </ion-col>
               <ion-col class="ion-text-center">
                 <input
                   type="date"
                   [(ngModel)]="event.mySecondVisit"
-                  [disabled]="!event.degradedNode || !event.notDegradedNode"
+                  [disabled]="!event.degradedNode || !event.notDegradedNode || !isFirstColumnCompleted()"
                   (ngModelChange)="eventChanged()"
+                  min="2021-01-01"
                 />
               </ion-col>
 
@@ -121,8 +123,9 @@
           <ion-button
             (click)="saveCalendar()"
             [disabled]="
-              !visits.length &&
-              (!events[0].degradedNode || !events[0].notDegradedNode || !events[0].myFirstVisit?.length)
+              (!visits.length &&
+                (!events[0].degradedNode || !events[0].notDegradedNode || !events[0].myFirstVisit?.length)) ||
+              (visits.length && !events[0].myFirstVisit?.length)
             "
             >Guardar cambios</ion-button
           >
