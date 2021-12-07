@@ -202,6 +202,19 @@ Table Monitors as Mon {
   createdAt timestamp
 }
 
+Table Transecto{
+  id int [pk, increment]
+  number int //número del Transecto
+  sum_vegetation_structure float8
+  sum_indicator_species float8
+  sum_impact float8
+  date_transecto timestamp
+  latitude float8 //of node
+  longitude float8 //of node
+  percentage float8
+  node_id int
+}
+
 
 // Relaciones uno a uno
 Ref: V.(calendar_id) - Cal.(id)
@@ -225,7 +238,6 @@ Ref: C.(id) < D.(cumulus_id)
 Ref: "Physical_Devices"."id" < "Deployments"."device_id"
 
 
-
 Ref: "Role_to_User"."user_id" < "Users"."id"
 
 Ref: "Role_to_User"."role_id" < "Roles"."id"
@@ -246,7 +258,7 @@ Ref: "Nodes"."id" < "Ind"."node_id"
 
 Ref: "Cumulus"."id" < "Ind"."cumulus_id"
 
-
+Ref: "Transecto"."node_id" < "Nodes"."id"
 
 Ref: "Visits"."monitor_ids" < "Monitors"."id"
 
