@@ -280,7 +280,7 @@ export class EventosComponent implements OnInit, AfterViewInit {
           variables: {
             search: {
               field: 'sipecam_year',
-              value: `${new Date().getFullYear()}`,
+              value: '2021',
               operator: 'eq',
             },
             pagination: {
