@@ -215,6 +215,15 @@ Table Transecto{
   node_id int
 }
 
+Table delivered_files {
+  id int [pk,increment]
+  who_delivers varchar
+  reception_date date
+  total_files int
+  audio_files int
+  image_files int
+  node_id int
+}
 
 // Relaciones uno a uno
 Ref: V.(calendar_id) - Cal.(id)
@@ -263,3 +272,5 @@ Ref: "Transecto"."node_id" < "Nodes"."id"
 Ref: "Visits"."monitor_ids" < "Monitors"."id"
 
 Ref: "Monitors"."visit_ids" < "Visits"."id"
+
+Ref: "Nodes"."id" < "delivered_files"."node_id"
