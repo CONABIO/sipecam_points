@@ -6,6 +6,7 @@ const routes: Routes = [
   Shell.childRoutes(
     [
       { path: 'manual', loadChildren: () => import('./manual/manual.module').then((m) => m.ManualModule) },
+      { path: 'entregas', loadChildren: () => import('./entregas/entregas.module').then((m) => m.EntregasModule) },
       { path: 'quienes-somos', loadChildren: () => import('./about/about.module').then((m) => m.AboutModule) },
       { path: 'zendro', loadChildren: () => import('./zendro/zendro.module').then((m) => m.ZendroModule) },
     ],

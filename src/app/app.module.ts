@@ -16,6 +16,7 @@ import { MapaModule } from './mapa/mapa.module';
 import { ShellModule } from './shell/shell.module';
 import { AppComponent } from './app.component';
 import { AppRoutingModule } from './app-routing.module';
+import { EntregasModule } from './entregas/entregas.module';
 
 @NgModule({
   imports: [
@@ -32,6 +33,7 @@ import { AppRoutingModule } from './app-routing.module';
     MapaModule,
     EventosModule,
     SitiosModule,
+    EntregasModule,
     AppRoutingModule, // must be imported as the last module as it contains the fallback route
   ],
   declarations: [AppComponent],

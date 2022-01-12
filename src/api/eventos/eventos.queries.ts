@@ -67,3 +67,23 @@ export const getVisits = gql`
     }
   }
 `;
+
+/**
+ * Entregas
+ */
+export const getFileDelivers = gql`
+  query delivered_files($pagination: paginationInput!) {
+    delivered_files(pagination: $pagination) {
+      node_delivered_files {
+        fid
+        nomenclatura
+      }
+      who_delivers
+      reception_date
+      audio_files
+      image_files
+      video_files
+      total_files
+    }
+  }
+`;
