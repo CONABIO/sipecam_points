@@ -13,3 +13,23 @@
   padding-bottom: 0.5em;
   border-bottom: 1px solid rgba(170, 170, 170, 0.733);
 }
+.total-row {
+  border-top: 2px solid black;
+  border-bottom: 2px solid black;
+}
+.last-row {
+  border-bottom: none;
+  padding-bottom: 0px;
+}
+.table-header {
+  position: sticky;
+  top: 0;
+  background: #ededed;
+  border: none;
+  z-index: 10;
+  padding-top: 1em;
+}
+.table-dimensions {
+  max-height: calc(100vh - 250px);
+  overflow: auto;
+}

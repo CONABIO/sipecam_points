@@ -39,8 +39,8 @@
       <ion-col *ngIf="!fileDelivers.length" class="ion-text-center">
         <ion-title color="dark">Sin información</ion-title>
       </ion-col>
-      <ion-col size-xs="12" *ngIf="fileDelivers.length">
-        <ion-row class="ion-text-center text-bold underline-row">
+      <ion-col size-xs="12" *ngIf="fileDelivers.length" class="table-dimensions">
+        <ion-row class="ion-text-center text-bold underline-row table-header">
           <ion-col>Nodo</ion-col>
           <ion-col>Responsable de la entrega</ion-col>
           <ion-col>Fecha de recepción</ion-col>
@@ -49,7 +49,10 @@
           <ion-col>Total de videos</ion-col>
           <ion-col>Archivos totales</ion-col>
         </ion-row>
-        <ion-row *ngFor="let f of searchFilterList" class="ion-align-items-center node-row">
+        <ion-row
+          *ngFor="let f of searchFilterList; let last = last"
+          class="ion-align-items-center node-row {{ last ? 'last-row' : '' }}"
+        >
           <ion-col class="ion-text-center">
             <ion-text>{{ f.node_delivered_files.nomenclatura }}</ion-text>
           </ion-col>
@@ -63,14 +66,25 @@
             <ion-label>{{ f.audio_files }}</ion-label>
           </ion-col>
           <ion-col class="ion-text-center">
-            <ion-label>{{ f.video_files }}</ion-label>
+            <ion-label>{{ f.image_files }}</ion-label>
           </ion-col>
           <ion-col class="ion-text-center">
-            <ion-label>{{ f.image_files }}</ion-label>
+            <ion-label>{{ f.video_files }}</ion-label>
           </ion-col>
           <ion-col class="ion-text-center">
             <ion-label>{{ f.total_files }}</ion-label>
           </ion-col>
+        </ion-row>
+      </ion-col>
+      <ion-col *ngIf="fileDelivers.length">
+        <ion-row class="ion-align-items-center node-row total-row">
+          <ion-col class="ion-text-center"></ion-col>
+          <ion-col class="ion-text-center"></ion-col>
+          <ion-col class="ion-text-center text-bold">TOTALES</ion-col>
+          <ion-col class="ion-text-center">{{ getTotals('audio_files') }}</ion-col>
+          <ion-col class="ion-text-center">{{ getTotals('image_files') }}</ion-col>
+          <ion-col class="ion-text-center">{{ getTotals('video_files') }}</ion-col>
+          <ion-col class="ion-text-center">{{ getTotals('total_files') }}</ion-col>
         </ion-row>
       </ion-col>
     </ion-row>

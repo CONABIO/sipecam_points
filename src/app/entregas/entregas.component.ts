@@ -77,4 +77,11 @@ export class EntregasComponent implements OnInit {
     this.searchField = value;
     this.onSearchInput(this.currentSearchValue);
   }
+
+  getTotals(field: string) {
+    let total = 0;
+    this.searchFilterList.forEach((f) => (total += f[field]));
+
+    return total;
+  }
 }
