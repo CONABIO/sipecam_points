@@ -221,7 +221,7 @@ export class EntregasComponent implements OnInit {
   getTotals(field: string, throughAll: boolean = false) {
     let total = 0;
 
-    if (!throughAll) this.searchFilterList.forEach((f) => (total += f[field]));
+    if (!throughAll) this.fileDelivers.forEach((f) => (total += f[field]));
     else this.fileDelivers.forEach((f) => (total += f[field]));
 
     return total;
