@@ -169,6 +169,7 @@ export class EntregasComponent implements OnInit {
 
       let valueAxis = chart.yAxes.push(new am4charts.ValueAxis());
       valueAxis.title.text = 'Archivos totales entregados';
+      valueAxis.min = 0;
 
       let series = chart.series.push(new am4charts.ColumnSeries());
       series.dataFields.categoryX = 'cumulus';
