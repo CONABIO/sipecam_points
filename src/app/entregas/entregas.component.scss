@@ -33,3 +33,18 @@
   max-height: calc(100vh - 250px);
   overflow: auto;
 }
+.hidden {
+  display: none !important;
+}
+.pie-chart {
+  margin-top: 2em !important;
+  width: 90%;
+  height: 500px;
+  margin: auto;
+  margin-bottom: 5em;
+}
+.bar-chart {
+  margin: auto;
+  width: 90%;
+  height: 500px;
+}

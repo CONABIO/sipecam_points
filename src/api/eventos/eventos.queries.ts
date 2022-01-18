@@ -77,6 +77,9 @@ export const getFileDelivers = gql`
       node_delivered_files {
         fid
         nomenclatura
+        cumulus_node {
+          name
+        }
       }
       who_delivers
       reception_date

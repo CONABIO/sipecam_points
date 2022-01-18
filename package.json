@@ -18,6 +18,7 @@
     "generate": "ng generate"
   },
   "dependencies": {
+    "@amcharts/amcharts4": "^4.10.23",
     "@angular/animations": "^12.2.2",
     "@angular/common": "^12.2.2",
     "@angular/compiler": "^12.2.2",
