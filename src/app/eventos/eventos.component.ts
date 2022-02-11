@@ -1,7 +1,7 @@
 import { Component, OnInit, AfterViewInit } from '@angular/core';
 import { ViewChild, TemplateRef } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
-import { AlertController } from '@ionic/angular';
+import { AlertController, PopoverController } from '@ionic/angular';
 import { addDays, isSameDay, isSameMonth } from 'date-fns';
 import { Subject } from 'rxjs';
 import { CalendarEvent, CalendarView } from 'angular-calendar';
@@ -10,6 +10,7 @@ import { Apollo } from 'apollo-angular';
 import { addVisit, deleteVisit, getCalendar, getVisits, updateVisit } from '@api/eventos';
 import { getOneCumulus, getNodes } from '@api/mapa';
 import { CredentialsService } from '@app/auth';
+import { TooltipComponent } from './tooltip/tooltip.component';
 
 import flatpickr from 'flatpickr';
 import { Spanish } from 'flatpickr/dist/l10n/es';
@@ -124,6 +125,7 @@ export class EventosComponent implements OnInit, AfterViewInit {
     private alertController: AlertController,
     private apollo: Apollo,
     private credentialsService: CredentialsService,
+    private popoverController: PopoverController,
     private route: ActivatedRoute,
     private router: Router
   ) {
@@ -550,6 +552,18 @@ export class EventosComponent implements OnInit, AfterViewInit {
 
   async ngOnInit() {
     this.flatpickrFactory();
+  }
+
+  async presentTooltip(ev: any) {
+    const popover = await this.popoverController.create({
+      component: TooltipComponent,
+      componentProps: {
+        text: 'Fecha de colocación del último nodo visitado',
+      },
+      event: ev,
+      translucent: true,
+    });
+    return await popover.present();
   }
 
   async saveCalendar() {

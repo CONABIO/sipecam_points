@@ -37,7 +37,9 @@
           <ion-row class="ion-text-center text-bold">
             <ion-col></ion-col>
             <ion-col></ion-col>
-            <ion-col>Mis Visitas</ion-col>
+            <ion-col
+              >Mis Visitas <ion-icon name="information-circle" (mouseover)="presentTooltip($event)"></ion-icon
+            ></ion-col>
             <ion-col>Calendario SiPeCaM</ion-col>
           </ion-row>
           <ion-row class="ion-text-center text-bold">
@@ -90,6 +92,7 @@
                 <input type="color" [(ngModel)]="event.color.secondary" (ngModelChange)="eventChanged()" />
               </ion-col>
               <ion-col class="ion-text-center">
+                <ion-label>Visita {{ i + 1 }} </ion-label>
                 <input
                   type="date"
                   [(ngModel)]="event.myFirstVisit"
@@ -99,6 +102,7 @@
                 />
               </ion-col>
               <ion-col class="ion-text-center">
+                <ion-label>Visita {{ i + events.length + 1 }} </ion-label>
                 <input
                   type="date"
                   [(ngModel)]="event.mySecondVisit"
