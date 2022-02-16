@@ -30,3 +30,15 @@
 .cal-month-view .cal-day-cell {
   min-height: 85px;
 }
+
+.img-slider-container {
+  .ng-image-fullscreen-view .lightbox-wrapper {
+    height: calc(100% - 56px) !important;
+    top: unset !important;
+    bottom: 0 !important;
+  }
+
+  .img-div {
+    cursor: pointer;
+  }
+}

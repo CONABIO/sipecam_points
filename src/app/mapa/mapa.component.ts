@@ -1,7 +1,8 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import { AlertController, ModalController } from '@ionic/angular';
 import { Router } from '@angular/router';
 import { Apollo } from 'apollo-angular';
+import { NgImageSliderComponent } from 'ng-image-slider';
 import { getCumulus, getNodes } from '@api/mapa';
 import { CredentialsService } from '@app/auth';
 import { environment } from '@env/environment';
@@ -51,6 +52,60 @@ export class MapaComponent implements OnInit {
   showFilterBar = true;
 
   userAuthenticated = false;
+
+  imageObject: Array<any> = [
+    {
+      image:
+        'https://media.istockphoto.com/photos/hummingbird-and-flower-picture-id481412413?k=20&m=481412413&s=612x612&w=0&h=2pLZt_Th_xqBNIcV7DWf_IYGYV73ixExm8Sq06T7zFw=',
+      thumbImage:
+        'https://media.istockphoto.com/photos/hummingbird-and-flower-picture-id481412413?k=20&m=481412413&s=612x612&w=0&h=2pLZt_Th_xqBNIcV7DWf_IYGYV73ixExm8Sq06T7zFw=',
+      alt: 'Colibrí',
+      title: 'Colibrí',
+      cumulo: 24,
+    },
+    {
+      image: 'https://st.depositphotos.com/1292828/2061/i/600/depositphotos_20613993-stock-photo-jaguar-cubs.jpg', // Support base64 image
+      thumbImage: 'https://st.depositphotos.com/1292828/2061/i/600/depositphotos_20613993-stock-photo-jaguar-cubs.jpg', // Support base64 image
+      title: 'Jaguar', //Optional: You can use this key if want to show image with title
+      alt: 'Jaguar', //Optional: You can use this key if want to show image with alt
+      cumulo: 13,
+    },
+    {
+      image: 'https://www.dondevive.org/wp-content/uploads/2015/07/donde-vive-el-venado.jpg',
+      thumbImage: 'https://www.dondevive.org/wp-content/uploads/2015/07/donde-vive-el-venado.jpg',
+      alt: 'Venado',
+      title: 'Venado',
+      cumulo: 94,
+    },
+    {
+      image: 'https://estaticos.muyinteresante.es/uploads/images/gallery/5f7c878e5cafe83b0f9ef1ba/1-oso-pardo.jpg', // Support base64 image
+      thumbImage: 'https://estaticos.muyinteresante.es/uploads/images/gallery/5f7c878e5cafe83b0f9ef1ba/1-oso-pardo.jpg', // Support base64 image
+      title: 'Oso', //Optional: You can use this key if want to show image with title
+      alt: 'Oso', //Optional: You can use this key if want to show image with alt,
+      cumulo: 71,
+    },
+    {
+      image:
+        'https://media.istockphoto.com/photos/hummingbird-and-flower-picture-id481412413?k=20&m=481412413&s=612x612&w=0&h=2pLZt_Th_xqBNIcV7DWf_IYGYV73ixExm8Sq06T7zFw=',
+      thumbImage:
+        'https://media.istockphoto.com/photos/hummingbird-and-flower-picture-id481412413?k=20&m=481412413&s=612x612&w=0&h=2pLZt_Th_xqBNIcV7DWf_IYGYV73ixExm8Sq06T7zFw=',
+      alt: 'alt of image',
+      title: 'Colibrí 2',
+      cumulo: 98,
+    },
+    {
+      image: 'https://st.depositphotos.com/1292828/2061/i/600/depositphotos_20613993-stock-photo-jaguar-cubs.jpg', // Support base64 image
+      thumbImage: 'https://st.depositphotos.com/1292828/2061/i/600/depositphotos_20613993-stock-photo-jaguar-cubs.jpg', // Support base64 image
+      title: 'Image title', //Optional: You can use this key if want to show image with title
+      alt: 'Image alt', //Optional: You can use this key if want to show image with alt
+      cumulo: 33,
+    },
+  ];
+
+  @ViewChild('slider') slider: NgImageSliderComponent;
+
+  centroids: Array<any> = [];
+  popup: any = null;
 
   constructor(
     private alertController: AlertController,
@@ -235,6 +290,32 @@ export class MapaComponent implements OnInit {
     });
   }
 
+  showImageLocation(imageIndex: number) {
+    const selectedImage = this.imageObject[imageIndex];
+    const centroid = this.centroids.find((c) => c.cumuloName == selectedImage.cumulo);
+
+    if (this.popup) {
+      this.popup.remove();
+      this.popup = null;
+    }
+
+    const wrapperElement = document.createElement('div');
+    wrapperElement.innerHTML = `<img src="${selectedImage.image}" width=100 style="margin-top: 5px; margin-bottom: 5px" /> <br>`;
+    const buttonElement = document.createElement('button');
+    buttonElement.innerHTML = `Ver`;
+    buttonElement.addEventListener('click', (e) => {
+      this.slider.showLightbox();
+    });
+    wrapperElement.appendChild(buttonElement);
+
+    this.popup = new mapboxgl.Popup({ closeOnClick: false })
+      .setLngLat(centroid.coordinates)
+      .setDOMContent(wrapperElement)
+      .addTo(this.map);
+
+    this.map.flyTo({ center: centroid.coordinates, speed: 0.7, zoom: 6.5 });
+  }
+
   setCumulosLayers() {
     const userCumulus = this.credentialsService.cumulus;
     const polygons = this.cumulos.map((c: any) => {
@@ -314,6 +395,14 @@ export class MapaComponent implements OnInit {
       const c = turf.centroid(polygon);
       c.properties = polygon.properties;
       return c;
+    });
+
+    this.centroids = centroids.map((c) => {
+      return {
+        coordinates: c.geometry.coordinates,
+        cumuloId: c.properties.cumulo,
+        cumuloName: c.properties.cumuloName,
+      };
     });
 
     this.map.addSource('cumulos-centroides-src', {

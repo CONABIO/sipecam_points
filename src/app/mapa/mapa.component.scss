@@ -5,7 +5,7 @@
 
 .filter-bar {
   display: block;
-  height: calc(100vh - 80px);
+  height: calc(100vh - 280px);
   min-width: 250px;
   width: 20%;
   position: absolute;
@@ -20,6 +20,18 @@
     z-index: 1;
     position: absolute;
   }
+}
+
+.img-slider-container {
+  display: block;
+  min-width: 300px;
+  max-width: 90%;
+  position: absolute;
+  bottom: 25px;
+  left: 0;
+  right: 0;
+  margin: auto;
+  z-index: 2;
 }
 
 .hidden-filter-bar {

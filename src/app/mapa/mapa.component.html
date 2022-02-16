@@ -18,4 +18,16 @@
     ></app-filters>
   </div>
   <div id="map"></div>
+  <div class="img-slider-container">
+    <ng-image-slider
+      #slider
+      [images]="imageObject"
+      [imageSize]="{ width: '250px', height: '150px' }"
+      [infinite]="true"
+      [autoSlide]="5"
+      [imagePopup]="false"
+      (imageClick)="showImageLocation($event)"
+    >
+    </ng-image-slider>
+  </div>
 </ion-content>

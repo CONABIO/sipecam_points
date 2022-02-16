@@ -11,7 +11,6 @@ import { CoreModule } from '@core';
 import { SharedModule } from '@shared';
 import { AuthModule } from '@app/auth';
 import { EventosModule } from './eventos/eventos.module';
-import { SitiosModule } from './sitios/sitios.module';
 import { MapaModule } from './mapa/mapa.module';
 import { ShellModule } from './shell/shell.module';
 import { AppComponent } from './app.component';
@@ -32,7 +31,6 @@ import { EntregasModule } from './entregas/entregas.module';
     AuthModule,
     MapaModule,
     EventosModule,
-    SitiosModule,
     EntregasModule,
     AppRoutingModule, // must be imported as the last module as it contains the fallback route
   ],
