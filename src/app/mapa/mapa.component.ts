@@ -55,50 +55,67 @@ export class MapaComponent implements OnInit {
 
   imageObject: Array<any> = [
     {
-      image:
-        'https://media.istockphoto.com/photos/hummingbird-and-flower-picture-id481412413?k=20&m=481412413&s=612x612&w=0&h=2pLZt_Th_xqBNIcV7DWf_IYGYV73ixExm8Sq06T7zFw=',
-      thumbImage:
-        'https://media.istockphoto.com/photos/hummingbird-and-flower-picture-id481412413?k=20&m=481412413&s=612x612&w=0&h=2pLZt_Th_xqBNIcV7DWf_IYGYV73ixExm8Sq06T7zFw=',
-      alt: 'Colibrí',
-      title: 'Colibrí',
-      cumulo: 24,
-    },
-    {
-      image: 'https://st.depositphotos.com/1292828/2061/i/600/depositphotos_20613993-stock-photo-jaguar-cubs.jpg', // Support base64 image
-      thumbImage: 'https://st.depositphotos.com/1292828/2061/i/600/depositphotos_20613993-stock-photo-jaguar-cubs.jpg', // Support base64 image
-      title: 'Jaguar', //Optional: You can use this key if want to show image with title
-      alt: 'Jaguar', //Optional: You can use this key if want to show image with alt
+      image: '/assets/slider/jaguar_hembra.jpeg',
+      thumbImage: '/assets/slider/jaguar_hembra.jpeg',
+      alt: 'Jaguar hembra',
+      title: 'Jaguar hembra (Panthera onca)',
       cumulo: 13,
     },
     {
-      image: 'https://www.dondevive.org/wp-content/uploads/2015/07/donde-vive-el-venado.jpg',
-      thumbImage: 'https://www.dondevive.org/wp-content/uploads/2015/07/donde-vive-el-venado.jpg',
-      alt: 'Venado',
-      title: 'Venado',
-      cumulo: 94,
+      video: 'assets/slider/jaguar_bebe.mp4',
+      title: 'Jaguar con cría (Panthera onca)',
+      cumulo: 13,
     },
     {
-      image: 'https://estaticos.muyinteresante.es/uploads/images/gallery/5f7c878e5cafe83b0f9ef1ba/1-oso-pardo.jpg', // Support base64 image
-      thumbImage: 'https://estaticos.muyinteresante.es/uploads/images/gallery/5f7c878e5cafe83b0f9ef1ba/1-oso-pardo.jpg', // Support base64 image
-      title: 'Oso', //Optional: You can use this key if want to show image with title
-      alt: 'Oso', //Optional: You can use this key if want to show image with alt,
-      cumulo: 71,
+      image: '/assets/slider/pajaro.jpeg',
+      thumbImage: '/assets/slider/pajaro.jpeg',
+      alt: 'Pavón grande',
+      title: 'Pavón grande (Crax rubra)',
+      cumulo: 92,
     },
     {
-      image:
-        'https://media.istockphoto.com/photos/hummingbird-and-flower-picture-id481412413?k=20&m=481412413&s=612x612&w=0&h=2pLZt_Th_xqBNIcV7DWf_IYGYV73ixExm8Sq06T7zFw=',
-      thumbImage:
-        'https://media.istockphoto.com/photos/hummingbird-and-flower-picture-id481412413?k=20&m=481412413&s=612x612&w=0&h=2pLZt_Th_xqBNIcV7DWf_IYGYV73ixExm8Sq06T7zFw=',
-      alt: 'alt of image',
-      title: 'Colibrí 2',
-      cumulo: 98,
+      image: '/assets/slider/cumulo95/RCNX0076.jpeg',
+      thumbImage: '/assets/slider/cumulo95/RCNX0076.jpeg',
+      alt: 'Oso negro',
+      title: 'Oso negro (Ursus americanus)',
+      cumulo: 95,
     },
     {
-      image: 'https://st.depositphotos.com/1292828/2061/i/600/depositphotos_20613993-stock-photo-jaguar-cubs.jpg', // Support base64 image
-      thumbImage: 'https://st.depositphotos.com/1292828/2061/i/600/depositphotos_20613993-stock-photo-jaguar-cubs.jpg', // Support base64 image
-      title: 'Image title', //Optional: You can use this key if want to show image with title
-      alt: 'Image alt', //Optional: You can use this key if want to show image with alt
+      video: 'assets/slider/RCNX0063.mp4',
+      title: 'Jaguar con cría (Panthera onca)',
+      cumulo: 92,
+    },
+    {
+      image: '/assets/slider/RCNX4861.jpeg',
+      thumbImage: '/assets/slider/RCNX4861.jpeg',
+      alt: 'Venado cola blanca',
+      title: 'Venado cola blanca (Odocoileus virginianus)',
+      cumulo: 13,
+    },
+    {
+      video: 'assets/slider/RCNX0009.mp4',
+      title: 'Animalitos',
+      cumulo: 92,
+    },
+    {
+      video: 'assets/slider/cumulo33/jaguar.mp4',
+      title: 'Jaguar(Panthera onca)',
       cumulo: 33,
+    },
+    {
+      video: 'assets/slider/RCNX0024.mp4',
+      title: 'Pecarí de collar (Tayassu pecari)',
+      cumulo: 92,
+    },
+    {
+      video: 'assets/slider/RCNX0078.mp4',
+      title: 'Oso negro (Ursus americanus)',
+      cumulo: 95,
+    },
+    {
+      video: 'assets/slider/cumulo92/tamandua.jpeg',
+      title: 'tamandua',
+      cumulo: 92,
     },
   ];
 
@@ -300,7 +317,9 @@ export class MapaComponent implements OnInit {
     }
 
     const wrapperElement = document.createElement('div');
-    wrapperElement.innerHTML = `<img src="${selectedImage.image}" width=100 style="margin-top: 5px; margin-bottom: 5px" /> <br>`;
+    if (selectedImage.image) {
+      wrapperElement.innerHTML = `<img src="${selectedImage.image}" width=100 style="margin-top: 5px; margin-bottom: 5px" /> <br>`;
+    }
     const buttonElement = document.createElement('button');
     buttonElement.innerHTML = `Ver`;
     buttonElement.addEventListener('click', (e) => {
