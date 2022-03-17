@@ -558,7 +558,7 @@ export class EventosComponent implements OnInit, AfterViewInit {
     const popover = await this.popoverController.create({
       component: TooltipComponent,
       componentProps: {
-        text: 'Fecha de colocación del último nodo visitado',
+        text: 'Fecha de colocación del primer nodo visitado',
       },
       event: ev,
       translucent: true,
