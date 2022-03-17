@@ -94,7 +94,7 @@ export class MapaComponent implements OnInit {
     },
     {
       video: 'assets/slider/RCNX0009.mp4',
-      title: 'Animalitos',
+      title: '',
       cumulo: 92,
     },
     {
