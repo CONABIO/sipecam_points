@@ -94,7 +94,7 @@ export class MapaComponent implements OnInit {
     },
     {
       video: 'assets/slider/RCNX0009.mp4',
-      title: '',
+      title: 'Tepezcuincle (Cuniculus paca)',
       cumulo: 92,
     },
     {
@@ -114,7 +114,7 @@ export class MapaComponent implements OnInit {
     },
     {
       video: 'assets/slider/cumulo92/tamandua.jpeg',
-      title: 'tamandua',
+      title: 'Oso hormiguero (Tamandua mexicana)',
       cumulo: 92,
     },
   ];
