@@ -9,6 +9,10 @@ const routes: Routes = [
       { path: 'entregas', loadChildren: () => import('./entregas/entregas.module').then((m) => m.EntregasModule) },
       { path: 'quienes-somos', loadChildren: () => import('./about/about.module').then((m) => m.AboutModule) },
       { path: 'zendro', loadChildren: () => import('./zendro/zendro.module').then((m) => m.ZendroModule) },
+      {
+        path: 'tablero',
+        loadChildren: () => import('./estadisticas/estadisticas.module').then((m) => m.EstadisticasModule),
+      },
     ],
     false
   ),

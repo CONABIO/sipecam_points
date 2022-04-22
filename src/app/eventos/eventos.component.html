@@ -17,10 +17,14 @@
   <div ion-fixed class="sipecam-background">
     <ion-grid class="ion-padding">
       <ion-row>
+        <ion-col size="2"></ion-col>
         <ion-col>
           <ion-title class="ion-text-center title" color="primary"
             ><span>Cúmulo {{ cumulo?.name }}</span></ion-title
           >
+        </ion-col>
+        <ion-col class="ion-text-right" size="2">
+          <ion-button size="small" fill="outline" routerLink="/tablero/{{ cumuloId }}"> Ver tablero </ion-button>
         </ion-col>
       </ion-row>
 

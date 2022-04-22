@@ -1,0 +1,38 @@
+.chart {
+  width: 100%;
+}
+
+.title {
+  font-size: 30px;
+  font-weight: bolder;
+  margin: 5px 0;
+  position: relative;
+  padding-inline: 0;
+}
+
+.text-bold {
+  font-weight: bolder;
+}
+
+.sipecam-background {
+  min-height: 100%;
+}
+
+#event-map {
+  display: block;
+  width: 100%;
+  height: max(300px, 100%);
+  min-height: 300px;
+}
+
+.hidden {
+  display: none !important;
+}
+
+.calendar-container {
+  font-size: 13px;
+}
+
+input {
+  max-width: 130px;
+}

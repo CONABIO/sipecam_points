@@ -1,0 +1,11 @@
+:host {
+  display: flex;
+  flex: 1;
+  background-color: #ffffff;
+}
+
+.page {
+  width: 100%;
+  height: calc(100% - 60px);
+  background-color: transparent;
+}
