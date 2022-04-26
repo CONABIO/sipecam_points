@@ -153,13 +153,64 @@ Table Deployments as Dep {
 Table Files {
   id uuid
   url varchar
-  metadata json
-  date Date
-  storage varchar
+  id_alfresco int
+  storage varchar //s3 or glacier
   deployment_id int
+  annotations_id int
   updatedAt timestamp
   createdAt timestamp
 }
+
+
+Table Annotations{
+  id uuid
+  annotator_type_id int
+  bbox string
+  model_id int
+  taxon_id int //SNIB, GBIF
+  age int
+  sex string
+  behaviour string
+  number_individuals int
+  updatedAt timestamp
+  createdAt timestamp
+  observations string
+  annotationclass string //imagen completa, bbox, máscara de segmentación
+
+}
+
+
+Table ModelData{
+  id uuid
+  version string
+  quality string
+  certainty string
+  accuracy float8
+  taxonomy_id int
+  createdAt timestamp
+}
+
+
+Table Taxonomy{
+  id uuid
+  kingdom string
+  phylum string
+  class string
+  order string
+  family string
+  genus string
+  species string
+  subspecies string
+  anthropophony string
+  geophony string
+}
+
+Table Annotator_type{
+  id uuid
+  type string //curador, user, model
+  type_annotation string //especimen, huella, restos, excretas
+}
+
 
 Table Individual as Ind {
   id int [pk, increment] // auto-increment
@@ -235,6 +286,11 @@ Ref: N.(ecosystem_id) > E.(id)
 Ref: C.(criteria_id) > CC.(id)
 
 // Relaciones Uno a Muchos
+Ref: "Files"."annotations_id" < "Annotations"."id"
+Ref: "Annotations"."model_id" < "ModelData"."id"
+Ref: "ModelData"."taxonomy_id" < "Taxonomy"."id"
+Ref: "Annotations"."annotator_type_id" < "Annotator_type"."id"
+
 Ref: Pacu.(user_id) < U.(id)
 Ref: Pacu.(cumulus_id) < C.(id)
 Ref: V.(user_id) < U.(id)
@@ -245,7 +301,6 @@ Ref: C.(id) < D.(cumulus_id)
 
 
 Ref: "Physical_Devices"."id" < "Deployments"."device_id"
-
 
 Ref: "Role_to_User"."user_id" < "Users"."id"
 
