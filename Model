@@ -166,30 +166,39 @@ Table Annotations{
   id uuid
   annotator_type_id int
   bbox string
+  bbox_geometry polygon
+  frequency_min float8
+  frequency_max float8
+  time_min float8
+  time_max float8
   model_id int
   taxon_id int //SNIB, GBIF
   age int
   sex string
   behaviour string
   number_individuals int
+  has_fauna boolean
   updatedAt timestamp
   createdAt timestamp
   observations string
   annotationclass string //imagen completa, bbox, máscara de segmentación
-
 }
 
+Table Annotator_type{
+  id uuid
+  type string //curador, user, model
+  type_annotation string //especimen, huella, restos, excretas
+}
 
 Table ModelData{
   id uuid
   version string
-  quality string
-  certainty string
-  accuracy float8
+  quality string //Calidad del contenido del artículo dentro de la anotación
+  certainty string //Nivel de certeza de ubicación o etiquetado de anotación
+  accuracy float8 //resultado de modelo
   taxonomy_id int
   createdAt timestamp
 }
-
 
 Table Taxonomy{
   id uuid
@@ -203,12 +212,6 @@ Table Taxonomy{
   subspecies string
   anthropophony string
   geophony string
-}
-
-Table Annotator_type{
-  id uuid
-  type string //curador, user, model
-  type_annotation string //especimen, huella, restos, excretas
 }
 
 
