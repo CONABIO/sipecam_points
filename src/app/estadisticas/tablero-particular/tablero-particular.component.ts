@@ -1,44 +1,12 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
+
+import * as _ from 'lodash';
+
 import { Apollo } from 'apollo-angular';
-import { getVisits } from '@api/eventos';
+import { getVisits, getDevices } from '@api/tableros';
 import { getOneCumulus } from '@api/mapa';
 import { AlertController } from '@ionic/angular';
-
-export interface Visit {
-  id: string;
-  comments: string;
-  date_sipecam_first_season: string;
-  date_sipecam_second_season: string;
-  date_first_season: string;
-  date_second_season: string;
-  report_first_season: string;
-  report_second_season: string;
-  cumulus_id: number;
-  pristine_id: number;
-  disturbed_id: number;
-  monitor_ids: number[];
-  cumulus_visit: {
-    id: string;
-    name: string;
-  };
-  unique_node_pristine: {
-    id: string;
-    nomenclatura: string;
-    location: any;
-    cat_integr: string;
-    cumulus_id: number;
-    ecosystem_id: number;
-  };
-  unique_node_disturbed: {
-    id: string;
-    nomenclatura: string;
-    location: any;
-    cat_integr: string;
-    cumulus_id: number;
-    ecosystem_id: number;
-  };
-}
 
 @Component({
   selector: 'app-tablero-particular',
@@ -49,7 +17,7 @@ export class TableroParticularComponent implements OnInit {
   cumulo: any = null;
   cumuloId: string = null;
 
-  visits: Visit[] = [];
+  visits: any = [];
 
   activeSection = 'visits';
 
@@ -97,12 +65,12 @@ export class TableroParticularComponent implements OnInit {
   };
 
   devicesChart = {
-    series: [0, 167, 3, 0],
+    series: [],
     chart: {
       height: 250,
       type: 'pie',
     },
-    labels: ['Inactivo', 'Activo', 'Descompostura', 'Robo'],
+    labels: [],
     responsive: [
       {
         breakpoint: 480,
@@ -166,9 +134,44 @@ export class TableroParticularComponent implements OnInit {
         })
         .toPromise();
       console.log('visits', visits);
-      this.visits = visits
-        .filter((v) => v.date_sipecam_first_season)
-        .sort((a, b) => a.date_sipecam_first_season?.localeCompare(b.date_sipecam_first_season));
+    } catch (error) {
+      console.log(error);
+    }
+  }
+
+  async getDevices() {
+    try {
+      const {
+        data: { physical_devices },
+      }: any = await this.apollo
+        .query({
+          query: getDevices,
+          variables: {
+            search: {
+              field: 'cumulus_id',
+              value: this.cumuloId,
+              operator: 'eq',
+            },
+            pagination: {
+              limit: 1000,
+              offset: 0,
+            },
+          },
+        })
+        .toPromise();
+      const devicesType = _.groupBy(physical_devices, (v) => v.device.type.toLowerCase());
+
+      const typeLabels = [];
+      const typeSeries = [];
+      Object.keys(devicesType).forEach((key) => {
+        typeLabels.push(key);
+        typeSeries.push(devicesType[key].length);
+      });
+
+      this.devicesChart.labels = typeLabels;
+      this.devicesChart.series = typeSeries;
+
+      console.log('dev', devicesType);
     } catch (error) {
       console.log(error);
     }
@@ -177,5 +180,6 @@ export class TableroParticularComponent implements OnInit {
   async ngOnInit() {
     await this.getCumulo();
     await this.getVisits();
+    await this.getDevices();
   }
 }

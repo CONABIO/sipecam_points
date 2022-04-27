@@ -12,6 +12,8 @@ export const getVisits = gql`
       }
       date_first_season
       date_second_season
+      report_first_season
+      report_second_season
     }
   }
 `;
