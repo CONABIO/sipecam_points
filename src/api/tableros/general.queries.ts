@@ -33,3 +33,37 @@ export const getDevices = gql`
     }
   }
 `;
+
+/**
+ *
+ * Pequeños mamiferos
+ */
+export const getIndividuals = gql`
+  query individuals($search: searchIndividualInput, $order: [orderIndividualInput], $pagination: paginationInput!) {
+    individuals(search: $search, order: $order, pagination: $pagination) {
+      associated_cumulus {
+        id
+        name
+      }
+    }
+  }
+`;
+
+/**
+ * Dispositivos desplegados
+ */
+export const getDeployments = gql`
+  query deployments($search: searchDeploymentInput, $order: [orderDeploymentInput], $pagination: paginationInput!) {
+    deployments(search: $search, order: $order, pagination: $pagination) {
+      cumulus {
+        id
+        name
+      }
+      device {
+        device {
+          type
+        }
+      }
+    }
+  }
+`;

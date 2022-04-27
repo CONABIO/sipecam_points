@@ -17,7 +17,7 @@ import {
 } from 'ng-apexcharts';
 
 import { Apollo } from 'apollo-angular';
-import { getDevices, getVisits } from '@api/tableros';
+import { getDevices, getVisits, getDeployments, getIndividuals } from '@api/tableros';
 import { getEcosystems } from '@api/mapa';
 import { AlertController } from '@ionic/angular';
 
@@ -61,31 +61,32 @@ export class TableroGeneralComponent implements OnInit {
 
   formulariosChart: Partial<ChartOptions> = {
     series: [
-      {
+      /*{
         name: 'ERIE',
-        data: [44, 55, 57, 56, 61, 58, 63, 60, 66],
-      },
+        data: [],
+      },*/
       {
         name: 'Cámaras Trampa',
-        data: [76, 85, 101, 98, 87, 105, 91, 114, 94],
+        data: [],
       },
       {
         name: 'Grabadoras',
-        data: [35, 41, 36, 26, 45, 48, 52, 53, 41],
+        data: [],
       },
       {
         name: 'Peq. Mamíferos',
-        data: [35, 41, 36, 26, 45, 48, 52, 53, 41],
+        data: [],
       },
     ],
     chart: {
       type: 'bar',
       height: 350,
+      toolbar: { show: false },
     },
     plotOptions: {
       bar: {
         horizontal: false,
-        columnWidth: '55%',
+        columnWidth: '70%',
       },
     },
     dataLabels: {
@@ -97,11 +98,14 @@ export class TableroGeneralComponent implements OnInit {
       colors: ['transparent'],
     },
     xaxis: {
-      categories: ['Cúm 1', 'Cúm 2', 'Cúm 3', 'Cúm 4', 'Cúm 5', 'Cúm 6', 'Cúm 7', 'Cúm 8', 'Cúm 9'],
+      labels: {
+        rotate: -90,
+      },
+      categories: [],
     },
     yaxis: {
       title: {
-        text: 'Cantidad',
+        text: 'Formularios entregados',
       },
     },
     fill: {
@@ -110,7 +114,7 @@ export class TableroGeneralComponent implements OnInit {
     tooltip: {
       y: {
         formatter: function (val) {
-          return val + ' elementos';
+          return val + ' formularios';
         },
       },
     },
@@ -245,11 +249,9 @@ export class TableroGeneralComponent implements OnInit {
         })
         .toPromise();
       this.visits = _.groupBy(visits, (v) => v.cumulus_visit.name);
-      console.log('visits2', this.visits);
       const categories = [];
       const data = [];
       Object.keys(this.visits).forEach((cumulo) => {
-        console.log('cumulo', cumulo);
         categories.push(`Cúm ${cumulo}`);
         const num = this.visits[cumulo]
           .map((visit) => (visit.date_second_season ? 2 : 1))
@@ -261,11 +263,10 @@ export class TableroGeneralComponent implements OnInit {
         categories: categories,
         labels: {
           style: {
-            fontSize: '12px',
+            fontSize: '9px',
           },
         },
       };
-      console.log('series', this.visitasChart);
     } catch (error) {
       console.log(error);
     }
@@ -315,6 +316,92 @@ export class TableroGeneralComponent implements OnInit {
     }
   }
 
+  async getFormularios() {
+    // pequeños mamiferos
+    try {
+      const {
+        data: { individuals },
+      }: any = await this.apollo
+        .query({
+          query: getIndividuals,
+          variables: {
+            pagination: {
+              limit: 5000,
+              offset: 0,
+            },
+          },
+        })
+        .toPromise();
+      const individualsGroup = _.groupBy(individuals, (i) => i.associated_cumulus.name);
+
+      console.log('individuals', individualsGroup);
+
+      // dispositivos
+      const {
+        data: { deployments },
+      }: any = await this.apollo
+        .query({
+          query: getDeployments,
+          variables: {
+            pagination: {
+              limit: 5000,
+              offset: 0,
+            },
+          },
+        })
+        .toPromise();
+      const deploymentsGroup = _.groupBy(deployments, (d) => d.cumulus.name);
+
+      console.log('deployments', deploymentsGroup);
+
+      // join all
+      let byCumulo = {};
+
+      Object.keys(individualsGroup).forEach((i) => {
+        if (!!!byCumulo[i]) {
+          byCumulo[i] = {};
+        }
+        byCumulo[i].mamiferos = individualsGroup[i].length;
+      });
+      Object.keys(deploymentsGroup).forEach((d) => {
+        if (!!!byCumulo[d]) {
+          byCumulo[d] = {};
+        }
+        byCumulo[d].camaras = deploymentsGroup[d].filter(
+          (deployment) => deployment.device.device.type.toLowerCase() === 'camara'
+        ).length;
+        byCumulo[d].grabadoras = deploymentsGroup[d].filter(
+          (deployment) => deployment.device.device.type.toLowerCase() === 'grabadora'
+        ).length;
+      });
+
+      const categories = [];
+      const camaras = [];
+      const grabadoras = [];
+      const mamiferos = [];
+
+      Object.keys(byCumulo).forEach((cumulo) => {
+        categories.push(`Cúm ${cumulo}`);
+        camaras.push(byCumulo[cumulo].camaras ?? 0);
+        grabadoras.push(byCumulo[cumulo].grabadoras ?? 0);
+        mamiferos.push(byCumulo[cumulo].mamiferos ?? 0);
+      });
+
+      this.formulariosChart.xaxis = {
+        labels: {
+          rotate: -90,
+        },
+        categories: categories,
+      };
+      this.formulariosChart.series[0].data = camaras;
+      this.formulariosChart.series[1].data = grabadoras;
+      this.formulariosChart.series[2].data = mamiferos;
+      console.log('formularios', this.formulariosChart);
+    } catch (error) {
+      console.log(error);
+    }
+  }
+
   async getEcosystems() {
     try {
       const { data }: any = await this.apollo
@@ -338,5 +425,6 @@ export class TableroGeneralComponent implements OnInit {
     await this.getEcosystems();
     await this.getVisits();
     await this.getDevices();
+    await this.getFormularios();
   }
 }
