@@ -1,0 +1,54 @@
+<ion-header>
+  <ion-toolbar color="dark">
+    <ion-buttons slot="start">
+      <ion-menu-button></ion-menu-button>
+    </ion-buttons>
+    <ion-title>Tablero - Cúmulo {{ cumulo?.name }}</ion-title>
+  </ion-toolbar>
+  <ion-toolbar>
+    <ion-segment (ionChange)="segmentChanged($event)" value="visits">
+      <ion-segment-button value="visits"> Visitas </ion-segment-button>
+    </ion-segment>
+  </ion-toolbar>
+</ion-header>
+<ion-content [ngClass]="{ hidden: activeSection !== 'visits' }" class="calendar-container">
+  <div ion-fixed>
+    <ion-grid class="ion-padding">
+      <ion-row>
+        <ion-col>
+          <ion-title class="ion-text-center" color="primary">Información general</ion-title>
+          <ion-row class="ion-margin">
+            <apx-chart
+              class="chart"
+              [series]="generalChart.series"
+              [chart]="generalChart.chart"
+              [dataLabels]="generalChart.dataLabels"
+              [plotOptions]="generalChart.plotOptions"
+              [yaxis]="generalChart.yaxis"
+              [xaxis]="generalChart.xaxis"
+              [legend]="generalChart.legend"
+              [colors]="generalChart.colors"
+            ></apx-chart>
+          </ion-row>
+        </ion-col>
+        <ion-col>
+          <ion-title class="ion-text-center" color="primary">Dispositivos</ion-title>
+          <ion-row class="ion-margin">
+            <apx-chart
+              class="chart"
+              [series]="devicesChart.series"
+              [chart]="devicesChart.chart"
+              [labels]="devicesChart.labels"
+            ></apx-chart>
+          </ion-row>
+        </ion-col>
+      </ion-row>
+
+      <ion-row class="ion-justify-content-center">
+        <ion-col size-xs="12" size-md="4" class="ion-padding">
+          <div id="event-map"></div>
+        </ion-col>
+      </ion-row>
+    </ion-grid>
+  </div>
+</ion-content>

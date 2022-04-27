@@ -19,4 +19,8 @@ export const environment = {
     style: 'mapbox://styles/ntrinidad-conabio/ckcl6xwth0dky1io6f6t6sb26',
   },
   zendroUrl: 'https://zendro.sipecamdata.conabio.gob.mx/',
+  alfresco: {
+    apiKey: env.alfresco_apikey,
+    url: 'https://api.conabio.gob.mx/test/search/',
+  },
 };

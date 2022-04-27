@@ -1,0 +1,133 @@
+<ion-header>
+  <ion-toolbar color="dark">
+    <ion-buttons slot="start">
+      <ion-menu-button></ion-menu-button>
+    </ion-buttons>
+    <ion-title><span translate>Tablero General</span></ion-title>
+  </ion-toolbar>
+  <ion-toolbar>
+    <ion-segment (ionChange)="segmentChanged($event)" value="visits">
+      <ion-segment-button value="progress"> Indicadores de avance </ion-segment-button>
+    </ion-segment>
+  </ion-toolbar>
+</ion-header>
+<!--<ion-content [ngClass]="{ hidden: activeSection !== 'visits' }" class="calendar-container">
+  <div ion-fixed>
+    <ion-grid class="ion-padding">
+      <ion-row>
+        <ion-col>
+          <ion-title class="ion-text-center title" color="primary"></ion-title>
+        </ion-col>
+      </ion-row>
+
+      <ion-row class="ion-justify-content-center">
+        <ion-col size-xs="12" size-md="4" class="ion-padding">
+          <div id="event-map"></div>
+        </ion-col>
+      </ion-row>
+    </ion-grid>
+  </div>
+</ion-content>-->
+
+<ion-content [ngClass]="{ hidden: activeSection !== 'progress' }">
+  <div ion-fixed>
+    <ion-grid class="ion-padding">
+      <ion-row>
+        <ion-col size="6">
+          <ion-item>
+            <ion-label>Ecosistema: </ion-label>
+            <ion-select placeholder="Selecciona" interface="popover" [(ngModel)]="currentEcosystem">
+              <ion-select-option value="todos">Todos</ion-select-option>
+              <ion-select-option class="ion-text-wrap" *ngFor="let e of ecosystems" [value]="e.id">{{
+                e.name
+              }}</ion-select-option>
+            </ion-select>
+          </ion-item>
+        </ion-col>
+      </ion-row>
+      <ion-row>
+        <ion-col>
+          <ion-title class="ion-text-center" color="primary">
+            <span>Visitas Registradas</span>
+          </ion-title>
+          <ion-row class="ion-margin">
+            <apx-chart
+              class="chart"
+              [series]="visitasChart.series"
+              [chart]="visitasChart.chart"
+              [dataLabels]="visitasChart.dataLabels"
+              [plotOptions]="visitasChart.plotOptions"
+              [yaxis]="visitasChart.yaxis"
+              [xaxis]="visitasChart.xaxis"
+              [legend]="visitasChart.legend"
+              [fill]="visitasChart.fill"
+              [colors]="['#0090FA']"
+            ></apx-chart>
+          </ion-row>
+        </ion-col>
+      </ion-row>
+
+      <ion-row>
+        <ion-col>
+          <ion-title class="ion-text-center" color="primary">Dispostivos totales</ion-title>
+          <ion-row class="ion-margin">
+            <apx-chart
+              class="chart"
+              [series]="devicesTypeChart.series"
+              [chart]="devicesTypeChart.chart"
+              [labels]="devicesTypeChart.labels"
+            ></apx-chart>
+          </ion-row>
+        </ion-col>
+        <ion-col>
+          <ion-title class="ion-text-center" color="primary">Estado de los dispositivos</ion-title>
+          <ion-row class="ion-margin">
+            <apx-chart
+              class="chart"
+              [series]="devicesStatusChart.series"
+              [chart]="devicesStatusChart.chart"
+              [labels]="devicesStatusChart.labels"
+            ></apx-chart>
+          </ion-row>
+        </ion-col>
+      </ion-row>
+
+      <ion-row>
+        <ion-col>
+          <ion-title class="ion-text-center" color="primary">
+            <span>Formularios</span>
+          </ion-title>
+          <ion-row class="ion-margin">
+            <apx-chart
+              class="chart"
+              [series]="formulariosChart.series"
+              [chart]="formulariosChart.chart"
+              [dataLabels]="formulariosChart.dataLabels"
+              [plotOptions]="formulariosChart.plotOptions"
+              [yaxis]="formulariosChart.yaxis"
+              [legend]="formulariosChart.legend"
+              [fill]="formulariosChart.fill"
+              [stroke]="formulariosChart.stroke"
+              [tooltip]="formulariosChart.tooltip"
+              [xaxis]="formulariosChart.xaxis"
+            ></apx-chart>
+          </ion-row>
+        </ion-col>
+      </ion-row>
+    </ion-grid>
+  </div>
+</ion-content>
+
+<!--<ion-content *ngIf="activeSection === 'deliveries'">
+  <div ion-fixed>
+    <ion-grid class="ion-padding">
+      <ion-row>
+        <ion-col>
+          <ion-title class="ion-text-center title" color="primary">
+            <span>Entregas</span>
+          </ion-title>
+        </ion-col>
+      </ion-row>
+    </ion-grid>
+  </div>
+</ion-content>-->
