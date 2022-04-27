@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 
+import * as _ from 'lodash';
 import {
   ApexAxisChartSeries,
   ApexChart,
@@ -16,42 +17,17 @@ import {
 } from 'ng-apexcharts';
 
 import { Apollo } from 'apollo-angular';
-import { getVisits } from '@api/eventos';
+import { getDevices, getVisits } from '@api/tableros';
 import { getEcosystems } from '@api/mapa';
 import { AlertController } from '@ionic/angular';
 
 export interface Visit {
-  id: string;
-  comments: string;
-  date_sipecam_first_season: string;
   date_sipecam_second_season: string;
   date_first_season: string;
   date_second_season: string;
-  report_first_season: string;
-  report_second_season: string;
-  cumulus_id: number;
-  pristine_id: number;
-  disturbed_id: number;
-  monitor_ids: number[];
   cumulus_visit: {
     id: string;
     name: string;
-  };
-  unique_node_pristine: {
-    id: string;
-    nomenclatura: string;
-    location: any;
-    cat_integr: string;
-    cumulus_id: number;
-    ecosystem_id: number;
-  };
-  unique_node_disturbed: {
-    id: string;
-    nomenclatura: string;
-    location: any;
-    cat_integr: string;
-    cumulus_id: number;
-    ecosystem_id: number;
   };
 }
 
@@ -77,16 +53,16 @@ export class TableroGeneralComponent implements OnInit {
   cumulo: any = null;
   cumuloId: string = null;
 
-  visits: Visit[] = [];
-  activeSection = 'visits';
+  visits: any = null;
+  activeSection = 'progress';
 
   ecosystems: any = [];
-  currentEcosystem: any = null;
+  currentEcosystem: any = 'todos';
 
   formulariosChart: Partial<ChartOptions> = {
     series: [
       {
-        name: 'EBIE',
+        name: 'ERIE',
         data: [44, 55, 57, 56, 61, 58, 63, 60, 66],
       },
       {
@@ -140,6 +116,106 @@ export class TableroGeneralComponent implements OnInit {
     },
   };
 
+  visitasChart: Partial<ChartOptions> = {
+    series: [
+      {
+        name: 'visitas',
+        data: [],
+      },
+    ],
+    chart: {
+      height: 250,
+      type: 'bar',
+      toolbar: { show: false },
+    },
+    plotOptions: {
+      bar: {
+        columnWidth: '45%',
+        distributed: true,
+      },
+    },
+    dataLabels: {
+      enabled: false,
+    },
+    legend: {
+      show: false,
+    },
+    stroke: {
+      width: 2,
+    },
+    xaxis: {
+      categories: [],
+      labels: {
+        rotate: -45,
+        style: {
+          fontSize: '12px',
+        },
+      },
+    },
+    yaxis: {
+      seriesName: 'visitas',
+      min: 0,
+      forceNiceScale: true,
+    },
+    fill: {
+      type: 'gradient',
+      gradient: {
+        shade: 'light',
+        type: 'horizontal',
+        shadeIntensity: 0.25,
+        gradientToColors: undefined,
+        inverseColors: true,
+        opacityFrom: 0.85,
+        opacityTo: 0.85,
+        stops: [50, 0, 100],
+      },
+    },
+  };
+
+  devicesStatusChart = {
+    series: [0, 0, 0, 0],
+    chart: {
+      height: 250,
+      type: 'pie',
+    },
+    labels: ['Inactivo', 'Activo', 'Descompostura', 'Robo'],
+    responsive: [
+      {
+        breakpoint: 480,
+        options: {
+          chart: {
+            width: 200,
+          },
+          legend: {
+            position: 'bottom',
+          },
+        },
+      },
+    ],
+  };
+
+  devicesTypeChart = {
+    series: [],
+    chart: {
+      height: 250,
+      type: 'pie',
+    },
+    labels: [],
+    responsive: [
+      {
+        breakpoint: 480,
+        options: {
+          chart: {
+            width: 200,
+          },
+          legend: {
+            position: 'bottom',
+          },
+        },
+      },
+    ],
+  };
+
   constructor(private alertController: AlertController, private apollo: Apollo, private route: ActivatedRoute) {
     this.cumuloId = this.route.snapshot.paramMap.get('id') || null;
   }
@@ -157,21 +233,83 @@ export class TableroGeneralComponent implements OnInit {
           query: getVisits,
           variables: {
             search: {
-              field: 'cumulus_id',
-              value: this.cumuloId,
-              operator: 'eq',
+              field: 'date_first_season',
+              value: null,
+              operator: 'ne',
             },
             pagination: {
-              limit: 100,
+              limit: 1000,
               offset: 0,
             },
           },
         })
         .toPromise();
-      console.log('visits', visits);
-      this.visits = visits
-        .filter((v) => v.date_sipecam_first_season)
-        .sort((a, b) => a.date_sipecam_first_season?.localeCompare(b.date_sipecam_first_season));
+      this.visits = _.groupBy(visits, (v) => v.cumulus_visit.name);
+      console.log('visits2', this.visits);
+      const categories = [];
+      const data = [];
+      Object.keys(this.visits).forEach((cumulo) => {
+        console.log('cumulo', cumulo);
+        categories.push(`Cúm ${cumulo}`);
+        const num = this.visits[cumulo]
+          .map((visit) => (visit.date_second_season ? 2 : 1))
+          .reduce((previous, current) => previous + current, 0);
+        data.push(num);
+      });
+      this.visitasChart.series[0].data = data;
+      this.visitasChart.xaxis = {
+        categories: categories,
+        labels: {
+          style: {
+            fontSize: '12px',
+          },
+        },
+      };
+      console.log('series', this.visitasChart);
+    } catch (error) {
+      console.log(error);
+    }
+  }
+
+  async getDevices() {
+    try {
+      const {
+        data: { physical_devices },
+      }: any = await this.apollo
+        .query({
+          query: getDevices,
+          variables: {
+            pagination: {
+              limit: 5000,
+              offset: 0,
+            },
+          },
+        })
+        .toPromise();
+      const devicesType = _.groupBy(physical_devices, (v) => v.device.type.toLowerCase());
+
+      const typeLabels = [];
+      const typeSeries = [];
+      Object.keys(devicesType).forEach((key) => {
+        typeLabels.push(key);
+        typeSeries.push(devicesType[key].length);
+      });
+
+      this.devicesTypeChart.labels = typeLabels;
+      this.devicesTypeChart.series = typeSeries;
+
+      const devicesStatus = _.groupBy(physical_devices, (v) => v.status.toLowerCase());
+      const statusLabels = [];
+      const statusSeries = [];
+      Object.keys(devicesStatus).forEach((key) => {
+        statusLabels.push(key);
+        statusSeries.push(devicesStatus[key].length);
+      });
+
+      this.devicesStatusChart.labels = statusLabels;
+      this.devicesStatusChart.series = statusSeries;
+
+      console.log('dev', devicesType, devicesStatus);
     } catch (error) {
       console.log(error);
     }
@@ -199,5 +337,6 @@ export class TableroGeneralComponent implements OnInit {
   async ngOnInit() {
     await this.getEcosystems();
     await this.getVisits();
+    await this.getDevices();
   }
 }
