@@ -36,7 +36,7 @@
         <ion-col size="6">
           <ion-item>
             <ion-label>Ecosistema: </ion-label>
-            <ion-select placeholder="Selecciona" interface="popover" [(ngModel)]="currentEcosystem">
+            <ion-select placeholder="Selecciona" interface="popover" [(ngModel)]="currentEcosystem" disabled>
               <ion-select-option value="todos">Todos</ion-select-option>
               <ion-select-option class="ion-text-wrap" *ngFor="let e of ecosystems" [value]="e.id">{{
                 e.name
