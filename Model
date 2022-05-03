@@ -109,6 +109,7 @@ Table Physical_Devices as D {
   id int [pk, increment] // auto-increment
   serial_number varchar
   comments varchar
+  previous_cumulus_ids varchar
   device_id int
   cumulus_id int
   updatedAt timestamp
