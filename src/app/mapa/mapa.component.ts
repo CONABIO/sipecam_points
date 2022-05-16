@@ -103,16 +103,6 @@ export class MapaComponent implements OnInit {
       cumulo: 33,
     },
     {
-      video: 'assets/slider/RCNX0024.mp4',
-      title: 'Pecarí de collar (Tayassu pecari)',
-      cumulo: 92,
-    },
-    {
-      video: 'assets/slider/RCNX0078.mp4',
-      title: 'Oso negro (Ursus americanus)',
-      cumulo: 95,
-    },
-    {
       video: 'assets/slider/cumulo92/tamandua.jpeg',
       title: 'Oso hormiguero (Tamandua mexicana)',
       cumulo: 92,
