@@ -69,7 +69,7 @@
 
       <ion-row>
         <ion-col>
-          <ion-title class="ion-text-center" color="primary">Dispostivos totales</ion-title>
+          <ion-title class="ion-text-center" color="primary">Dispostivos adquiridos</ion-title>
           <ion-row class="ion-margin">
             <apx-chart
               class="chart"
@@ -79,6 +79,20 @@
             ></apx-chart>
           </ion-row>
         </ion-col>
+        <ion-col>
+          <ion-title class="ion-text-center" color="primary">Estado de los dispositivos en el campo</ion-title>
+          <ion-row class="ion-margin">
+            <apx-chart
+              class="chart"
+              [series]="activeDevicesChart.series"
+              [chart]="activeDevicesChart.chart"
+              [labels]="activeDevicesChart.labels"
+            ></apx-chart>
+          </ion-row>
+        </ion-col>
+      </ion-row>
+
+      <ion-row>
         <ion-col>
           <ion-title class="ion-text-center" color="primary">Estado de los dispositivos</ion-title>
           <ion-row class="ion-margin">

@@ -220,6 +220,28 @@ export class TableroGeneralComponent implements OnInit {
     ],
   };
 
+  activeDevicesChart = {
+    series: [],
+    chart: {
+      height: 250,
+      type: 'pie',
+    },
+    labels: [],
+    responsive: [
+      {
+        breakpoint: 480,
+        options: {
+          chart: {
+            width: 200,
+          },
+          legend: {
+            position: 'bottom',
+          },
+        },
+      },
+    ],
+  };
+
   constructor(private alertController: AlertController, private apollo: Apollo, private route: ActivatedRoute) {
     this.cumuloId = this.route.snapshot.paramMap.get('id') || null;
   }
@@ -295,7 +317,7 @@ export class TableroGeneralComponent implements OnInit {
         typeLabels.push(key);
         typeSeries.push(devicesType[key].length);
       });
-
+      console.log('charts', devicesType);
       this.devicesTypeChart.labels = typeLabels;
       this.devicesTypeChart.series = typeSeries;
 
@@ -303,12 +325,28 @@ export class TableroGeneralComponent implements OnInit {
       const statusLabels = [];
       const statusSeries = [];
       Object.keys(devicesStatus).forEach((key) => {
-        statusLabels.push(key);
-        statusSeries.push(devicesStatus[key].length);
+        const current: any = _.groupBy(devicesStatus[key], (v) => v.device.type.toLowerCase());
+        Object.keys(current).forEach((item) => {
+          statusLabels.push(`${item} ${key}`);
+          statusSeries.push(current[item].length);
+        });
       });
-
+      console.log('****', this.devicesStatusChart);
       this.devicesStatusChart.labels = statusLabels;
       this.devicesStatusChart.series = statusSeries;
+
+      //active devices
+      const activeDevices = _.groupBy(devicesStatus.activo, (v) => v.device.type.toLowerCase());
+      console.log('*****active', activeDevices);
+      const activeLabels = [];
+      const activeSeries = [];
+      Object.keys(activeDevices).forEach((key) => {
+        activeLabels.push(key);
+        activeSeries.push(activeDevices[key].length);
+      });
+
+      this.activeDevicesChart.labels = activeLabels;
+      this.activeDevicesChart.series = activeSeries;
 
       console.log('dev', devicesType, devicesStatus);
     } catch (error) {
