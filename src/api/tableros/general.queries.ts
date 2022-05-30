@@ -69,3 +69,17 @@ export const getDeployments = gql`
     }
   }
 `;
+
+/**
+ * Visitas
+ */
+export const getTransects = gql`
+  query transects($search: searchTransectInput, $order: [orderTransectInput], $pagination: paginationInput!) {
+    transects(search: $search, order: $order, pagination: $pagination) {
+      associated_node {
+        id
+        nomenclatura
+      }
+    }
+  }
+`;

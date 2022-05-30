@@ -17,7 +17,7 @@ import {
 } from 'ng-apexcharts';
 
 import { Apollo } from 'apollo-angular';
-import { getDevices, getVisits, getDeployments, getIndividuals } from '@api/tableros';
+import { getDevices, getVisits, getDeployments, getIndividuals, getTransects } from '@api/tableros';
 import { getEcosystems } from '@api/mapa';
 import { AlertController } from '@ionic/angular';
 
@@ -61,10 +61,6 @@ export class TableroGeneralComponent implements OnInit {
 
   formulariosChart: Partial<ChartOptions> = {
     series: [
-      /*{
-        name: 'ERIE',
-        data: [],
-      },*/
       {
         name: 'Cámaras Trampa',
         data: [],
@@ -75,6 +71,10 @@ export class TableroGeneralComponent implements OnInit {
       },
       {
         name: 'Peq. Mamíferos',
+        data: [],
+      },
+      {
+        name: 'ERIE',
         data: [],
       },
     ],
@@ -123,7 +123,11 @@ export class TableroGeneralComponent implements OnInit {
   visitasChart: Partial<ChartOptions> = {
     series: [
       {
-        name: 'visitas',
+        name: 'Visitas',
+        data: [],
+      },
+      {
+        name: 'Reportes',
         data: [],
       },
     ],
@@ -142,10 +146,11 @@ export class TableroGeneralComponent implements OnInit {
       enabled: false,
     },
     legend: {
-      show: false,
+      show: true,
     },
     stroke: {
       width: 2,
+      show: true,
     },
     xaxis: {
       categories: [],
@@ -157,11 +162,11 @@ export class TableroGeneralComponent implements OnInit {
       },
     },
     yaxis: {
-      seriesName: 'visitas',
+      seriesName: 'Visitas y Reportes',
       min: 0,
       forceNiceScale: true,
     },
-    fill: {
+    /*fill: {
       type: 'gradient',
       gradient: {
         shade: 'light',
@@ -171,9 +176,9 @@ export class TableroGeneralComponent implements OnInit {
         inverseColors: true,
         opacityFrom: 0.85,
         opacityTo: 0.85,
-        stops: [50, 0, 100],
+        stops: [100],
       },
-    },
+    },*/
   };
 
   devicesStatusChart = {
@@ -272,15 +277,31 @@ export class TableroGeneralComponent implements OnInit {
         .toPromise();
       this.visits = _.groupBy(visits, (v) => v.cumulus_visit.name);
       const categories = [];
-      const data = [];
+      const dataVisits = [];
+      const dataReports = [];
       Object.keys(this.visits).forEach((cumulo) => {
         categories.push(`Cúm ${cumulo}`);
-        const num = this.visits[cumulo]
+        const numVisits = this.visits[cumulo]
           .map((visit) => (visit.date_second_season ? 2 : 1))
           .reduce((previous, current) => previous + current, 0);
-        data.push(num);
+        dataVisits.push(numVisits);
+
+        const numReports = this.visits[cumulo]
+          .map((visit) => {
+            let rep = 0;
+            if (visit.report_first_season) {
+              rep = rep + 1;
+            }
+            if (visit.report_second_season) {
+              rep = rep + 1;
+            }
+            return rep;
+          })
+          .reduce((previous, current) => previous + current, 0);
+        dataReports.push(numReports);
       });
-      this.visitasChart.series[0].data = data;
+      this.visitasChart.series[0].data = dataVisits;
+      this.visitasChart.series[1].data = dataReports;
       this.visitasChart.xaxis = {
         categories: categories,
         labels: {
@@ -390,7 +411,26 @@ export class TableroGeneralComponent implements OnInit {
         .toPromise();
       const deploymentsGroup = _.groupBy(deployments, (d) => d.cumulus.name);
 
+      const {
+        data: { transects },
+      }: any = await this.apollo
+        .query({
+          query: getTransects,
+          variables: {
+            pagination: {
+              limit: 1000,
+              offset: 0,
+            },
+          },
+        })
+        .toPromise();
+
       console.log('deployments', deploymentsGroup);
+
+      const transectsGroup = _.groupBy(transects, (t) => {
+        const cumulo = t.associated_node ? t.associated_node.nomenclatura.split('_')[1] : -1;
+        return cumulo;
+      });
 
       // join all
       let byCumulo = {};
@@ -412,17 +452,25 @@ export class TableroGeneralComponent implements OnInit {
           (deployment) => deployment.device.device.type.toLowerCase() === 'grabadora'
         ).length;
       });
+      Object.keys(transectsGroup).forEach((i) => {
+        if (!!!byCumulo[i]) {
+          byCumulo[i] = {};
+        }
+        byCumulo[i].transectos = transectsGroup[i].length;
+      });
 
       const categories = [];
       const camaras = [];
       const grabadoras = [];
       const mamiferos = [];
+      const transectos = [];
 
       Object.keys(byCumulo).forEach((cumulo) => {
         categories.push(`Cúm ${cumulo}`);
         camaras.push(byCumulo[cumulo].camaras ?? 0);
         grabadoras.push(byCumulo[cumulo].grabadoras ?? 0);
         mamiferos.push(byCumulo[cumulo].mamiferos ?? 0);
+        transectos.push(byCumulo[cumulo].transectos ?? 0);
       });
 
       this.formulariosChart.xaxis = {
@@ -434,6 +482,7 @@ export class TableroGeneralComponent implements OnInit {
       this.formulariosChart.series[0].data = camaras;
       this.formulariosChart.series[1].data = grabadoras;
       this.formulariosChart.series[2].data = mamiferos;
+      this.formulariosChart.series[3].data = transectos;
       console.log('formularios', this.formulariosChart);
     } catch (error) {
       console.log(error);
@@ -459,10 +508,38 @@ export class TableroGeneralComponent implements OnInit {
     }
   }
 
+  async getTransects() {
+    try {
+      const {
+        data: { transects },
+      }: any = await this.apollo
+        .query({
+          query: getTransects,
+          variables: {
+            pagination: {
+              limit: 1000,
+              offset: 0,
+            },
+          },
+        })
+        .toPromise();
+
+      const transectsGroup = _.groupBy(transects, (t) => {
+        const cumulo = t.associated_node ? t.associated_node.nomenclatura.split('_')[1] : -1;
+        return cumulo;
+      });
+      console.log('***tran by cum', transectsGroup);
+      Object.keys(transectsGroup).forEach((cumulo) => {});
+    } catch (error) {
+      console.log(error);
+    }
+  }
+
   async ngOnInit() {
     await this.getEcosystems();
     await this.getVisits();
     await this.getDevices();
     await this.getFormularios();
+    await this.getTransects();
   }
 }
