@@ -2,14 +2,6 @@
   width: 100%;
 }
 
-.title {
-  font-size: 30px;
-  font-weight: bolder;
-  margin: 5px 0;
-  position: relative;
-  padding-inline: 0;
-}
-
 .text-bold {
   font-weight: bolder;
 }
@@ -35,4 +27,34 @@
 
 input {
   max-width: 130px;
+}
+
+/** NEW **/
+ion-content {
+  font-size: 14px !important;
+}
+
+ion-item {
+  font-size: 14px;
+  --padding-end: 4px;
+  --padding-start: 4px;
+}
+
+.filters-container::after {
+  background-image: none;
+}
+
+.filters-container {
+  ion-label {
+    color: var(--ion-color-secondary);
+    font-weight: bold;
+  }
+
+  ion-item.filter-input {
+    --border-color: var(--ion-color-secondary);
+  }
+}
+
+ion-title {
+  font-size: 16px;
 }

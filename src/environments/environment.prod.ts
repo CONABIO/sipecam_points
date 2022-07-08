@@ -20,7 +20,9 @@ export const environment = {
   },
   zendroUrl: 'https://zendro.sipecamdata.conabio.gob.mx/',
   alfresco: {
-    apiKey: env.alfresco_apikey,
-    url: 'https://api.conabio.gob.mx/test/search/',
+    apiKey: 'lUEmE9EqA8DTGUXQS9Wzh3UcT9yV42rIIW9BFbNw',
+    // url: 'https://api.conabio.gob.mx/test/search/',
+    url: 'https://api.conabio.gob.mx/sipecam/reader/',
+    url2: 'http://34.208.18.151/alfresco/api/-default-/public/search/versions/1/search',
   },
 };

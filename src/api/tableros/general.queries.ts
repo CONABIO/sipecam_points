@@ -9,6 +9,8 @@ export const getVisits = gql`
       cumulus_visit {
         id
         name
+        con_socio
+        ecosystem_id
       }
       date_first_season
       date_second_season

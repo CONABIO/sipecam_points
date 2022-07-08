@@ -13,6 +13,10 @@ const routes: Routes = [
         path: 'tablero',
         loadChildren: () => import('./estadisticas/estadisticas.module').then((m) => m.EstadisticasModule),
       },
+      {
+        path: 'multimedia',
+        loadChildren: () => import('./multimedia/multimedia.module').then((m) => m.MultimediaModule),
+      },
     ],
     false
   ),

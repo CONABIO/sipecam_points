@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, AfterViewInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 
 import * as _ from 'lodash';
@@ -14,6 +14,7 @@ import {
   ApexXAxis,
   ApexFill,
   ApexTooltip,
+  ApexOptions,
 } from 'ng-apexcharts';
 
 import { Apollo } from 'apollo-angular';
@@ -49,15 +50,16 @@ export type ChartOptions = {
   templateUrl: './tablero-general.component.html',
   styleUrls: ['./tablero-general.component.scss'],
 })
-export class TableroGeneralComponent implements OnInit {
+export class TableroGeneralComponent implements OnInit, AfterViewInit {
   cumulo: any = null;
   cumuloId: string = null;
 
   visits: any = null;
-  activeSection = 'progress';
 
   ecosystems: any = [];
   currentEcosystem: any = 'todos';
+
+  colors = ['#2D82B7', '#FF6978', '#E6C79C', '#56AAB8', '#cddfa0'];
 
   formulariosChart: Partial<ChartOptions> = {
     series: [
@@ -132,14 +134,14 @@ export class TableroGeneralComponent implements OnInit {
       },
     ],
     chart: {
-      height: 250,
+      height: 350,
       type: 'bar',
       toolbar: { show: false },
     },
     plotOptions: {
       bar: {
-        columnWidth: '45%',
-        distributed: true,
+        horizontal: false,
+        columnWidth: '70%',
       },
     },
     dataLabels: {
@@ -155,16 +157,13 @@ export class TableroGeneralComponent implements OnInit {
     xaxis: {
       categories: [],
       labels: {
-        rotate: -45,
-        style: {
-          fontSize: '12px',
-        },
+        rotate: -90,
       },
     },
     yaxis: {
-      seriesName: 'Visitas y Reportes',
-      min: 0,
-      forceNiceScale: true,
+      title: {
+        text: 'Registros',
+      },
     },
     /*fill: {
       type: 'gradient',
@@ -181,78 +180,86 @@ export class TableroGeneralComponent implements OnInit {
     },*/
   };
 
-  devicesStatusChart = {
-    series: [0, 0, 0, 0],
-    chart: {
-      height: 250,
-      type: 'pie',
-    },
-    labels: ['Inactivo', 'Activo', 'Descompostura', 'Robo'],
-    responsive: [
-      {
-        breakpoint: 480,
-        options: {
-          chart: {
-            width: 200,
-          },
-          legend: {
-            position: 'bottom',
-          },
-        },
-      },
-    ],
-  };
-
-  devicesTypeChart = {
+  devicesStatusChart: ApexOptions = {
     series: [],
     chart: {
       height: 250,
-      type: 'pie',
+      type: 'donut',
     },
     labels: [],
-    responsive: [
-      {
-        breakpoint: 480,
-        options: {
-          chart: {
-            width: 200,
-          },
-          legend: {
-            position: 'bottom',
+    legend: {
+      position: 'left',
+    },
+    plotOptions: {
+      pie: {
+        donut: {
+          labels: {
+            show: true,
+            total: {
+              show: true,
+            },
           },
         },
       },
-    ],
+    },
   };
 
-  activeDevicesChart = {
+  devicesTypeChart: ApexOptions = {
     series: [],
     chart: {
       height: 250,
-      type: 'pie',
+      type: 'donut',
     },
     labels: [],
-    responsive: [
-      {
-        breakpoint: 480,
-        options: {
-          chart: {
-            width: 200,
-          },
-          legend: {
-            position: 'bottom',
+    legend: {
+      position: 'left',
+    },
+    plotOptions: {
+      pie: {
+        donut: {
+          labels: {
+            show: true,
+            total: {
+              show: true,
+            },
           },
         },
       },
-    ],
+    },
+  };
+
+  activeDevicesChart: ApexOptions = {
+    series: [],
+    chart: {
+      height: 250,
+      type: 'donut',
+    },
+    labels: [],
+    legend: {
+      position: 'left',
+    },
+    plotOptions: {
+      pie: {
+        donut: {
+          labels: {
+            show: true,
+            total: {
+              show: true,
+            },
+          },
+        },
+      },
+    },
   };
 
   constructor(private alertController: AlertController, private apollo: Apollo, private route: ActivatedRoute) {
     this.cumuloId = this.route.snapshot.paramMap.get('id') || null;
   }
 
-  segmentChanged(event: any) {
-    this.activeSection = event.target.value;
+  async ecosystemChanged() {
+    await this.getVisits();
+    // await this.getFormularios();
+    // await this.getDevices();
   }
 
   async getVisits() {
@@ -263,11 +270,11 @@ export class TableroGeneralComponent implements OnInit {
         .query({
           query: getVisits,
           variables: {
-            search: {
+            /*search: {
               field: 'date_first_season',
               value: null,
               operator: 'ne',
-            },
+            },*/
             pagination: {
               limit: 1000,
               offset: 0,
@@ -275,7 +282,13 @@ export class TableroGeneralComponent implements OnInit {
           },
         })
         .toPromise();
-      this.visits = _.groupBy(visits, (v) => v.cumulus_visit.name);
+      let conSocio = visits.filter((v) => v.cumulus_visit.con_socio === 2);
+
+      if (this.currentEcosystem !== 'todos') {
+        conSocio = conSocio.filter((v) => v.cumulus_visit.ecosystem_id == this.currentEcosystem);
+      }
+      this.visits = _.groupBy(conSocio, (v) => v.cumulus_visit.name);
+      console.log('****filst', this.visits);
       const categories = [];
       const dataVisits = [];
       const dataReports = [];
@@ -300,16 +313,14 @@ export class TableroGeneralComponent implements OnInit {
           .reduce((previous, current) => previous + current, 0);
         dataReports.push(numReports);
       });
+      this.visitasChart.xaxis = {
+        labels: {
+          rotate: -90,
+        },
+        categories: categories,
+      };
       this.visitasChart.series[0].data = dataVisits;
       this.visitasChart.series[1].data = dataReports;
-      this.visitasChart.xaxis = {
-        categories: categories,
-        labels: {
-          style: {
-            fontSize: '9px',
-          },
-        },
-      };
     } catch (error) {
       console.log(error);
     }
@@ -330,6 +341,13 @@ export class TableroGeneralComponent implements OnInit {
           },
         })
         .toPromise();
+
+      // let filteredDevices = [...physical_devices];
+
+      /*if (this.currentEcosystem !== 'todos') {
+        filteredDevices = physical_devices.filter(d => d.cumulus_device.ecosystem_id == this.currentEcosystem);
+      }*/
+
       const devicesType = _.groupBy(physical_devices, (v) => v.device.type.toLowerCase());
 
       const typeLabels = [];
@@ -346,11 +364,13 @@ export class TableroGeneralComponent implements OnInit {
       const statusLabels = [];
       const statusSeries = [];
       Object.keys(devicesStatus).forEach((key) => {
-        const current: any = _.groupBy(devicesStatus[key], (v) => v.device.type.toLowerCase());
-        Object.keys(current).forEach((item) => {
-          statusLabels.push(`${item} ${key}`);
-          statusSeries.push(current[item].length);
-        });
+        if (key !== 'inactivo') {
+          const current: any = _.groupBy(devicesStatus[key], (v) => v.device.type.toLowerCase());
+          Object.keys(current).forEach((item) => {
+            statusLabels.push(`${item} ${key}`);
+            statusSeries.push(current[item].length);
+          });
+        }
       });
       console.log('****', this.devicesStatusChart);
       this.devicesStatusChart.labels = statusLabels;
@@ -535,11 +555,13 @@ export class TableroGeneralComponent implements OnInit {
     }
   }
 
-  async ngOnInit() {
+  async ngOnInit() {}
+
+  async ngAfterViewInit() {
     await this.getEcosystems();
     await this.getVisits();
-    await this.getDevices();
     await this.getFormularios();
-    await this.getTransects();
+    await this.getDevices();
+    // this.getTransects();
   }
 }
