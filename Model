@@ -109,7 +109,6 @@ Table Physical_Devices as D {
   id int [pk, increment] // auto-increment
   serial_number varchar
   comments varchar
-  previous_cumulus_ids varchar
   device_id int
   cumulus_id int
   updatedAt timestamp
@@ -133,7 +132,6 @@ Table Calendar as Cal {
 }
 
 
-
 Table Deployments as Dep {
   id int [pk, increment] // auto-increment
   date_deployment date
@@ -152,68 +150,63 @@ Table Deployments as Dep {
 
 
 Table Files {
-  id uuid
-  url varchar
+  id int
+  mime_type varchar // mime type
+  url varchar //s3 o glacier url
   id_alfresco int
   storage varchar //s3 or glacier
   deployment_id int
-  annotations_id int
   updatedAt timestamp
   createdAt timestamp
 }
 
 
 Table Annotations{
-  id uuid
-  annotator_type_id int
-  bbox string
+  id int
+  classification_method varchar //human, model 
+  classification_by varchar //megaD, Rekog
+  model_id int
+  taxon_id int //SNIB, GBIF
+  observation_type varchar //vehicle, animal, human, empty, no clasified
+  label_id varchar //auxiliar para consultar ontologías en repo
+  label varchar //clasificación resultado a diferente niveles
+  confidence float8 //resultado de modelo
+  behaviour varchar //posando, descansando, comiendo
+  sex varchar 
+  age int
+  file_id   int
   bbox_geometry polygon
+  geometry geometry //se usará para convertir a wkt por ejemplo
+  timestamp_video timestamp
   frequency_min float8
   frequency_max float8
   time_min float8
   time_max float8
-  model_id int
-  taxon_id int //SNIB, GBIF
-  age int
-  sex string
-  behaviour string
-  number_individuals int
-  has_fauna boolean
   updatedAt timestamp
   createdAt timestamp
-  observations string
-  annotationclass string //imagen completa, bbox, máscara de segmentación
+  comments varchar //calidad del animal etiquetado, si se ve bien, sale borroso, si sólo se le veía una parte
+                      //Nivel de certeza de ubicación o etiquetado de anotación
 }
 
-Table Annotator_type{
-  id uuid
-  type string //curador, user, model
-  type_annotation string //especimen, huella, restos, excretas
-}
+// Relaciones Uno a Muchos
+Ref: "Annotations"."file_id" < "Files"."id"
 
-Table ModelData{
-  id uuid
-  version string
-  quality string //Calidad del contenido del artículo dentro de la anotación
-  certainty string //Nivel de certeza de ubicación o etiquetado de anotación
-  accuracy float8 //resultado de modelo
-  taxonomy_id int
+
+// Relaciones Uno a Muchos
+Ref: "Annotations"."model_id" < "Model_Data"."id"
+
+
+
+Table Model_Data{
+  id int
+  version varchar //model version name
+  commit_dvc_of_data_ref varchar //id commit in dvc for data reference
+  commit_dvc_of_model varchar
+  url_repo_model_info varchar //descripción del modelo usado y código
   createdAt timestamp
+  comments varchar //clasification description: better for humans, animals, empty ?
 }
 
-Table Taxonomy{
-  id uuid
-  kingdom string
-  phylum string
-  class string
-  order string
-  family string
-  genus string
-  species string
-  subspecies string
-  anthropophony string
-  geophony string
-}
 
 
 Table Individual as Ind {
@@ -290,11 +283,6 @@ Ref: N.(ecosystem_id) > E.(id)
 Ref: C.(criteria_id) > CC.(id)
 
 // Relaciones Uno a Muchos
-Ref: "Files"."annotations_id" < "Annotations"."id"
-Ref: "Annotations"."model_id" < "ModelData"."id"
-Ref: "ModelData"."taxonomy_id" < "Taxonomy"."id"
-Ref: "Annotations"."annotator_type_id" < "Annotator_type"."id"
-
 Ref: Pacu.(user_id) < U.(id)
 Ref: Pacu.(cumulus_id) < C.(id)
 Ref: V.(user_id) < U.(id)
@@ -333,3 +321,5 @@ Ref: "Visits"."monitor_ids" < "Monitors"."id"
 Ref: "Monitors"."visit_ids" < "Visits"."id"
 
 Ref: "Nodes"."id" < "delivered_files"."node_id"
+
+
