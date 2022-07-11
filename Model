@@ -168,15 +168,14 @@ Table Annotations{
   model_id int
   taxon_id int //SNIB, GBIF
   observation_type varchar //vehicle, animal, human, empty, no clasified
-  label_id varchar //auxiliar para consultar ontologías en repo
-  label varchar //clasificación resultado a diferente niveles
+  label_id varchar //auxiliar para consultar ontologías en columna json
+  label varchar //clasificación resultado a diferente niveles, p.ej. especie
   confidence float8 //resultado de modelo
-  behaviour varchar //posando, descansando, comiendo
-  sex varchar 
-  age int
+  ontology json //información del estándar o propuesta que incluye behaviour, sequence, type, level, order
+  url_ontology varchar //https://tdwg.github.io/camtrap-dp/data/, https://github.com/audioset/ontology
   file_id   int
   bbox_geometry polygon
-  geometry geometry //se usará para convertir a wkt por ejemplo
+  geometry GeometryCollection //se usará para convertir a wkt por ejemplo
   timestamp_video timestamp
   frequency_min float8
   frequency_max float8
