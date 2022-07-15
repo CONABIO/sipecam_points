@@ -270,11 +270,11 @@ export class TableroGeneralComponent implements OnInit, AfterViewInit {
         .query({
           query: getVisits,
           variables: {
-            /*search: {
+            search: {
               field: 'date_first_season',
               value: null,
               operator: 'ne',
-            },*/
+            },
             pagination: {
               limit: 1000,
               offset: 0,
