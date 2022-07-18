@@ -176,7 +176,7 @@ Table Annotations_Geom_Obs_Type{
   time_min float8
   time_max float8
   metadata json // incluye clasificacion realizada por el modelo (score, top posibles especies, detection_threshold, etc)
-  product_id_alfesco int //id producto en alfresco
+  product_id_alfesco varchar //id producto en alfresco
   updatedAt timestamp
   createdAt timestamp
 }
