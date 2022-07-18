@@ -153,7 +153,7 @@ Table Files {
   id int
   mime_type varchar // mime type
   url varchar //s3 o glacier url
-  id_alfresco int
+  id_alfresco varchar
   storage varchar //s3 or glacier
   deployment_id int
   updatedAt timestamp
