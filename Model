@@ -161,48 +161,43 @@ Table Files {
 }
 
 
-Table Annotations{
+Table Annotations_Geom_Obs_Type{
   id int
-  classification_method varchar //human, model 
-  classification_by varchar //megaD, Rekog
-  model_id int
-  taxon_id int //SNIB, GBIF
+  classified_by varchar //megaD, Rekog, yuntu
+  classification_method varchar // human o machine
+  pipeline_id int
   observation_type varchar //vehicle, animal, human, empty, no clasified
-  label_id varchar //auxiliar para consultar ontologías en columna json
-  label varchar //clasificación resultado a diferente niveles, p.ej. especie
   confidence float8 //resultado de modelo
-  ontology json //información del estándar o propuesta que incluye behaviour, sequence, type, level, order
-  url_ontology varchar //https://tdwg.github.io/camtrap-dp/data/, https://github.com/audioset/ontology
   file_id   int
-  bbox_geometry polygon
-  geometry GeometryCollection //se usará para convertir a wkt por ejemplo
-  timestamp_video timestamp
+  geometry GeometryCollection //para diferentes tipos de geometrías, útil para convertir a wkt por ejemplo
+  video_frame_num int // para ubicar dentro del video la anotación
   frequency_min float8
   frequency_max float8
   time_min float8
   time_max float8
+  metadata json // incluye clasificacion realizada por el modelo (score, top posibles especies, detection_threshold, etc)
+  product_id_alfesco int //id producto en alfresco
   updatedAt timestamp
   createdAt timestamp
-  comments varchar //calidad del animal etiquetado, si se ve bien, sale borroso, si sólo se le veía una parte
-                      //Nivel de certeza de ubicación o etiquetado de anotación
 }
 
 // Relaciones Uno a Muchos
-Ref: "Annotations"."file_id" < "Files"."id"
+Ref: "Annotations_Geom_Obs_Type"."file_id" < "Files"."id"
 
 
 // Relaciones Uno a Muchos
-Ref: "Annotations"."model_id" < "Model_Data"."id"
+Ref: "Annotations_Geom_Obs_Type"."pipeline_id" < "Pipeline_Info"."id"
 
 
 
-Table Model_Data{
+Table Pipeline_Info{
   id int
   version varchar //model version name
   commit_dvc_of_data_ref varchar //id commit in dvc for data reference
   commit_dvc_of_model varchar
-  url_repo_model_info varchar //descripción del modelo usado y código
+  url_repo_model varchar //descripción del modelo usado y código
   createdAt timestamp
+  updatedAt timestamp
   comments varchar //clasification description: better for humans, animals, empty ?
 }
 
