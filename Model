@@ -165,7 +165,6 @@ Table Annotations_Geom_Obs_Type{
   id int
   classified_by varchar //megaD, Rekog, yuntu
   classification_method varchar // human o machine
-  pipeline_id int
   observation_type varchar //vehicle, animal, human, empty, no clasified
   confidence float8 //resultado de modelo
   file_id   int
@@ -175,8 +174,6 @@ Table Annotations_Geom_Obs_Type{
   frequency_max float8
   time_min float8
   time_max float8
-  metadata json // incluye clasificacion realizada por el modelo (score, top posibles especies, detection_threshold, etc)
-  product_id_alfesco varchar //id producto en alfresco
   updatedAt timestamp
   createdAt timestamp
 }
@@ -184,22 +181,34 @@ Table Annotations_Geom_Obs_Type{
 // Relaciones Uno a Muchos
 Ref: "Annotations_Geom_Obs_Type"."file_id" < "Files"."id"
 
-
-// Relaciones Uno a Muchos
-Ref: "Annotations_Geom_Obs_Type"."pipeline_id" < "Pipeline_Info"."id"
-
-
-
 Table Pipeline_Info{
   id int
   version varchar //model version name
-  commit_dvc_of_data_ref varchar //id commit in dvc for data reference
-  commit_dvc_of_model varchar
+  commit_dvc_of_data_ref varchar //id commit in dvc for data referen
   url_repo_model varchar //descripción del modelo usado y código
   createdAt timestamp
   updatedAt timestamp
   comments varchar //clasification description: better for humans, animals, empty ?
 }
+
+
+Table Products{
+  id int [pk, increment]
+  file_id int
+  product_from varchar //video, audio, imagen
+  product_id_alfesco varchar //id que regresa al subir los videos con bboxes
+  pipeline_id int
+  observation_type varchar //animal, empty, person
+  metadata json // Institución que produce, metodología usada, fecha de procesamiento, Proyecto, metadatos de archivos crudos (extrae simex y están en Alfresco)
+  createdAt timestamp
+  updatedAt timestamp
+  comments varchar //clasification description: better for humans, animals, empty ?
+}
+
+// Relaciones Muchos a Uno
+Ref: "Files"."id" > "Products"."file_id"
+// Relaciones Uno a Uno
+Ref: "Products"."pipeline_id" - "Pipeline_Info"."id"
 
 
 
