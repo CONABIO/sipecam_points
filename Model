@@ -196,7 +196,7 @@ Table Products{
   id int [pk, increment]
   file_id int
   product_from varchar //video, audio, imagen
-  product_id_alfesco varchar //id que regresa al subir los videos con bboxes
+  product_id_alfresco varchar //id que regresa al subir los videos con bboxes
   pipeline_id int
   observation_type varchar //animal, empty, person
   metadata json // Institución que produce, metodología usada, fecha de procesamiento, Proyecto, metadatos de archivos crudos (extrae simex y están en Alfresco)
