@@ -168,7 +168,7 @@ Table Annotations_Geom_Obs_Type{
   observation_type varchar //vehicle, animal, human, empty, no clasified
   confidence float8 //resultado de modelo
   file_id   int
-  geometry GeometryCollection //para diferentes tipos de geometrías, útil para convertir a wkt por ejemplo
+  geometry Polygon 
   video_frame_num int // para ubicar dentro del video la anotación
   frequency_min float8
   frequency_max float8
@@ -195,14 +195,16 @@ Table Pipeline_Info{
 Table Products{
   id int [pk, increment]
   file_id int
-  product_from varchar //video, audio, imagen
+  type varchar //video, audio, image, image_without_bboxes_from_video
   product_id_alfresco varchar //id que regresa al subir los videos con bboxes
   pipeline_id int
   observation_type varchar //animal, empty, person
-  metadata json // Institución que produce, metodología usada, fecha de procesamiento, Proyecto, metadatos de archivos crudos (extrae simex y están en Alfresco)
+  producer varchar //CONABIO
+  project varchar //SiPeCaM
+  metadata json // bboxes list of every animal in image, simex_metadata
   createdAt timestamp
   updatedAt timestamp
-  comments varchar //clasification description: better for humans, animals, empty ?
+  comments varchar //methodology, how to cite, clasification description: better for humans, animals, empty ?
 }
 
 // Relaciones Muchos a Uno
