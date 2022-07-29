@@ -168,7 +168,7 @@ Table Annotations_Geom_Obs_Type{
   observation_type varchar //vehicle, animal, human, empty, no clasified
   confidence float8 //resultado de modelo
   file_id   int
-  geometry Polygon 
+  geometry GeometryCollection 
   video_frame_num int // para ubicar dentro del video la anotación
   frequency_min float8
   frequency_max float8
@@ -328,4 +328,7 @@ Ref: "Visits"."monitor_ids" < "Monitors"."id"
 Ref: "Monitors"."visit_ids" < "Visits"."id"
 
 Ref: "Nodes"."id" < "delivered_files"."node_id"
+
+
+
 
