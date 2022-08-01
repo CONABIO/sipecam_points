@@ -647,7 +647,7 @@ export class TableroGeneralComponent implements OnInit, AfterViewInit {
           (t) =>
             this.cumulusByEcosystem[this.currentEcosystem].findIndex((cum) => {
               const cumulo = t.associated_node ? t.associated_node.nomenclatura.split('_')[1] : -1;
-              cum.name == cumulo;
+              return cum.name == cumulo;
             }) > -1
         );
       }
