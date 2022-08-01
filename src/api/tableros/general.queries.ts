@@ -34,6 +34,7 @@ export const getDevices = gql`
         type
       }
       status
+      cumulus_id
     }
   }
 `;
@@ -73,15 +74,55 @@ export const getDeployments = gql`
 `;
 
 /**
- * Visitas
+ * Transectos
  */
 export const getTransects = gql`
   query transects($search: searchTransectInput, $order: [orderTransectInput], $pagination: paginationInput!) {
     transects(search: $search, order: $order, pagination: $pagination) {
+      id
       associated_node {
         id
         nomenclatura
       }
+    }
+  }
+`;
+
+/**
+ * Archivos
+ */
+export const getFiles = gql`
+  query ecosystemFileCounts($ecosystem_id: ID!) {
+    ecosystemFileCounts(ecosystem_id: $ecosystem_id) {
+      file_count_ecosystem {
+        delivery_date
+        audio_files
+        image_files
+        video_files
+        size
+      }
+    }
+  }
+`;
+
+export const getAllFiles = gql`
+  query file_counts($search: searchFile_countInput, $order: [orderFile_countInput], $pagination: paginationInput!) {
+    file_counts(search: $search, order: $order, pagination: $pagination) {
+      delivery_date
+      audio_files
+      image_files
+      video_files
+      size
+    }
+  }
+`;
+
+export const getCumulus = gql`
+  query cumulus($search: searchCumulusInput, $order: [orderCumulusInput], $pagination: paginationInput!) {
+    cumulus(search: $search, order: $order, pagination: $pagination) {
+      id
+      name
+      ecosystem_id
     }
   }
 `;

@@ -113,6 +113,41 @@
           </ion-row>
         </ion-col>
       </ion-row>
+
+      <ion-row>
+        <ion-col class="ion-padding" size="12" size-md="7">
+          <ion-row>
+            <ion-title class="ion-text-start ion-no-padding" color="medium"> Archivos entregados </ion-title>
+            <ion-item-divider class="ion-margin-top" color="light"></ion-item-divider>
+            <apx-chart
+              class="chart"
+              [series]="filesChart.series"
+              [chart]="filesChart.chart"
+              [xaxis]="filesChart.xaxis"
+              [dataLabels]="filesChart.dataLabels"
+              [colors]="filesChart.colors"
+              [legend]="filesChart.legend"
+              [yaxis]="filesChart.yaxis"
+            ></apx-chart>
+          </ion-row>
+        </ion-col>
+        <ion-col class="ion-padding" size="12" size-md="5">
+          <ion-row>
+            <ion-title class="ion-text-start ion-no-padding" color="medium"> Datos entregados </ion-title>
+            <ion-item-divider class="ion-margin-top" color="light"></ion-item-divider>
+            <apx-chart
+              class="chart"
+              [series]="filesSizeChart.series"
+              [chart]="filesSizeChart.chart"
+              [xaxis]="filesSizeChart.xaxis"
+              [dataLabels]="filesSizeChart.dataLabels"
+              [colors]="filesSizeChart.colors"
+              [legend]="filesSizeChart.legend"
+              [yaxis]="filesSizeChart.yaxis"
+            ></apx-chart>
+          </ion-row>
+        </ion-col>
+      </ion-row>
     </ion-grid>
   </div>
 </ion-content>

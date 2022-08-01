@@ -18,7 +18,16 @@ import {
 } from 'ng-apexcharts';
 
 import { Apollo } from 'apollo-angular';
-import { getDevices, getVisits, getDeployments, getIndividuals, getTransects } from '@api/tableros';
+import {
+  getDevices,
+  getVisits,
+  getDeployments,
+  getIndividuals,
+  getTransects,
+  getAllFiles,
+  getFiles,
+  getCumulus,
+} from '@api/tableros';
 import { getEcosystems } from '@api/mapa';
 import { AlertController } from '@ionic/angular';
 
@@ -54,8 +63,9 @@ export class TableroGeneralComponent implements OnInit, AfterViewInit {
   cumulo: any = null;
   cumuloId: string = null;
 
-  visits: any = null;
+  cumulusByEcosystem = {};
 
+  visits: any = null;
   ecosystems: any = [];
   currentEcosystem: any = 'todos';
 
@@ -252,14 +262,183 @@ export class TableroGeneralComponent implements OnInit, AfterViewInit {
     },
   };
 
+  filesChart: ApexOptions = {
+    series: [
+      {
+        name: 'Audio',
+        data: [],
+      },
+      {
+        name: 'Video',
+        data: [],
+      },
+      {
+        name: 'Imágenes',
+        data: [],
+      },
+    ],
+    chart: {
+      type: 'area',
+      height: 350,
+      stacked: true,
+    },
+    colors: this.colors,
+    dataLabels: {
+      enabled: false,
+    },
+    legend: {
+      position: 'top',
+      horizontalAlign: 'left',
+    },
+    xaxis: {
+      categories: [],
+    },
+    yaxis: {
+      title: {
+        text: 'Archivos entregados',
+      },
+    },
+  };
+
+  filesSizeChart: ApexOptions = {
+    series: [
+      {
+        name: 'MB',
+        data: [],
+      },
+    ],
+    chart: {
+      type: 'area',
+      height: 350,
+      stacked: false,
+    },
+    colors: this.colors,
+    dataLabels: {
+      enabled: false,
+    },
+    legend: {
+      position: 'top',
+      horizontalAlign: 'left',
+    },
+    xaxis: {
+      categories: [],
+    },
+    yaxis: {
+      title: {
+        text: 'Datos entregados (MB)',
+      },
+    },
+  };
+
   constructor(private alertController: AlertController, private apollo: Apollo, private route: ActivatedRoute) {
     this.cumuloId = this.route.snapshot.paramMap.get('id') || null;
   }
 
   async ecosystemChanged() {
     await this.getVisits();
-    // await this.getFormularios();
-    // await this.getDevices();
+    await this.getFiles();
+    await this.getFormularios();
+    await this.getDevices();
+  }
+
+  async getCumulus() {
+    try {
+      const { data }: any = await this.apollo
+        .query({
+          query: getCumulus,
+          variables: {
+            pagination: {
+              limit: 1000,
+              offset: 0,
+            },
+          },
+        })
+        .toPromise();
+      const cumulus = data?.cumulus ?? [];
+      this.cumulusByEcosystem = _.groupBy(cumulus, (c) => c.ecosystem_id);
+    } catch (error) {
+      console.log(error);
+    }
+  }
+
+  async getFiles() {
+    let files: any = null;
+    if (this.currentEcosystem !== 'todos') {
+      try {
+        const { data }: any = await this.apollo
+          .query({
+            query: getFiles,
+            variables: {
+              ecosystem_id: Number(this.currentEcosystem),
+            },
+          })
+          .toPromise();
+
+        files = data?.ecosystemFileCounts.file_count_ecosystem ?? [];
+      } catch (error) {
+        console.log(error);
+      }
+    } else {
+      try {
+        const { data }: any = await this.apollo
+          .query({
+            query: getAllFiles,
+            variables: {
+              pagination: {
+                limit: 1000,
+                offset: 0,
+              },
+            },
+          })
+          .toPromise();
+
+        files = data?.file_counts ?? [];
+      } catch (error) {
+        console.log(error);
+      }
+    }
+
+    files = files.sort((a, b) => a.delivery_date.localeCompare(b.delivery_date));
+    const categories = [];
+    const audio = [];
+    const video = [];
+    const images = [];
+    const size = [];
+    files.forEach((delivery) => {
+      categories.push(delivery.delivery_date);
+      audio.push(delivery.audio_files ?? 0);
+      video.push(delivery.video_files ?? 0);
+      images.push(delivery.image_files ?? 0);
+      size.push(delivery.size ?? 0);
+    });
+
+    this.filesChart.series = [
+      {
+        name: 'Audio',
+        data: audio,
+      },
+      {
+        name: 'Video',
+        data: video,
+      },
+      {
+        name: 'Imágenes',
+        data: images,
+      },
+    ];
+    this.filesChart.xaxis = {
+      categories,
+    };
+
+    this.filesSizeChart.series = [
+      {
+        name: 'MB',
+        data: size,
+      },
+    ];
+    this.filesSizeChart.xaxis = {
+      categories,
+    };
   }
 
   async getVisits() {
@@ -288,7 +467,7 @@ export class TableroGeneralComponent implements OnInit, AfterViewInit {
         conSocio = conSocio.filter((v) => v.cumulus_visit.ecosystem_id == this.currentEcosystem);
       }
       this.visits = _.groupBy(conSocio, (v) => v.cumulus_visit.name);
-      console.log('****filst', this.visits);
+
       const categories = [];
       const dataVisits = [];
       const dataReports = [];
@@ -342,13 +521,15 @@ export class TableroGeneralComponent implements OnInit, AfterViewInit {
         })
         .toPromise();
 
-      // let filteredDevices = [...physical_devices];
+      let filteredDevices = [...physical_devices];
 
-      /*if (this.currentEcosystem !== 'todos') {
-        filteredDevices = physical_devices.filter(d => d.cumulus_device.ecosystem_id == this.currentEcosystem);
-      }*/
+      if (this.currentEcosystem !== 'todos') {
+        filteredDevices = physical_devices.filter(
+          (d) => this.cumulusByEcosystem[this.currentEcosystem].findIndex((cum) => cum.id == d.cumulus_id) > -1
+        );
+      }
 
-      const devicesType = _.groupBy(physical_devices, (v) => v.device.type.toLowerCase());
+      const devicesType = _.groupBy(filteredDevices, (v) => v.device.type.toLowerCase());
 
       const typeLabels = [];
       const typeSeries = [];
@@ -356,11 +537,11 @@ export class TableroGeneralComponent implements OnInit, AfterViewInit {
         typeLabels.push(key);
         typeSeries.push(devicesType[key].length);
       });
-      console.log('charts', devicesType);
+
       this.devicesTypeChart.labels = typeLabels;
       this.devicesTypeChart.series = typeSeries;
 
-      const devicesStatus = _.groupBy(physical_devices, (v) => v.status.toLowerCase());
+      const devicesStatus = _.groupBy(filteredDevices, (v) => v.status.toLowerCase());
       const statusLabels = [];
       const statusSeries = [];
       Object.keys(devicesStatus).forEach((key) => {
@@ -372,13 +553,13 @@ export class TableroGeneralComponent implements OnInit, AfterViewInit {
           });
         }
       });
-      console.log('****', this.devicesStatusChart);
+
       this.devicesStatusChart.labels = statusLabels;
       this.devicesStatusChart.series = statusSeries;
 
       //active devices
       const activeDevices = _.groupBy(devicesStatus.activo, (v) => v.device.type.toLowerCase());
-      console.log('*****active', activeDevices);
+
       const activeLabels = [];
       const activeSeries = [];
       Object.keys(activeDevices).forEach((key) => {
@@ -388,8 +569,6 @@ export class TableroGeneralComponent implements OnInit, AfterViewInit {
 
       this.activeDevicesChart.labels = activeLabels;
       this.activeDevicesChart.series = activeSeries;
-
-      console.log('dev', devicesType, devicesStatus);
     } catch (error) {
       console.log(error);
     }
@@ -411,9 +590,17 @@ export class TableroGeneralComponent implements OnInit, AfterViewInit {
           },
         })
         .toPromise();
-      const individualsGroup = _.groupBy(individuals, (i) => i.associated_cumulus.name);
 
-      console.log('individuals', individualsGroup);
+      let filteredIndividuals = [...individuals];
+
+      if (this.currentEcosystem !== 'todos') {
+        filteredIndividuals = individuals.filter(
+          (i) =>
+            this.cumulusByEcosystem[this.currentEcosystem].findIndex((cum) => cum.id == i.associated_cumulus.id) > -1
+        );
+      }
+
+      const individualsGroup = _.groupBy(filteredIndividuals, (i) => i.associated_cumulus.name);
 
       // dispositivos
       const {
@@ -429,7 +616,15 @@ export class TableroGeneralComponent implements OnInit, AfterViewInit {
           },
         })
         .toPromise();
-      const deploymentsGroup = _.groupBy(deployments, (d) => d.cumulus.name);
+
+      let filteredDeployments = [...deployments];
+
+      if (this.currentEcosystem !== 'todos') {
+        filteredDeployments = deployments.filter(
+          (d) => this.cumulusByEcosystem[this.currentEcosystem].findIndex((cum) => cum.id == d.cumulus.id) > -1
+        );
+      }
+      const deploymentsGroup = _.groupBy(filteredDeployments, (d) => d.cumulus.name);
 
       const {
         data: { transects },
@@ -445,10 +640,23 @@ export class TableroGeneralComponent implements OnInit, AfterViewInit {
         })
         .toPromise();
 
-      console.log('deployments', deploymentsGroup);
+      let filteredTransects = [...transects];
 
-      const transectsGroup = _.groupBy(transects, (t) => {
+      if (this.currentEcosystem !== 'todos') {
+        filteredTransects = transects.filter(
+          (t) =>
+            this.cumulusByEcosystem[this.currentEcosystem].findIndex((cum) => {
+              const cumulo = t.associated_node ? t.associated_node.nomenclatura.split('_')[1] : -1;
+              cum.name == cumulo;
+            }) > -1
+        );
+      }
+
+      const transectsGroup = _.groupBy(filteredTransects, (t) => {
         const cumulo = t.associated_node ? t.associated_node.nomenclatura.split('_')[1] : -1;
+        if (cumulo === -1) {
+          console.log('//////', t);
+        }
         return cumulo;
       });
 
@@ -503,7 +711,6 @@ export class TableroGeneralComponent implements OnInit, AfterViewInit {
       this.formulariosChart.series[1].data = grabadoras;
       this.formulariosChart.series[2].data = mamiferos;
       this.formulariosChart.series[3].data = transectos;
-      console.log('formularios', this.formulariosChart);
     } catch (error) {
       console.log(error);
     }
@@ -548,20 +755,23 @@ export class TableroGeneralComponent implements OnInit, AfterViewInit {
         const cumulo = t.associated_node ? t.associated_node.nomenclatura.split('_')[1] : -1;
         return cumulo;
       });
-      console.log('***tran by cum', transectsGroup);
+
       Object.keys(transectsGroup).forEach((cumulo) => {});
     } catch (error) {
       console.log(error);
     }
   }
 
-  async ngOnInit() {}
+  async ngOnInit() {
+    await this.getCumulus();
+  }
 
   async ngAfterViewInit() {
     await this.getEcosystems();
     await this.getVisits();
     await this.getFormularios();
     await this.getDevices();
+    await this.getFiles();
     // this.getTransects();
   }
 }
