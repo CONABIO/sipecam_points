@@ -37,9 +37,10 @@
       <ion-button
         expand="block"
         fill="outline"
-        href="http://selia-env.eba-3pecr5yq.us-west-2.elasticbeanstalk.com/upload/?collection=3&licence=1&item_type=154"
+        [routerLink]="'/multimedia/' + cumulus.id"
         target="_blank"
-        >Subir archivos</ion-button
+        (click)="dismiss()"
+        >Ver multimedia</ion-button
       >
       <ion-button expand="block" fill="outline" (click)="dismiss()">Cerrar</ion-button>
     </ion-card-content>

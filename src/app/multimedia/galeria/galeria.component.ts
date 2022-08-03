@@ -26,6 +26,8 @@ import lgThumbnail from 'lightgallery/plugins/thumbnail';
 import lgPager from 'lightgallery/plugins/pager';
 import { BeforeSlideDetail } from 'lightgallery/lg-events';
 
+import Imagenes from '@static/files/3_13_0_1398.json';
+
 export interface Visit {
   date_sipecam_second_season: string;
   date_first_season: string;
@@ -62,6 +64,8 @@ export class GaleriaComponent implements OnInit {
     thumbnail: true,
     plugins: [lgZoom, lgThumbnail],
   };
+
+  imgList = Imagenes;
 
   constructor(private route: ActivatedRoute) {
     this.cumuloId = this.route.snapshot.paramMap.get('id') || null;
