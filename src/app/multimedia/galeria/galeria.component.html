@@ -11,14 +11,18 @@
   <ion-title class="ion-text-start ion-padding-start ion-margin-top" color="medium"> Cúmulo </ion-title>
   <ion-item-divider class="ion-margin-top ion-margin-bottom" color="light"></ion-item-divider>
 
-  <lightgallery [settings]="settings" [onBeforeSlide]="onBeforeSlide" class="justified-gallery">
-    <a
-      *ngFor="let url of imgList"
-      class="gallery-item"
-      [attr.data-src]="url"
-      [attr.sub-html]="'<h4>Nodo 3_13_0_1398</h4>'"
-    >
-      <img alt="SiPeCaM fauna" class="img-responsive" [src]="url" />
-    </a>
-  </lightgallery>
+  <ion-grid>
+    <ion-row>
+      <lightgallery [settings]="settings" [onBeforeSlide]="onBeforeSlide" class="img-gallery">
+        <a
+          *ngFor="let url of imgList"
+          class="gallery-item"
+          [attr.data-src]="url"
+          [attr.sub-html]="'<h4>Nodo 3_13_0_1398</h4>'"
+        >
+          <img alt="SiPeCaM fauna" class="img-responsive" [src]="url" />
+        </a>
+      </lightgallery>
+    </ion-row>
+  </ion-grid>
 </ion-content>

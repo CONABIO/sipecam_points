@@ -1,9 +1,11 @@
 .img-responsive {
-  height: 200px;
+  height: 180px;
 }
 
-.justified-gallery {
-  position: relative;
-  overflow: hidden;
-  width: 100%;
+.img-gallery {
+  display: flex;
+  flex-direction: row;
+  flex: 1;
+  flex-wrap: wrap;
+  justify-content: center;
 }
