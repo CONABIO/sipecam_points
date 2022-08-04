@@ -9,3 +9,24 @@
   flex-wrap: wrap;
   justify-content: center;
 }
+
+.filters-container::after {
+  background-image: none;
+}
+
+.filters-container {
+  ion-label {
+    color: var(--ion-color-secondary);
+    font-weight: bold;
+  }
+
+  ion-item.filter-input {
+    --border-color: var(--ion-color-secondary);
+  }
+}
+
+.gallery-video-item,
+.gallery-imagen-item {
+  margin-left: 2.5px;
+  margin-right: 2.5px;
+}

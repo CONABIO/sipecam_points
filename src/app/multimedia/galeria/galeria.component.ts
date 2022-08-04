@@ -16,27 +16,14 @@ import {
   ApexTooltip,
 } from 'ng-apexcharts';
 
-import { Apollo } from 'apollo-angular';
-import { getDevices, getVisits, getDeployments, getIndividuals, getTransects } from '@api/tableros';
-import { getEcosystems } from '@api/mapa';
-import { AlertController } from '@ionic/angular';
-
 import lgZoom from 'lightgallery/plugins/zoom';
 import lgThumbnail from 'lightgallery/plugins/thumbnail';
 import lgPager from 'lightgallery/plugins/pager';
+import lgVideo from 'lightgallery/plugins/video';
 import { BeforeSlideDetail } from 'lightgallery/lg-events';
 
 import Imagenes from '@static/files/3_13_0_1398.json';
-
-export interface Visit {
-  date_sipecam_second_season: string;
-  date_first_season: string;
-  date_second_season: string;
-  cumulus_visit: {
-    id: string;
-    name: string;
-  };
-}
+import Node3_13_1_1392 from '@static/videos/3_13_1_1392.json';
 
 export type ChartOptions = {
   series: ApexAxisChartSeries;
@@ -60,12 +47,22 @@ export class GaleriaComponent implements OnInit {
   cumulo: any = null;
   cumuloId: string = null;
 
+  currentGallery = 'image';
+  currentVideoNode = '3_13_1_1392';
+
   settings = {
     thumbnail: true,
     plugins: [lgZoom, lgThumbnail],
   };
 
+  settingsVideo = {
+    thumbnail: true,
+    plugins: [lgThumbnail, lgVideo],
+    videojs: true,
+  };
+
   imgList = Imagenes;
+  videoList: any = [];
 
   constructor(private route: ActivatedRoute) {
     this.cumuloId = this.route.snapshot.paramMap.get('id') || null;
@@ -73,10 +70,33 @@ export class GaleriaComponent implements OnInit {
 
   onBeforeSlide = (detail: BeforeSlideDetail): void => {
     const { index, prevIndex } = detail;
-    console.log(index, prevIndex);
   };
 
   async ngOnInit() {
     // const answer = await this.alfrescoService.audio();
+    this.videoList = this.getVideoUrls(Node3_13_1_1392);
   }
+
+  getVideoUrls(list: Object) {
+    return Object.keys(list)
+      .map((url) => url.replace('s3://sipecam-open-data', 'https://sipecam-open-data.s3.amazonaws.com'))
+      .map((url) => {
+        const obj = {
+          source: [{ src: url, type: 'video/mp4' }],
+          attributes: {
+            preload: false,
+            playsinline: true,
+            controls: true,
+          },
+        };
+
+        return JSON.stringify(obj);
+      });
+  }
+
+  segmentChanged(event: any) {
+    this.currentGallery = event.target.value;
+  }
+
+  videoNodeChanged() {}
 }
