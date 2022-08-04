@@ -2,41 +2,20 @@ import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 
 import * as _ from 'lodash';
-import {
-  ApexAxisChartSeries,
-  ApexChart,
-  ChartComponent,
-  ApexDataLabels,
-  ApexPlotOptions,
-  ApexYAxis,
-  ApexLegend,
-  ApexStroke,
-  ApexXAxis,
-  ApexFill,
-  ApexTooltip,
-} from 'ng-apexcharts';
 
 import lgZoom from 'lightgallery/plugins/zoom';
 import lgThumbnail from 'lightgallery/plugins/thumbnail';
 import lgPager from 'lightgallery/plugins/pager';
 import lgVideo from 'lightgallery/plugins/video';
+import { LightGallery } from 'lightgallery/lightgallery';
 import { BeforeSlideDetail } from 'lightgallery/lg-events';
 
 import Imagenes from '@static/files/3_13_0_1398.json';
+import Node1_95_1_1350 from '@static/videos/1_95_1_1350.json';
 import Node3_13_1_1392 from '@static/videos/3_13_1_1392.json';
-
-export type ChartOptions = {
-  series: ApexAxisChartSeries;
-  chart: ApexChart;
-  dataLabels: ApexDataLabels;
-  plotOptions: ApexPlotOptions;
-  yaxis: ApexYAxis;
-  xaxis: ApexXAxis;
-  fill: ApexFill;
-  tooltip: ApexTooltip;
-  stroke: ApexStroke;
-  legend: ApexLegend;
-};
+import Node3_92_1_1334 from '@static/videos/3_92_1_1334.json';
+import Node4_32_0_1281 from '@static/videos/4_32_0_1281.json';
+import Node4_32_1_1286 from '@static/videos/4_32_1_1286.json';
 
 @Component({
   selector: 'app-galeria',
@@ -44,11 +23,14 @@ export type ChartOptions = {
   styleUrls: ['./galeria.component.scss'],
 })
 export class GaleriaComponent implements OnInit {
+  private lightGallery!: LightGallery;
+  private needRefresh = false;
+
   cumulo: any = null;
   cumuloId: string = null;
 
   currentGallery = 'image';
-  currentVideoNode = '3_13_1_1392';
+  currentVideoNode = '1_95_1_1350';
 
   settings = {
     thumbnail: true,
@@ -64,6 +46,8 @@ export class GaleriaComponent implements OnInit {
   imgList = Imagenes;
   videoList: any = [];
 
+  showVideoGallery = true;
+
   constructor(private route: ActivatedRoute) {
     this.cumuloId = this.route.snapshot.paramMap.get('id') || null;
   }
@@ -74,7 +58,7 @@ export class GaleriaComponent implements OnInit {
 
   async ngOnInit() {
     // const answer = await this.alfrescoService.audio();
-    this.videoList = this.getVideoUrls(Node3_13_1_1392);
+    this.videoList = this.getVideoUrls(Node1_95_1_1350);
   }
 
   getVideoUrls(list: Object) {
@@ -98,5 +82,36 @@ export class GaleriaComponent implements OnInit {
     this.currentGallery = event.target.value;
   }
 
-  videoNodeChanged() {}
+  videoNodeChanged() {
+    switch (this.currentVideoNode) {
+      case '1_95_1_1350':
+        this.videoList = this.getVideoUrls(Node1_95_1_1350);
+        break;
+      case '3_13_1_1392':
+        this.videoList = this.getVideoUrls(Node3_13_1_1392);
+        break;
+      case '3_92_1_1334':
+        this.videoList = this.getVideoUrls(Node3_92_1_1334);
+        break;
+      case '4_32_0_1281':
+        this.videoList = this.getVideoUrls(Node4_32_0_1281);
+        break;
+      case '4_32_1_1286':
+        this.videoList = this.getVideoUrls(Node4_32_1_1286);
+        break;
+    }
+
+    this.needRefresh = true;
+  }
+
+  onInitVideoGallery = (detail): void => {
+    this.lightGallery = detail.instance;
+  };
+
+  ngAfterViewChecked(): void {
+    if (this.needRefresh) {
+      this.lightGallery.refresh();
+      this.needRefresh = false;
+    }
+  }
 }

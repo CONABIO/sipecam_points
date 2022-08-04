@@ -280,7 +280,7 @@ export class TableroGeneralComponent implements OnInit, AfterViewInit {
     chart: {
       type: 'area',
       height: 350,
-      stacked: true,
+      stacked: false,
     },
     colors: this.colors,
     dataLabels: {

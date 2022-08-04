@@ -43,13 +43,25 @@
             [(ngModel)]="currentVideoNode"
             (ionChange)="videoNodeChanged()"
           >
+            <ion-select-option class="ion-text-wrap" value="1_95_1_1350">Nodo 1_95_1_1350</ion-select-option>
             <ion-select-option class="ion-text-wrap" value="3_13_1_1392">Nodo 3_13_1_1392</ion-select-option>
+            <ion-select-option class="ion-text-wrap" value="3_92_1_1334">Nodo 3_92_1_1334</ion-select-option>
+            <ion-select-option class="ion-text-wrap" value="4_32_0_1281">Nodo 4_32_0_1281</ion-select-option>
+            <ion-select-option class="ion-text-wrap" value="4_32_1_1286">Nodo 4_32_1_1286</ion-select-option>
           </ion-select>
         </ion-item>
       </ion-col>
     </ion-row>
     <ion-row>
-      <lightgallery [settings]="settingsVideo" class="img-gallery">
+      <ion-col> {{ videoList.length }} Archivos </ion-col>
+    </ion-row>
+    <ion-row>
+      <lightgallery
+        *ngIf="showVideoGallery"
+        [onInit]="onInitVideoGallery"
+        [settings]="settingsVideo"
+        class="img-gallery"
+      >
         <a
           *ngFor="let url of videoList"
           class="gallery-video-item"
@@ -58,7 +70,7 @@
         >
           <img
             alt="SiPeCaM fauna"
-            class="img-responsive"
+            class="poster-video"
             src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAOEAAADhCAMAAAAJbSJIAAAAbFBMVEUBAAL///8AAAD4+Pk1NTXn5+j7+/vy8vLr6+usrKzPz8+NjY2Dg4Ofnp88PD1XV1fd3d0tLC3V1dUODQ5sbG2kpKRPTk/CwsKVlJVaWlolJSViYmK/v78VFBV8e3xBQUIbGxy3t7cwMDBqamv3MZLIAAADiElEQVR4nO3cYW/aMBSF4dwEEjoKBLaVjW7dWP//f5yBBUFIiO244p6780pVv/Io0VViGzKxXvboD/DhUYgfhfhRiB+F+FGIH4X4UYgfhfhRiB+F+FGIH4X4nYRlYbGyERaL1XJiseVqURyE9S63266WrHL/M6s5W5XN7foO5fNsbVy4dn+P/hAfWm4daN/HGGOMMcYYY4wxxhhjjLH/OMv7rcfy/JdxYp5Pn2xfRieU6tWy8SAU2a7tEk9CKeZmL+M/oUg9MUo8C0W+2ryMF0KZvVokXgpFfvy0Z7wWSvlm7lZtCUU21p5xboQiC1uXsUMo05UlYpfQTZzPdozdQinezBB7hCKfrDzj9ApFvtmYOHeERibOPaHI3sDEuS+U6gv8rTogdBNnB04cFIqAvxx7CKWGnjg+QhHk5Tg/4XHiPPqjRuYpBF6O8xbCLsf5C93EWSISQ4SYy3FhQpnhTZxAIeDLcbBQymesWzVc6CYO1HJcjPA4cR79wb2LE8psBXOrRgrdxPkNQowWSvGMQYwXupdjiGecMUKMDYBxwuPEeTRhoJFCkb32LcfRQqmUbzmOF7qJ80czMYVQ9wZAGqHm5bhEQjdxtF7GZEIplL4cpxNqnTgphccNgEeDbkorlOmLOmJiYW1cWGp8oUop3KrcakwnrJSebEwmVLsBl+qp7UWpL5VQ87ZUCuFW9bJbgjdgpc+jTaOFT9p3akYKp/q3MEYJS83v9k1jhFuIA5ojVvVBjrxFC9WuWrSLFAIdPY0TIkyYphjhBup4VLhQ+yp+u2DhXvVDaEehJ4a+g/lChQg7ou1ChBuIXe12AacvNS6keeR/glb7W1JfnsLDhMEEegoRz5U2eX0bQf9r7p08hGCnLdsNCrfaT5MMNSCcvYP7hoRql+oDuifEnjBN/cJS81J9QL3CrcpjBxH1fVv93cYFzPqEMAtpHnUJFR/hiqhDiLSQ5tGNEP6bze1aQrSFNI+uheqPNEd09UtYpiZM04UQcSHNo7PQzK+1tGt+VRB0Ic2jk9DCb5j0dRACL6R55IRIX5eMKM+tTphzlm9QxhhjjDHGGGOMMcYYY4x9cNa3GXLrRKdbGxeus7lx4TyrLO/4OVuVSb3L7barJRMpFqvlxGLL1aKQg9BVFhYrj7as69CyqSjEj0L8KMSPQvwoxI9C/CjEj0L8KMSPQvwoxI9C/OwL/wLpr17CJLPlFQAAAABJRU5ErkJggg=="
           />
         </a>
