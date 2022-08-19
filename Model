@@ -167,6 +167,7 @@ Table Annotations_Geom_Obs_Type{
   classification_method varchar // human o machine
   observation_type varchar //vehicle, animal, human, empty, no clasified
   confidence float8 //resultado de modelo
+  pipeline_id int //relación con tabla Pipeline_Info
   file_id   int
   geometry GeometryCollection 
   video_frame_num int // para ubicar dentro del video la anotación
@@ -191,12 +192,14 @@ Table Pipeline_Info{
   comments varchar //clasification description: better for humans, animals, empty ?
 }
 
+// Relaciones Muchos a uno
+Ref: "Annotations_Geom_Obs_Type"."pipeline_id" > "Pipeline_Info"."id"
 
 Table Products{
   id int [pk, increment]
   file_id int
   type varchar //video, audio, image, image_without_bboxes_from_video
-  url varchar //ruta en s3
+  url varchar //Unique, ruta en s3
   pipeline_id int
   observation_type varchar //animal, empty, person
   producer varchar //CONABIO
