@@ -198,22 +198,20 @@ Ref: "Annotations_Geom_Obs_Type"."pipeline_id" > "Pipeline_Info"."id"
 Table Products{
   id int [pk, increment]
   file_id int
-  type varchar //video, audio, image, image_without_bboxes_from_video
+  type varchar //video, audio, image, spectrogram, image_without_bboxes_from_video
   url varchar //Unique, ruta en s3
   pipeline_id int
   observation_type varchar //animal, empty, person
   producer varchar //CONABIO
   project varchar //SiPeCaM
   metadata json // bboxes list of every animal in image, simex_metadata
-  audio_grid_id int //position in the grid for soundscape
-  audio_distance_to_mean float //to order audios which were used to generate soundscape
   createdAt timestamp
   updatedAt timestamp
   comments varchar //methodology, how to cite, clasification description: better for humans, animals, empty ?
 }
 
-// Relaciones Muchos a Muchos
-Ref: "Files"."id" <> "Products"."file_id"
+// Relaciones Uno a Muchos
+Ref: "Files"."id" < "Products"."file_id"
 // Relaciones Muchos a uno
 Ref: "Products"."pipeline_id" > "Pipeline_Info"."id"
 
@@ -331,7 +329,3 @@ Ref: "Visits"."monitor_ids" < "Monitors"."id"
 Ref: "Monitors"."visit_ids" < "Visits"."id"
 
 Ref: "Nodes"."id" < "delivered_files"."node_id"
-
-
-
-
