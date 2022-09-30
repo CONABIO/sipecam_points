@@ -50,6 +50,7 @@ export class MapaComponent implements OnInit {
   };
 
   showFilterBar = true;
+  showCarousel = true;
 
   userAuthenticated = false;
 

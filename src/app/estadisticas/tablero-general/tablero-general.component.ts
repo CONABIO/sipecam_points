@@ -297,13 +297,18 @@ export class TableroGeneralComponent implements OnInit, AfterViewInit {
       title: {
         text: 'Archivos entregados',
       },
+      min: 0,
+      forceNiceScale: true,
+      labels: {
+        formatter: this.shortNumber,
+      },
     },
   };
 
   filesSizeChart: ApexOptions = {
     series: [
       {
-        name: 'MB',
+        name: 'GB',
         data: [],
       },
     ],
@@ -325,13 +330,38 @@ export class TableroGeneralComponent implements OnInit, AfterViewInit {
     },
     yaxis: {
       title: {
-        text: 'Datos entregados (MB)',
+        text: 'Datos entregados (GB)',
+      },
+      min: 0,
+      forceNiceScale: true,
+      labels: {
+        formatter: this.shortNumber,
       },
     },
   };
 
   constructor(private alertController: AlertController, private apollo: Apollo, private route: ActivatedRoute) {
     this.cumuloId = this.route.snapshot.paramMap.get('id') || null;
+  }
+
+  shortNumber(value: any) {
+    if (isNaN(value)) {
+      return value;
+    }
+    let sufix = '';
+    if (value >= 1000000) {
+      value = value / 1000000;
+      sufix = 'M';
+    }
+
+    if (value >= 100000) {
+      value = value / 100000;
+      sufix = 'K';
+    }
+
+    const v = Number.isInteger(value) ? value : value.toFixed(2);
+
+    return v.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',') + sufix;
   }
 
   async ecosystemChanged() {
@@ -409,7 +439,8 @@ export class TableroGeneralComponent implements OnInit, AfterViewInit {
       audio.push(delivery.audio_files ?? 0);
       video.push(delivery.video_files ?? 0);
       images.push(delivery.image_files ?? 0);
-      size.push(delivery.size ?? 0);
+      const sizeMB = delivery.size ?? 0;
+      size.push((sizeMB / 1024).toFixed(2));
     });
 
     this.filesChart.series = [
