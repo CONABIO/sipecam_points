@@ -1,0 +1,117 @@
+<ion-content class="mod">
+  <ion-card class="ion-text-center ion-no-margin detail-card">
+    <ion-card-header color="dark">
+      <ion-card-title>Paisaje sonoro</ion-card-title>
+    </ion-card-header>
+    <ion-card-content>
+      <ion-grid class="ion-margin-top">
+        <ion-col size="6">
+          <ion-row>
+            <ion-col><b>INTEGRO</b></ion-col>
+          </ion-row>
+          <ion-row>
+            <ion-col><b>Nodo</b></ion-col>
+            <ion-col class="ion-text-end"></ion-col>
+          </ion-row>
+          <ion-row>
+            <ion-col><b>Fecha Inicio</b></ion-col>
+            <ion-col class="ion-text-end"></ion-col>
+          </ion-row>
+          <ion-row>
+            <ion-col><b>Fecha Fin</b></ion-col>
+            <ion-col class="ion-text-end"></ion-col>
+          </ion-row>
+          <ion-row>
+            <ion-col><b>Archivos</b></ion-col>
+            <ion-col class="ion-text-end">2880</ion-col>
+          </ion-row>
+          <ion-row>
+            <ion-col><b>Estación</b></ion-col>
+            <ion-col class="ion-text-end"> Lluvias</ion-col>
+          </ion-row>
+          <ion-row>
+            <ion-col class="ion-text-end">
+              <b>Longitud:</b> -98.9999 / <b>Latitud:</b> 18.4195 / <b>Altitud:</b> m</ion-col
+            >
+          </ion-row>
+          <ion-row>
+            <ion-col>
+              <div class="ion-text-center">
+                <img
+                  src="https://snmb.conabio.gob.mx/soundscape_snmb/process_sipecam/cumulo_32/soundscape_player_data/4_32_0_1279_2021-12-08T00%3A00%3A00.000%2B0000_243B1F055B1F95BF_18.477_-99.1682.png"
+                  style="height: 100%"
+                />
+                <audio
+                  controls
+                  src="https://snmb.conabio.gob.mx/soundscape_snmb/process_sipecam/cumulo_32/soundscape_player_data/4_32_0_1279_2021-12-08T00%3A00%3A00.000%2B0000_243B1F055B1F95BF_18.477_-99.1682.wav"
+                >
+                  <a
+                    href="https://snmb.conabio.gob.mx/soundscape_snmb/process_sipecam/cumulo_32/soundscape_player_data/4_32_0_1279_2021-12-08T00%3A00%3A00.000%2B0000_243B1F055B1F95BF_18.477_-99.1682.wav"
+                  >
+                    Download audio
+                  </a>
+                </audio>
+              </div>
+            </ion-col>
+          </ion-row>
+        </ion-col>
+
+        <ion-col size="6">
+          <ion-row>
+            <ion-col><b>DEGRADADO</b></ion-col>
+          </ion-row>
+          <ion-row>
+            <ion-col><b>Nodo</b></ion-col>
+            <ion-col class="ion-text-end"></ion-col>
+          </ion-row>
+          <ion-row>
+            <ion-col><b>Fecha Inicio</b></ion-col>
+            <ion-col class="ion-text-end"></ion-col>
+          </ion-row>
+          <ion-row>
+            <ion-col><b>Fecha Fin</b></ion-col>
+            <ion-col class="ion-text-end"></ion-col>
+          </ion-row>
+          <ion-row>
+            <ion-col><b>Archivos</b></ion-col>
+            <ion-col class="ion-text-end"></ion-col>
+          </ion-row>
+          <ion-row>
+            <ion-col><b>Estación</b></ion-col>
+            <ion-col class="ion-text-end"></ion-col>
+          </ion-row>
+          <ion-row>
+            <ion-col class="ion-text-end">
+              <b>Longitud:</b> -99.137 / <b>Latitud:</b> 18.4902 / <b>Altitud:</b> m</ion-col
+            >
+          </ion-row>
+          <ion-row>
+            <ion-col>
+              <div class="ion-text-center">
+                <img
+                  src="https://snmb.conabio.gob.mx/soundscape_snmb/process_sipecam/cumulo_32/soundscape_player_data/4_32_0_1280_2021-08-23T00%3A00%3A00.000%2B0000_248C7D075B1F81B1_18.4902_-99.137_plot.png"
+                  style="width: 100%"
+                />
+                <audio
+                  controls
+                  src="https://snmb.conabio.gob.mx/soundscape_snmb/process_sipecam/cumulo_32/soundscape_player_data/4_32_0_1280_2021-08-23T00%3A00%3A00.000%2B0000_248C7D075B1F81B1_18.4902_-99.137.wav"
+                >
+                  <a
+                    href="https://snmb.conabio.gob.mx/soundscape_snmb/process_sipecam/cumulo_32/soundscape_player_data/4_32_0_1280_2021-08-23T00%3A00%3A00.000%2B0000_248C7D075B1F81B1_18.4902_-99.137.wav"
+                  >
+                    Download audio
+                  </a>
+                </audio>
+              </div>
+            </ion-col>
+          </ion-row>
+        </ion-col>
+      </ion-grid>
+
+      <ion-button expand="block" fill="outline" [routerLink]="'/multimedia/' + id" target="_blank" (click)="dismiss()"
+        >Ver multimedia</ion-button
+      >
+      <ion-button expand="block" fill="outline" (click)="dismiss()">Cerrar</ion-button>
+    </ion-card-content>
+  </ion-card>
+</ion-content>

@@ -10,6 +10,7 @@ import { SharedModule } from '@shared';
 import { MapaRoutingModule } from './mapa-routing.module';
 import { MapaComponent } from './mapa.component';
 import { NodeDetailComponent } from './node-detail/node-detail.component';
+import { AcusticDetailComponent } from './acustic-detail/acustic-detail.component';
 import { FiltersComponent } from './filters/filters.component';
 
 @NgModule({
@@ -23,6 +24,6 @@ import { FiltersComponent } from './filters/filters.component';
     NgImageSliderModule,
     MapaRoutingModule,
   ],
-  declarations: [MapaComponent, NodeDetailComponent, FiltersComponent],
+  declarations: [MapaComponent, NodeDetailComponent, AcusticDetailComponent, FiltersComponent],
 })
 export class MapaModule {}

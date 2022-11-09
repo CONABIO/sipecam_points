@@ -8,6 +8,7 @@ import { CredentialsService } from '@app/auth';
 import { environment } from '@env/environment';
 import { FiltersService } from '../services/filters.service';
 import { NodeDetailComponent } from './node-detail/node-detail.component';
+import { AcusticDetailComponent } from './acustic-detail/acustic-detail.component';
 import * as mapboxgl from 'mapbox-gl';
 import * as turf from '@turf/turf';
 import * as _ from 'lodash';
@@ -114,6 +115,8 @@ export class MapaComponent implements OnInit {
 
   centroids: Array<any> = [];
   popup: any = null;
+
+  acusticFilter = true;
 
   constructor(
     private alertController: AlertController,
@@ -224,18 +227,29 @@ export class MapaComponent implements OnInit {
   }
 
   async goToCalendar(id: string = null, name?: string) {
+    if (this.acusticFilter) {
+      this.showAcusticDetail(id, name);
+      return;
+    }
+
     if (this.userAuthenticated) {
       const isUserAssociated = this.credentialsService.cumulus.indexOf(Number(id)) > -1;
       if (this.credentialsService.isAdmin() || (this.credentialsService.isPartner() && isUserAssociated)) {
         const alert = await this.alertController.create({
-          header: 'Calendario',
-          message: `¿Deseas ir al calendario del cúmulo ${name}?`,
+          header: `Cúmulo ${name}`,
+          message: `¿A dónde deseas ir?`,
           buttons: [
             'Cancelar',
             {
-              text: 'Ir',
+              text: 'Calendario',
               handler: () => {
                 this.router.navigate(['/eventos', id]);
+              },
+            },
+            {
+              text: 'Paisajes',
+              handler: () => {
+                this.router.navigate(['/paisajes', id]);
               },
             },
           ],
@@ -552,6 +566,16 @@ export class MapaComponent implements OnInit {
     ['cumulos-socio'].forEach((layer) => {
       this.map.setLayoutProperty(layer, 'visibility', value);
     });
+  }
+
+  async showAcusticDetail(id: string, cumulo?: string) {
+    const modal = await this.modalCtrl.create({
+      component: AcusticDetailComponent,
+      componentProps: { id, cumulo },
+      cssClass: 'acustic-modal',
+    });
+
+    modal.present();
   }
 
   async showDetail(id: string, cumulo?: string) {

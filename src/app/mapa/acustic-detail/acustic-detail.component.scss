@@ -1,0 +1,14 @@
+.detail-card {
+  height: 100%;
+  overflow: auto;
+
+  ion-grid,
+  ion-col,
+  ion-row {
+    border: solid var(--ion-color-light-shade) 0.5px;
+  }
+}
+
+.mod {
+  width: 600px;
+}
