@@ -83,7 +83,7 @@ export class MapaComponent implements OnInit {
     },
     {
       video: 'assets/slider/RCNX0063.mp4',
-      title: 'Jaguar con cría (Panthera onca)',
+      title: 'Jaguar (Panthera onca)',
       cumulo: 92,
     },
     {
