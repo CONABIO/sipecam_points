@@ -19,13 +19,9 @@
   </div>
   <div id="map"></div>
   <div class="acustic-filter">
-    <ion-item>
+    <ion-item color="primary" style="border-radius: 10px">
       <ion-label>Paisajes sonoros</ion-label>
-      <ion-toggle
-        [(ngModel)]="acusticFilter"
-        (ngModelChange)="acusticFilter = !acusticFilter"
-        slot="start"
-      ></ion-toggle>
+      <ion-toggle [(ngModel)]="acusticFilter" slot="start" color="light"></ion-toggle>
     </ion-item>
   </div>
   <div class="img-slider-container">

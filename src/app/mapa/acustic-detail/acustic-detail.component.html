@@ -5,36 +5,48 @@
     </ion-card-header>
     <ion-card-content>
       <ion-grid class="ion-margin-top">
-        <ion-col size="6">
-          <ion-row>
-            <ion-col><b>INTEGRO</b></ion-col>
-          </ion-row>
-          <ion-row>
-            <ion-col><b>Nodo</b></ion-col>
-            <ion-col class="ion-text-end"></ion-col>
-          </ion-row>
-          <ion-row>
-            <ion-col><b>Fecha Inicio</b></ion-col>
-            <ion-col class="ion-text-end"></ion-col>
-          </ion-row>
-          <ion-row>
-            <ion-col><b>Fecha Fin</b></ion-col>
-            <ion-col class="ion-text-end"></ion-col>
-          </ion-row>
-          <ion-row>
-            <ion-col><b>Archivos</b></ion-col>
-            <ion-col class="ion-text-end">2880</ion-col>
-          </ion-row>
-          <ion-row>
-            <ion-col><b>Estación</b></ion-col>
-            <ion-col class="ion-text-end"> Lluvias</ion-col>
-          </ion-row>
-          <ion-row>
-            <ion-col class="ion-text-end">
-              <b>Longitud:</b> -98.9999 / <b>Latitud:</b> 18.4195 / <b>Altitud:</b> m</ion-col
-            >
-          </ion-row>
-          <ion-row>
+        <ion-row>
+          <ion-col size="12"><b>PAR 1</b></ion-col>
+          <ion-col size="6">
+            <ion-row>
+              <ion-col><b>INTEGRO</b></ion-col>
+            </ion-row>
+            <ion-row>
+              <ion-col><b>Nodo</b></ion-col>
+              <ion-col class="ion-text-end"></ion-col>
+            </ion-row>
+            <ion-row>
+              <ion-col><b>Fecha Inicio</b></ion-col>
+              <ion-col class="ion-text-end"> {{ data[0].soundscape_start_date | date: 'dd/MM/yyyy' }} </ion-col>
+            </ion-row>
+            <ion-row>
+              <ion-col><b>Fecha Fin</b></ion-col>
+              <ion-col class="ion-text-end"> {{ data[0].soundscape_end_date | date: 'dd/MM/yyyy' }} </ion-col>
+            </ion-row>
+            <ion-row>
+              <ion-col><b>Archivos</b></ion-col>
+              <ion-col class="ion-text-end">{{ data[0].soundscape_total_files }}</ion-col>
+            </ion-row>
+            <ion-row>
+              <ion-col><b>Estación</b></ion-col>
+              <ion-col class="ion-text-end">{{ data[0].soundscape_season }}</ion-col>
+            </ion-row>
+            <ion-row>
+              <ion-col><b>Ecosistema</b></ion-col>
+              <ion-col class="ion-text-end">{{ data[0].sipecam_ecosystemsname }}</ion-col>
+            </ion-row>
+            <ion-row>
+              <ion-col class="ion-text-end">
+                <b>Longitud:</b> {{ data[0].sipecam_longitude }} / <b>Latitud:</b>
+                {{ data[0].sipecam_latitude }}</ion-col
+              >
+            </ion-row>
+            <ion-row>
+              <ion-col class="ion-text-center">
+                <b><a href="assets/audio-soundscape-player/example.html?audio=0" target="_blank">Ver</a></b>
+              </ion-col>
+            </ion-row>
+            <!--<ion-row>
             <ion-col>
               <div class="ion-text-center">
                 <img
@@ -53,64 +65,197 @@
                 </audio>
               </div>
             </ion-col>
-          </ion-row>
-        </ion-col>
+          </ion-row>-->
+          </ion-col>
 
-        <ion-col size="6">
-          <ion-row>
-            <ion-col><b>DEGRADADO</b></ion-col>
-          </ion-row>
-          <ion-row>
-            <ion-col><b>Nodo</b></ion-col>
-            <ion-col class="ion-text-end"></ion-col>
-          </ion-row>
-          <ion-row>
-            <ion-col><b>Fecha Inicio</b></ion-col>
-            <ion-col class="ion-text-end"></ion-col>
-          </ion-row>
-          <ion-row>
-            <ion-col><b>Fecha Fin</b></ion-col>
-            <ion-col class="ion-text-end"></ion-col>
-          </ion-row>
-          <ion-row>
-            <ion-col><b>Archivos</b></ion-col>
-            <ion-col class="ion-text-end"></ion-col>
-          </ion-row>
-          <ion-row>
-            <ion-col><b>Estación</b></ion-col>
-            <ion-col class="ion-text-end"></ion-col>
-          </ion-row>
-          <ion-row>
-            <ion-col class="ion-text-end">
-              <b>Longitud:</b> -99.137 / <b>Latitud:</b> 18.4902 / <b>Altitud:</b> m</ion-col
-            >
-          </ion-row>
-          <ion-row>
+          <ion-col size="6">
+            <ion-row>
+              <ion-col><b>DEGRADADO</b></ion-col>
+            </ion-row>
+            <ion-row>
+              <ion-col><b>Nodo</b></ion-col>
+              <ion-col class="ion-text-end"></ion-col>
+            </ion-row>
+            <ion-row>
+              <ion-col><b>Fecha Inicio</b></ion-col>
+              <ion-col class="ion-text-end"> {{ data[1].soundscape_start_date | date: 'dd/MM/yyyy' }} </ion-col>
+            </ion-row>
+            <ion-row>
+              <ion-col><b>Fecha Fin</b></ion-col>
+              <ion-col class="ion-text-end"> {{ data[1].soundscape_end_date | date: 'dd/MM/yyyy' }} </ion-col>
+            </ion-row>
+            <ion-row>
+              <ion-col><b>Archivos</b></ion-col>
+              <ion-col class="ion-text-end">{{ data[1].soundscape_total_files }}</ion-col>
+            </ion-row>
+            <ion-row>
+              <ion-col><b>Estación</b></ion-col>
+              <ion-col class="ion-text-end">{{ data[1].soundscape_season }}</ion-col>
+            </ion-row>
+            <ion-row>
+              <ion-col><b>Ecosistema</b></ion-col>
+              <ion-col class="ion-text-end">{{ data[1].sipecam_ecosystemsname }}</ion-col>
+            </ion-row>
+            <ion-row>
+              <ion-col class="ion-text-end">
+                <b>Longitud:</b> {{ data[1].sipecam_longitude }} / <b>Latitud:</b>
+                {{ data[1].sipecam_latitude }}</ion-col
+              >
+            </ion-row>
+            <ion-row>
+              <ion-col class="ion-text-center">
+                <b><a href="assets/audio-soundscape-player/example.html?audio=1" target="_blank">Ver</a></b>
+              </ion-col>
+            </ion-row>
+            <!--<ion-row>
             <ion-col>
               <div class="ion-text-center">
                 <img
-                  src="https://snmb.conabio.gob.mx/soundscape_snmb/process_sipecam/cumulo_32/soundscape_player_data/4_32_0_1280_2021-08-23T00%3A00%3A00.000%2B0000_248C7D075B1F81B1_18.4902_-99.137_plot.png"
-                  style="width: 100%"
+                  src="https://snmb.conabio.gob.mx/soundscape_snmb/process_sipecam/cumulo_32/soundscape_player_data/4_32_0_1279_2021-12-08T00%3A00%3A00.000%2B0000_243B1F055B1F95BF_18.477_-99.1682.png"
+                  style="height: 100%"
                 />
                 <audio
                   controls
-                  src="https://snmb.conabio.gob.mx/soundscape_snmb/process_sipecam/cumulo_32/soundscape_player_data/4_32_0_1280_2021-08-23T00%3A00%3A00.000%2B0000_248C7D075B1F81B1_18.4902_-99.137.wav"
+                  src="https://snmb.conabio.gob.mx/soundscape_snmb/process_sipecam/cumulo_32/soundscape_player_data/4_32_0_1279_2021-12-08T00%3A00%3A00.000%2B0000_243B1F055B1F95BF_18.477_-99.1682.wav"
                 >
                   <a
-                    href="https://snmb.conabio.gob.mx/soundscape_snmb/process_sipecam/cumulo_32/soundscape_player_data/4_32_0_1280_2021-08-23T00%3A00%3A00.000%2B0000_248C7D075B1F81B1_18.4902_-99.137.wav"
+                    href="https://snmb.conabio.gob.mx/soundscape_snmb/process_sipecam/cumulo_32/soundscape_player_data/4_32_0_1279_2021-12-08T00%3A00%3A00.000%2B0000_243B1F055B1F95BF_18.477_-99.1682.wav"
                   >
                     Download audio
                   </a>
                 </audio>
               </div>
             </ion-col>
-          </ion-row>
-        </ion-col>
+          </ion-row>-->
+          </ion-col>
+        </ion-row>
+
+        <ion-row>
+          <ion-col size="12"><b>PAR 2</b></ion-col>
+          <ion-col size="6">
+            <ion-row>
+              <ion-col><b>INTEGRO</b></ion-col>
+            </ion-row>
+            <ion-row>
+              <ion-col><b>Nodo</b></ion-col>
+              <ion-col class="ion-text-end"></ion-col>
+            </ion-row>
+            <ion-row>
+              <ion-col><b>Fecha Inicio</b></ion-col>
+              <ion-col class="ion-text-end"> {{ data[2].soundscape_start_date | date: 'dd/MM/yyyy' }} </ion-col>
+            </ion-row>
+            <ion-row>
+              <ion-col><b>Fecha Fin</b></ion-col>
+              <ion-col class="ion-text-end"> {{ data[2].soundscape_end_date | date: 'dd/MM/yyyy' }} </ion-col>
+            </ion-row>
+            <ion-row>
+              <ion-col><b>Archivos</b></ion-col>
+              <ion-col class="ion-text-end">{{ data[2].soundscape_total_files }}</ion-col>
+            </ion-row>
+            <ion-row>
+              <ion-col><b>Estación</b></ion-col>
+              <ion-col class="ion-text-end">{{ data[2].soundscape_season }}</ion-col>
+            </ion-row>
+            <ion-row>
+              <ion-col><b>Ecosistema</b></ion-col>
+              <ion-col class="ion-text-end">{{ data[2].sipecam_ecosystemsname }}</ion-col>
+            </ion-row>
+            <ion-row>
+              <ion-col class="ion-text-end">
+                <b>Longitud:</b> {{ data[2].sipecam_longitude }} / <b>Latitud:</b>
+                {{ data[2].sipecam_latitude }}</ion-col
+              >
+            </ion-row>
+            <ion-row>
+              <ion-col class="ion-text-center">
+                <b><a href="assets/audio-soundscape-player/example.html?audio=2" target="_blank">Ver</a></b>
+              </ion-col>
+            </ion-row>
+            <!--<ion-row>
+              <ion-col>
+                <div class="ion-text-center">
+                  <img
+                    src="https://snmb.conabio.gob.mx/soundscape_snmb/process_sipecam/cumulo_32/soundscape_player_data/4_32_0_1279_2021-12-08T00%3A00%3A00.000%2B0000_243B1F055B1F95BF_18.477_-99.1682.png"
+                    style="height: 100%"
+                  />
+                  <audio
+                    controls
+                    src="https://snmb.conabio.gob.mx/soundscape_snmb/process_sipecam/cumulo_32/soundscape_player_data/4_32_0_1279_2021-12-08T00%3A00%3A00.000%2B0000_243B1F055B1F95BF_18.477_-99.1682.wav"
+                  >
+                    <a
+                      href="https://snmb.conabio.gob.mx/soundscape_snmb/process_sipecam/cumulo_32/soundscape_player_data/4_32_0_1279_2021-12-08T00%3A00%3A00.000%2B0000_243B1F055B1F95BF_18.477_-99.1682.wav"
+                    >
+                      Download audio
+                    </a>
+                  </audio>
+                </div>
+              </ion-col>
+            </ion-row>-->
+          </ion-col>
+
+          <ion-col size="6">
+            <ion-row>
+              <ion-col><b>DEGRADADO</b></ion-col>
+            </ion-row>
+            <ion-row>
+              <ion-col><b>Nodo</b></ion-col>
+              <ion-col class="ion-text-end"></ion-col>
+            </ion-row>
+            <ion-row>
+              <ion-col><b>Fecha Inicio</b></ion-col>
+              <ion-col class="ion-text-end"> {{ data[3].soundscape_start_date | date: 'dd/MM/yyyy' }} </ion-col>
+            </ion-row>
+            <ion-row>
+              <ion-col><b>Fecha Fin</b></ion-col>
+              <ion-col class="ion-text-end"> {{ data[3].soundscape_end_date | date: 'dd/MM/yyyy' }} </ion-col>
+            </ion-row>
+            <ion-row>
+              <ion-col><b>Archivos</b></ion-col>
+              <ion-col class="ion-text-end">{{ data[3].soundscape_total_files }}</ion-col>
+            </ion-row>
+            <ion-row>
+              <ion-col><b>Estación</b></ion-col>
+              <ion-col class="ion-text-end">{{ data[3].soundscape_season }}</ion-col>
+            </ion-row>
+            <ion-row>
+              <ion-col><b>Ecosistema</b></ion-col>
+              <ion-col class="ion-text-end">{{ data[3].sipecam_ecosystemsname }}</ion-col>
+            </ion-row>
+            <ion-row>
+              <ion-col class="ion-text-end">
+                <b>Longitud:</b> {{ data[3].sipecam_longitude }} / <b>Latitud:</b>
+                {{ data[3].sipecam_latitude }}</ion-col
+              >
+            </ion-row>
+            <ion-row>
+              <ion-col class="ion-text-center">
+                <b><a href="assets/audio-soundscape-player/example.html?audio=3" target="_blank">Ver</a></b>
+              </ion-col>
+            </ion-row>
+            <!--<ion-row>
+              <ion-col>
+                <div class="ion-text-center">
+                  <img
+                    src="https://snmb.conabio.gob.mx/soundscape_snmb/process_sipecam/cumulo_32/soundscape_player_data/4_32_0_1279_2021-12-08T00%3A00%3A00.000%2B0000_243B1F055B1F95BF_18.477_-99.1682.png"
+                    style="height: 100%"
+                  />
+                  <audio
+                    controls
+                    src="https://snmb.conabio.gob.mx/soundscape_snmb/process_sipecam/cumulo_32/soundscape_player_data/4_32_0_1279_2021-12-08T00%3A00%3A00.000%2B0000_243B1F055B1F95BF_18.477_-99.1682.wav"
+                  >
+                    <a
+                      href="https://snmb.conabio.gob.mx/soundscape_snmb/process_sipecam/cumulo_32/soundscape_player_data/4_32_0_1279_2021-12-08T00%3A00%3A00.000%2B0000_243B1F055B1F95BF_18.477_-99.1682.wav"
+                    >
+                      Download audio
+                    </a>
+                  </audio>
+                </div>
+              </ion-col>
+            </ion-row>-->
+          </ion-col>
+        </ion-row>
       </ion-grid>
 
-      <ion-button expand="block" fill="outline" [routerLink]="'/multimedia/' + id" target="_blank" (click)="dismiss()"
-        >Ver multimedia</ion-button
-      >
       <ion-button expand="block" fill="outline" (click)="dismiss()">Cerrar</ion-button>
     </ion-card-content>
   </ion-card>
