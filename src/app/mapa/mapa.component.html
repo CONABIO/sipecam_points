@@ -18,6 +18,12 @@
     ></app-filters>
   </div>
   <div id="map"></div>
+  <div class="acustic-filter">
+    <ion-item color="primary" style="border-radius: 10px">
+      <ion-label>Paisajes sonoros</ion-label>
+      <ion-toggle [(ngModel)]="acusticFilter" slot="start" color="light"></ion-toggle>
+    </ion-item>
+  </div>
   <div class="img-slider-container">
     <ion-button slot="start" class="display-button" fill="clear" size="small" (click)="showCarousel = !showCarousel">
       <ion-icon *ngIf="showCarousel" slot="icon-only" name="remove" color="medium"></ion-icon>

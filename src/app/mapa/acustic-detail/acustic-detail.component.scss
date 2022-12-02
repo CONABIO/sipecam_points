@@ -1,0 +1,15 @@
+.detail-card {
+  height: 100%;
+  overflow: auto;
+
+  ion-grid,
+  ion-col,
+  ion-row {
+    border: solid var(--ion-color-light-shade) 0.5px;
+  }
+}
+
+.bg-primary {
+  background-color: var(--ion-color-primary);
+  color: #ffffff;
+}
