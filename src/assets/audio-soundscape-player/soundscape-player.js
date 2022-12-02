@@ -732,8 +732,8 @@ var setData = function () {
     '/LUSTRE/sacmod/audio/sipecam/process_sipecam/cumulo_32/soundscape_player_data/',
     ''
   );
-  source.src = `https://snmb.conabio.gob.mx/soundscape_snmb/process_sipecam/cumulo_32/soundscape_player_data/${sourceUrl}`;
-  sourceImg.src = `https://snmb.conabio.gob.mx/soundscape_snmb/process_sipecam/cumulo_32/soundscape_player_data/${imgUrl}`;
+  source.src = `https://snmb.conabio.gob.mx/soundscape_snmb/cumulo_32/soundscape_player_data/${sourceUrl}`;
+  sourceImg.src = `https://snmb.conabio.gob.mx/soundscape_snmb/cumulo_32/soundscape_player_data/${imgUrl}`;
 };
 
 window.onload = function () {

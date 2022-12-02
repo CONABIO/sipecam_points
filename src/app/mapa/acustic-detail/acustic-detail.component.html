@@ -6,7 +6,7 @@
     <ion-card-content>
       <ion-grid class="ion-margin-top">
         <ion-row>
-          <ion-col size="12"><b>PAR 1</b></ion-col>
+          <ion-col size="12" class="bg-primary"><b>PAR 1</b></ion-col>
           <ion-col size="6">
             <ion-row>
               <ion-col><b>INTEGRO</b></ion-col>
@@ -43,7 +43,8 @@
             </ion-row>
             <ion-row>
               <ion-col class="ion-text-center">
-                <b><a href="assets/audio-soundscape-player/example.html?audio=0" target="_blank">Ver</a></b>
+                <img [src]="getSoundscapeUrl(data[0].soundscape_plot_path)" />
+                <b><a href="assets/audio-soundscape-player/example.html?audio=0" target="_blank">Escuchar audio</a></b>
               </ion-col>
             </ion-row>
             <!--<ion-row>
@@ -104,7 +105,8 @@
             </ion-row>
             <ion-row>
               <ion-col class="ion-text-center">
-                <b><a href="assets/audio-soundscape-player/example.html?audio=1" target="_blank">Ver</a></b>
+                <img [src]="getSoundscapeUrl(data[1].soundscape_plot_path)" />
+                <b><a href="assets/audio-soundscape-player/example.html?audio=1" target="_blank">Escuchar audio</a></b>
               </ion-col>
             </ion-row>
             <!--<ion-row>
@@ -129,9 +131,11 @@
           </ion-row>-->
           </ion-col>
         </ion-row>
+      </ion-grid>
 
+      <ion-grid class="ion-margin-top">
         <ion-row>
-          <ion-col size="12"><b>PAR 2</b></ion-col>
+          <ion-col size="12" class="bg-primary"><b>PAR 2</b></ion-col>
           <ion-col size="6">
             <ion-row>
               <ion-col><b>INTEGRO</b></ion-col>
@@ -168,7 +172,8 @@
             </ion-row>
             <ion-row>
               <ion-col class="ion-text-center">
-                <b><a href="assets/audio-soundscape-player/example.html?audio=2" target="_blank">Ver</a></b>
+                <img [src]="getSoundscapeUrl(data[2].soundscape_plot_path)" />
+                <b><a href="assets/audio-soundscape-player/example.html?audio=2" target="_blank">Escuchar audio</a></b>
               </ion-col>
             </ion-row>
             <!--<ion-row>
@@ -229,7 +234,8 @@
             </ion-row>
             <ion-row>
               <ion-col class="ion-text-center">
-                <b><a href="assets/audio-soundscape-player/example.html?audio=3" target="_blank">Ver</a></b>
+                <img [src]="getSoundscapeUrl(data[3].soundscape_plot_path)" />
+                <b><a href="assets/audio-soundscape-player/example.html?audio=3" target="_blank">Escuchar audio</a></b>
               </ion-col>
             </ion-row>
             <!--<ion-row>

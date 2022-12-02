@@ -159,5 +159,10 @@ export class AcusticDetailComponent implements OnInit {
     });
   }
 
+  getSoundscapeUrl(url: string) {
+    const suffix = url.replace('/LUSTRE/sacmod/audio/sipecam/process_sipecam/cumulo_32/soundscape_player_data/', '');
+    return `https://snmb.conabio.gob.mx/soundscape_snmb/cumulo_32/soundscape_player_data/${suffix}`;
+  }
+
   async ngOnInit() {}
 }
