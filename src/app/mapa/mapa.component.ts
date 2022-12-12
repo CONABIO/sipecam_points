@@ -116,7 +116,7 @@ export class MapaComponent implements OnInit {
   centroids: Array<any> = [];
   popup: any = null;
 
-  acusticFilter = true;
+  acusticFilter = false;
 
   constructor(
     private alertController: AlertController,

@@ -355,7 +355,7 @@ export class TableroGeneralComponent implements OnInit, AfterViewInit {
     }
 
     if (value >= 100000) {
-      value = value / 100000;
+      value = value / 1000;
       sufix = 'K';
     }
 
@@ -606,26 +606,34 @@ export class TableroGeneralComponent implements OnInit, AfterViewInit {
   }
 
   async getFormularios() {
+    const LIMIT = 500;
     // pequeños mamiferos
     try {
-      const {
-        data: { individuals },
-      }: any = await this.apollo
-        .query({
-          query: getIndividuals,
-          variables: {
-            pagination: {
-              limit: 5000,
-              offset: 0,
-            },
-          },
-        })
-        .toPromise();
+      let indOffset = 0;
+      let filteredIndividuals = [];
+      let indLastResults = 0;
 
-      let filteredIndividuals = [...individuals];
+      do {
+        const {
+          data: { individuals },
+        }: any = await this.apollo
+          .query({
+            query: getIndividuals,
+            variables: {
+              pagination: {
+                limit: LIMIT,
+                offset: indOffset,
+              },
+            },
+          })
+          .toPromise();
+        indOffset += LIMIT;
+        indLastResults = individuals?.length ?? 0;
+        filteredIndividuals = [...filteredIndividuals, ...individuals];
+      } while (indLastResults >= LIMIT);
 
       if (this.currentEcosystem !== 'todos') {
-        filteredIndividuals = individuals.filter(
+        filteredIndividuals = filteredIndividuals.filter(
           (i) =>
             this.cumulusByEcosystem[this.currentEcosystem].findIndex((cum) => cum.id == i.associated_cumulus.id) > -1
         );
@@ -634,47 +642,65 @@ export class TableroGeneralComponent implements OnInit, AfterViewInit {
       const individualsGroup = _.groupBy(filteredIndividuals, (i) => i.associated_cumulus.name);
 
       // dispositivos
-      const {
-        data: { deployments },
-      }: any = await this.apollo
-        .query({
-          query: getDeployments,
-          variables: {
-            pagination: {
-              limit: 5000,
-              offset: 0,
-            },
-          },
-        })
-        .toPromise();
 
-      let filteredDeployments = [...deployments];
+      let depOffset = 0;
+      let filteredDeployments = [];
+      let depLastResults = 0;
+
+      do {
+        const {
+          data: { deployments },
+        }: any = await this.apollo
+          .query({
+            query: getDeployments,
+            variables: {
+              pagination: {
+                limit: LIMIT,
+                offset: depOffset,
+              },
+            },
+          })
+          .toPromise();
+
+        indOffset += LIMIT;
+        indLastResults = deployments?.length ?? 0;
+        filteredDeployments = [...filteredDeployments, ...deployments];
+      } while (depLastResults >= LIMIT);
 
       if (this.currentEcosystem !== 'todos') {
-        filteredDeployments = deployments.filter(
+        filteredDeployments = filteredDeployments.filter(
           (d) => this.cumulusByEcosystem[this.currentEcosystem].findIndex((cum) => cum.id == d.cumulus.id) > -1
         );
       }
       const deploymentsGroup = _.groupBy(filteredDeployments, (d) => d.cumulus.name);
 
-      const {
-        data: { transects },
-      }: any = await this.apollo
-        .query({
-          query: getTransects,
-          variables: {
-            pagination: {
-              limit: 1000,
-              offset: 0,
-            },
-          },
-        })
-        .toPromise();
+      // Transectos
+      let tranOffset = 0;
+      let filteredTransects = [];
+      let tranLastResults = 0;
 
-      let filteredTransects = [...transects];
+      do {
+        const {
+          data: { transects },
+        }: any = await this.apollo
+          .query({
+            query: getTransects,
+            variables: {
+              pagination: {
+                limit: LIMIT,
+                offset: tranOffset,
+              },
+            },
+          })
+          .toPromise();
+
+        tranOffset += LIMIT;
+        tranLastResults = transects?.length ?? 0;
+        filteredTransects = [...filteredTransects, ...transects];
+      } while (tranLastResults >= LIMIT);
 
       if (this.currentEcosystem !== 'todos') {
-        filteredTransects = transects.filter(
+        filteredTransects = filteredTransects.filter(
           (t) =>
             this.cumulusByEcosystem[this.currentEcosystem].findIndex((cum) => {
               const cumulo = t.associated_node ? t.associated_node.nomenclatura.split('_')[1] : -1;
