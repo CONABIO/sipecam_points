@@ -126,3 +126,22 @@ export const getCumulus = gql`
     }
   }
 `;
+
+// ------- -------
+// Queries for 'z1' server
+// ------- -------
+/**
+ * KoboCounters
+ */
+export const getKoboCounters = gql`
+  query get_kobo_counters($pagination: paginationInput!) {
+    kobo_counters(pagination: $pagination) {
+      id
+      cumulus
+      name
+      value
+      kobo_asset_uid
+      kobo_asset_name
+    }
+  }
+`;
