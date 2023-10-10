@@ -56,6 +56,8 @@ export type ChartOptions = {
   legend: ApexLegend;
 };
 
+const updateTimeout = 300;
+
 @Component({
   selector: 'app-tablero-general',
   templateUrl: './tablero-general.component.html',
@@ -525,6 +527,14 @@ export class TableroGeneralComponent implements OnInit, AfterViewInit {
           .reduce((previous, current) => previous + current, 0);
         dataReports.push(numReports);
       });
+
+      // We need this timeout to get the categories updated correctly on load.
+      await new Promise((resolve) => {
+        setTimeout(() => {
+          resolve(true);
+        }, updateTimeout);
+      });
+
       this.visitasChart.xaxis = {
         labels: {
           rotate: -90,
@@ -610,7 +620,7 @@ export class TableroGeneralComponent implements OnInit, AfterViewInit {
   /**
    * Query for 'z1' Zendro server.
    */
-   async getFormularios() {
+  async getFormularios() {
     try {
       const { data } = (await this.apollo
         .use('kzCounters')
@@ -664,12 +674,20 @@ export class TableroGeneralComponent implements OnInit, AfterViewInit {
         eries.push(byCumulo[cumulo][eries_name] ?? 0);
       });
 
+      // We need this timeout to get the categories updated correctly on load.
+      await new Promise((resolve) => {
+        setTimeout(() => {
+          resolve(true);
+        }, updateTimeout);
+      });
+
       this.formulariosChart.xaxis = {
         labels: {
           rotate: -90,
         },
         categories: categories,
       };
+
       this.formulariosChart.series[0].data = camaras;
       this.formulariosChart.series[1].data = grabadoras;
       this.formulariosChart.series[2].data = mamiferos;
