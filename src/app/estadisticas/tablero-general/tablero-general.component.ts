@@ -56,6 +56,8 @@ export type ChartOptions = {
   legend: ApexLegend;
 };
 
+const updateTimeout = 300;
+
 @Component({
   selector: 'app-tablero-general',
   templateUrl: './tablero-general.component.html',
@@ -530,7 +532,7 @@ export class TableroGeneralComponent implements OnInit, AfterViewInit {
       await new Promise((resolve) => {
         setTimeout(() => {
           resolve(true);
-        }, 700);
+        }, updateTimeout);
       });
 
       this.visitasChart.xaxis = {
@@ -676,7 +678,7 @@ export class TableroGeneralComponent implements OnInit, AfterViewInit {
       await new Promise((resolve) => {
         setTimeout(() => {
           resolve(true);
-        }, 700);
+        }, updateTimeout);
       });
 
       this.formulariosChart.xaxis = {
