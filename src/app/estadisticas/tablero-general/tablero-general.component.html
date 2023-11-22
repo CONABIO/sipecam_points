@@ -148,6 +148,44 @@
           </ion-row>
         </ion-col>
       </ion-row>
+      <ion-row>
+        <ion-col class="ion-padding" size="12" size-md="7">
+          <ion-row>
+            <ion-title class="ion-text-start ion-no-padding" color="medium">
+              Archivos entregados (Acumulación contada trimestralmente)
+            </ion-title>
+            <ion-item-divider class="ion-margin-top" color="light"></ion-item-divider>
+            <apx-chart
+              class="chart"
+              [series]="filesAccChart.series"
+              [chart]="filesAccChart.chart"
+              [xaxis]="filesAccChart.xaxis"
+              [dataLabels]="filesAccChart.dataLabels"
+              [colors]="filesAccChart.colors"
+              [legend]="filesAccChart.legend"
+              [yaxis]="filesAccChart.yaxis"
+            ></apx-chart>
+          </ion-row>
+        </ion-col>
+        <ion-col class="ion-padding" size="12" size-md="5">
+          <ion-row>
+            <ion-title class="ion-text-start ion-no-padding" color="medium">
+              Datos entregados (Acumulación contada trimestralmente)
+            </ion-title>
+            <ion-item-divider class="ion-margin-top" color="light"></ion-item-divider>
+            <apx-chart
+              class="chart"
+              [series]="filesSizeAccChart.series"
+              [chart]="filesSizeAccChart.chart"
+              [xaxis]="filesSizeAccChart.xaxis"
+              [dataLabels]="filesSizeAccChart.dataLabels"
+              [colors]="filesSizeAccChart.colors"
+              [legend]="filesSizeAccChart.legend"
+              [yaxis]="filesSizeAccChart.yaxis"
+            ></apx-chart>
+          </ion-row>
+        </ion-col>
+      </ion-row>
     </ion-grid>
   </div>
 </ion-content>

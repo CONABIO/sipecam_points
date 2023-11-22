@@ -58,6 +58,19 @@ export type ChartOptions = {
 
 const updateTimeout = 300;
 
+const inArray = (array) => (input) => _.includes(array, input);
+
+const monthToFourMountPeriod = (month) => {
+  const f = _.cond([
+    [inArray([0, 1, 2]), _.constant(1)],
+    [inArray([3, 4, 5]), _.constant(2)],
+    [inArray([6, 7, 8]), _.constant(3)],
+    [inArray([9, 10, 11]), _.constant(4)],
+    [_.stubTrue, _.constant(-1)],
+  ]);
+  return f(month);
+};
+
 @Component({
   selector: 'app-tablero-general',
   templateUrl: './tablero-general.component.html',
@@ -344,6 +357,90 @@ export class TableroGeneralComponent implements OnInit, AfterViewInit {
     },
   };
 
+  filesAccChart: ApexOptions = {
+    series: [
+      {
+        name: 'Audio',
+        data: [],
+      },
+      {
+        name: 'Video',
+        data: [],
+      },
+      {
+        name: 'Imágenes',
+        data: [],
+      },
+    ],
+    chart: {
+      type: 'area',
+      height: 350,
+      stacked: false,
+    },
+    colors: this.colors,
+    dataLabels: {
+      enabled: false,
+    },
+    legend: {
+      position: 'top',
+      horizontalAlign: 'left',
+    },
+    xaxis: {
+      title: {
+        text: 'Trimestre',
+      },
+      categories: [],
+    },
+    yaxis: {
+      title: {
+        text: 'Archivos entregados (Acumulados)',
+      },
+      min: 0,
+      forceNiceScale: true,
+      labels: {
+        formatter: this.shortNumber,
+      },
+    },
+  };
+
+  filesSizeAccChart: ApexOptions = {
+    series: [
+      {
+        name: 'GB',
+        data: [],
+      },
+    ],
+    chart: {
+      type: 'area',
+      height: 350,
+      stacked: false,
+    },
+    colors: this.colors,
+    dataLabels: {
+      enabled: false,
+    },
+    legend: {
+      position: 'top',
+      horizontalAlign: 'left',
+    },
+    xaxis: {
+      title: {
+        text: 'Trimestre',
+      },
+      categories: [],
+    },
+    yaxis: {
+      title: {
+        text: 'Datos entregados (GB Acumulados)',
+      },
+      min: 0,
+      forceNiceScale: true,
+      labels: {
+        formatter: this.shortNumber,
+      },
+    },
+  };
+
   constructor(private alertController: AlertController, private apollo: Apollo, private route: ActivatedRoute) {
     this.cumuloId = this.route.snapshot.paramMap.get('id') || null;
   }
@@ -392,6 +489,105 @@ export class TableroGeneralComponent implements OnInit, AfterViewInit {
       this.cumulusByEcosystem = _.groupBy(cumulus, (c) => c.ecosystem_id);
     } catch (error) {
       console.log(error);
+    }
+  }
+
+  async partition_files() {
+    let files: any = null;
+    try {
+      const { data }: any = await this.apollo
+        .query({
+          query: getAllFiles,
+          variables: {
+            pagination: {
+              limit: 1000,
+              offset: 0,
+            },
+          },
+        })
+        .toPromise();
+
+      let files: any = _.sortBy(data.file_counts, ['delivery_date']);
+
+      files = _.groupBy(files, (f) => new Date(f.delivery_date).getFullYear());
+      Object.keys(files).forEach((key) => {
+        files[key] = _.groupBy(files[key], (f) => monthToFourMountPeriod(new Date(f.delivery_date).getMonth()));
+        Object.keys(files[key]).forEach((key2) => {
+          files[key][key2] = _.reduce(
+            files[key][key2],
+            (result, obj) => {
+              return {
+                audio_files: result.audio_files + obj.audio_files,
+                image_files: result.image_files + obj.image_files,
+                video_files: result.video_files + obj.video_files,
+                size: result.size + obj.size / 1024,
+              };
+            },
+            {
+              audio_files: 0,
+              image_files: 0,
+              video_files: 0,
+              size: 0,
+            }
+          );
+        });
+      });
+
+      const categories = [];
+      const audio = [];
+      const video = [];
+      const images = [];
+      const size = [];
+      let audiot = 0;
+      let videot = 0;
+      let imagest = 0;
+      let sizet = 0;
+
+      Object.keys(files).forEach((year) => {
+        Object.keys(files[year]).forEach((fourMonthPeriod) => {
+          categories.push(`${year}-0${fourMonthPeriod}`);
+          audiot += files[year][fourMonthPeriod].audio_files;
+          videot += files[year][fourMonthPeriod].video_files;
+          imagest += files[year][fourMonthPeriod].image_files;
+          sizet += files[year][fourMonthPeriod].size;
+          audio.push(audiot);
+          video.push(videot);
+          images.push(imagest);
+          size.push(sizet.toFixed(2));
+        });
+      });
+
+      this.filesAccChart.series = [
+        {
+          name: 'Audio',
+          data: audio,
+        },
+        {
+          name: 'Video',
+          data: video,
+        },
+        {
+          name: 'Imágenes',
+          data: images,
+        },
+      ];
+
+      this.filesAccChart.xaxis = {
+        categories,
+      };
+
+      this.filesSizeAccChart.series = [
+        {
+          name: 'MB',
+          data: size,
+        },
+      ];
+
+      this.filesSizeAccChart.xaxis = {
+        categories,
+      };
+    } catch (error) {
+      console.error('Error al obtener los archivos', error);
     }
   }
 
@@ -753,6 +949,7 @@ export class TableroGeneralComponent implements OnInit, AfterViewInit {
     await this.getFormularios();
     await this.getDevices();
     await this.getFiles();
+    await this.partition_files();
     // this.getTransects();
   }
 }
