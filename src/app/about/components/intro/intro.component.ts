@@ -42,7 +42,7 @@ export class IntroComponent implements OnInit {
     await new Promise((resolve) => {
       setTimeout(() => {
         resolve(true);
-      }, this.timeout);
+      }, this.timeout1s);
     });
 
     // --
