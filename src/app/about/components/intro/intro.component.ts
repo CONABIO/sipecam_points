@@ -19,6 +19,51 @@ export class IntroComponent implements OnInit {
   }
 
   // ------- -------
+  // images
+  // ------- -------
+  imagesLoading = true;
+  imagesError = false;
+  images = [
+    'assets/logo-blanco.png',
+    'assets/logo.png',
+    'assets/bg/Fauna_Flora_SiPeCaM-02.png',
+    'assets/bg/Fauna_Flora_SiPeCaM-03.png',
+    'assets/bg/Fauna_Flora_SiPeCaM-04.png',
+    'assets/bg/Fauna_Flora_SiPeCaM-05.png',
+    'assets/bg/Fauna_Flora_SiPeCaM-06.png',
+    'assets/bg/Fauna_Flora_SiPeCaM-07.png',
+    'assets/bg/Fauna_Flora_SiPeCaM-08.png',
+  ];
+
+  loadImages = async () => {
+    this.imagesLoading = true;
+
+    // --
+    await new Promise((resolve) => {
+      setTimeout(() => {
+        resolve(true);
+      }, this.timeout1s);
+    });
+
+    // --
+    for (let i = 0; i < this.images.length && !this.imagesError; i++) {
+      // load
+      await new Promise((resolve) => {
+        let img = new Image();
+        img.onload = () => {
+          resolve(true);
+        };
+        img.src = this.images[i];
+      }).catch(() => {
+        // error
+        this.imagesError = true;
+      });
+    }
+    // --
+    this.imagesLoading = false;
+  };
+
+  // ------- -------
   // Intro
   // ------- -------
   timeout = 500;
@@ -27,6 +72,12 @@ export class IntroComponent implements OnInit {
   bgColor = '#FFF';
 
   startIntro = async () => {
+    await this.loadImages();
+    if (this.imagesError) {
+      this.introState = 100;
+      return;
+    }
+
     await new Promise((resolve) => {
       setTimeout(() => {
         this.introState = 1;
