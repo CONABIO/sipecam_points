@@ -357,6 +357,44 @@ export class TableroGeneralComponent implements OnInit, AfterViewInit {
     },
   };
 
+  filesAudioChart: ApexOptions = {
+    series: [
+      {
+        name: 'Audio',
+        data: [],
+      },
+    ],
+    chart: {
+      type: 'area',
+      height: 350,
+      stacked: false,
+    },
+    colors: this.colors,
+    dataLabels: {
+      enabled: false,
+    },
+    legend: {
+      position: 'top',
+      horizontalAlign: 'left',
+    },
+    xaxis: {
+      title: {
+        text: 'Trimestre',
+      },
+      categories: [],
+    },
+    yaxis: {
+      title: {
+        text: 'Archivos de audio entregados (Acumulados)',
+      },
+      min: 0,
+      forceNiceScale: true,
+      labels: {
+        formatter: this.shortNumber,
+      },
+    },
+  };
+
   filesAccChart: ApexOptions = {
     series: [
       {
@@ -406,7 +444,7 @@ export class TableroGeneralComponent implements OnInit, AfterViewInit {
   filesSizeAccChart: ApexOptions = {
     series: [
       {
-        name: 'GB',
+        name: 'MB',
         data: [],
       },
     ],
@@ -431,7 +469,7 @@ export class TableroGeneralComponent implements OnInit, AfterViewInit {
     },
     yaxis: {
       title: {
-        text: 'Datos entregados (GB Acumulados)',
+        text: 'Datos entregados (MB Acumulados)',
       },
       min: 0,
       forceNiceScale: true,
@@ -455,7 +493,7 @@ export class TableroGeneralComponent implements OnInit, AfterViewInit {
       sufix = 'M';
     }
 
-    if (value >= 100000) {
+    if (value >= 1000) {
       value = value / 1000;
       sufix = 'K';
     }
@@ -557,11 +595,17 @@ export class TableroGeneralComponent implements OnInit, AfterViewInit {
         });
       });
 
-      this.filesAccChart.series = [
+      this.filesAudioChart.series = [
         {
           name: 'Audio',
           data: audio,
         },
+      ];
+      this.filesAudioChart.xaxis = {
+        categories,
+      };
+
+      this.filesAccChart.series = [
         {
           name: 'Video',
           data: video,
