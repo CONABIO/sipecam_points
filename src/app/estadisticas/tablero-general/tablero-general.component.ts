@@ -27,9 +27,11 @@ import {
   getAllFiles,
   getFiles,
   getCumulus,
+  getKoboCounters,
 } from '@api/tableros';
 import { getEcosystems } from '@api/mapa';
 import { AlertController } from '@ionic/angular';
+import { ApolloQueryResult } from '@apollo/client/core';
 
 export interface Visit {
   date_sipecam_second_season: string;
@@ -52,6 +54,21 @@ export type ChartOptions = {
   tooltip: ApexTooltip;
   stroke: ApexStroke;
   legend: ApexLegend;
+};
+
+const updateTimeout = 300;
+
+const inArray = (array) => (input) => _.includes(array, input);
+
+const monthToFourMountPeriod = (month) => {
+  const f = _.cond([
+    [inArray([0, 1, 2]), _.constant(1)],
+    [inArray([3, 4, 5]), _.constant(2)],
+    [inArray([6, 7, 8]), _.constant(3)],
+    [inArray([9, 10, 11]), _.constant(4)],
+    [_.stubTrue, _.constant(-1)],
+  ]);
+  return f(month);
 };
 
 @Component({
@@ -340,6 +357,128 @@ export class TableroGeneralComponent implements OnInit, AfterViewInit {
     },
   };
 
+  filesAudioChart: ApexOptions = {
+    series: [
+      {
+        name: 'Audio',
+        data: [],
+      },
+    ],
+    chart: {
+      type: 'area',
+      height: 350,
+      stacked: false,
+    },
+    colors: this.colors,
+    dataLabels: {
+      enabled: false,
+    },
+    legend: {
+      position: 'top',
+      horizontalAlign: 'left',
+    },
+    xaxis: {
+      title: {
+        text: 'Trimestre',
+      },
+      categories: [],
+    },
+    yaxis: {
+      title: {
+        text: 'Archivos de audio entregados (Acumulados)',
+      },
+      min: 0,
+      forceNiceScale: true,
+      labels: {
+        formatter: this.shortNumber,
+      },
+    },
+  };
+
+  filesAccChart: ApexOptions = {
+    series: [
+      {
+        name: 'Audio',
+        data: [],
+      },
+      {
+        name: 'Video',
+        data: [],
+      },
+      {
+        name: 'Imágenes',
+        data: [],
+      },
+    ],
+    chart: {
+      type: 'area',
+      height: 350,
+      stacked: false,
+    },
+    colors: this.colors,
+    dataLabels: {
+      enabled: false,
+    },
+    legend: {
+      position: 'top',
+      horizontalAlign: 'left',
+    },
+    xaxis: {
+      title: {
+        text: 'Trimestre',
+      },
+      categories: [],
+    },
+    yaxis: {
+      title: {
+        text: 'Archivos entregados (Acumulados)',
+      },
+      min: 0,
+      forceNiceScale: true,
+      labels: {
+        formatter: this.shortNumber,
+      },
+    },
+  };
+
+  filesSizeAccChart: ApexOptions = {
+    series: [
+      {
+        name: 'MB',
+        data: [],
+      },
+    ],
+    chart: {
+      type: 'area',
+      height: 350,
+      stacked: false,
+    },
+    colors: this.colors,
+    dataLabels: {
+      enabled: false,
+    },
+    legend: {
+      position: 'top',
+      horizontalAlign: 'left',
+    },
+    xaxis: {
+      title: {
+        text: 'Trimestre',
+      },
+      categories: [],
+    },
+    yaxis: {
+      title: {
+        text: 'Datos entregados (MB Acumulados)',
+      },
+      min: 0,
+      forceNiceScale: true,
+      labels: {
+        formatter: this.shortNumber,
+      },
+    },
+  };
+
   constructor(private alertController: AlertController, private apollo: Apollo, private route: ActivatedRoute) {
     this.cumuloId = this.route.snapshot.paramMap.get('id') || null;
   }
@@ -354,7 +493,7 @@ export class TableroGeneralComponent implements OnInit, AfterViewInit {
       sufix = 'M';
     }
 
-    if (value >= 100000) {
+    if (value >= 1000) {
       value = value / 1000;
       sufix = 'K';
     }
@@ -388,6 +527,111 @@ export class TableroGeneralComponent implements OnInit, AfterViewInit {
       this.cumulusByEcosystem = _.groupBy(cumulus, (c) => c.ecosystem_id);
     } catch (error) {
       console.log(error);
+    }
+  }
+
+  async partition_files() {
+    let files: any = null;
+    try {
+      const { data }: any = await this.apollo
+        .query({
+          query: getAllFiles,
+          variables: {
+            pagination: {
+              limit: 1000,
+              offset: 0,
+            },
+          },
+        })
+        .toPromise();
+
+      let files: any = _.sortBy(data.file_counts, ['delivery_date']);
+
+      files = _.groupBy(files, (f) => new Date(f.delivery_date).getFullYear());
+      Object.keys(files).forEach((key) => {
+        files[key] = _.groupBy(files[key], (f) => monthToFourMountPeriod(new Date(f.delivery_date).getMonth()));
+        Object.keys(files[key]).forEach((key2) => {
+          files[key][key2] = _.reduce(
+            files[key][key2],
+            (result, obj) => {
+              return {
+                audio_files: result.audio_files + obj.audio_files,
+                image_files: result.image_files + obj.image_files,
+                video_files: result.video_files + obj.video_files,
+                size: result.size + obj.size / 1024,
+              };
+            },
+            {
+              audio_files: 0,
+              image_files: 0,
+              video_files: 0,
+              size: 0,
+            }
+          );
+        });
+      });
+
+      const categories = [];
+      const audio = [];
+      const video = [];
+      const images = [];
+      const size = [];
+      let audiot = 0;
+      let videot = 0;
+      let imagest = 0;
+      let sizet = 0;
+
+      Object.keys(files).forEach((year) => {
+        Object.keys(files[year]).forEach((fourMonthPeriod) => {
+          categories.push(`${year}-0${fourMonthPeriod}`);
+          audiot += files[year][fourMonthPeriod].audio_files;
+          videot += files[year][fourMonthPeriod].video_files;
+          imagest += files[year][fourMonthPeriod].image_files;
+          sizet += files[year][fourMonthPeriod].size;
+          audio.push(audiot);
+          video.push(videot);
+          images.push(imagest);
+          size.push(sizet.toFixed(2));
+        });
+      });
+
+      this.filesAudioChart.series = [
+        {
+          name: 'Audio',
+          data: audio,
+        },
+      ];
+      this.filesAudioChart.xaxis = {
+        categories,
+      };
+
+      this.filesAccChart.series = [
+        {
+          name: 'Video',
+          data: video,
+        },
+        {
+          name: 'Imágenes',
+          data: images,
+        },
+      ];
+
+      this.filesAccChart.xaxis = {
+        categories,
+      };
+
+      this.filesSizeAccChart.series = [
+        {
+          name: 'MB',
+          data: size,
+        },
+      ];
+
+      this.filesSizeAccChart.xaxis = {
+        categories,
+      };
+    } catch (error) {
+      console.error('Error al obtener los archivos', error);
     }
   }
 
@@ -523,6 +767,14 @@ export class TableroGeneralComponent implements OnInit, AfterViewInit {
           .reduce((previous, current) => previous + current, 0);
         dataReports.push(numReports);
       });
+
+      // We need this timeout to get the categories updated correctly on load.
+      await new Promise((resolve) => {
+        setTimeout(() => {
+          resolve(true);
+        }, updateTimeout);
+      });
+
       this.visitasChart.xaxis = {
         labels: {
           rotate: -90,
@@ -605,157 +857,68 @@ export class TableroGeneralComponent implements OnInit, AfterViewInit {
     }
   }
 
+  /**
+   * Query for 'z1' Zendro server.
+   */
   async getFormularios() {
-    const LIMIT = 500;
-    // pequeños mamiferos
     try {
-      let indOffset = 0;
-      let filteredIndividuals = [];
-      let indLastResults = 0;
-
-      do {
-        const {
-          data: { individuals },
-        }: any = await this.apollo
-          .query({
-            query: getIndividuals,
-            variables: {
-              pagination: {
-                limit: LIMIT,
-                offset: indOffset,
-              },
+      const { data } = (await this.apollo
+        .use('kzCounters')
+        .query({
+          query: getKoboCounters,
+          variables: {
+            pagination: {
+              limit: 5000,
+              offset: 0,
             },
-          })
-          .toPromise();
-        indOffset += LIMIT;
-        indLastResults = individuals?.length ?? 0;
-        filteredIndividuals = [...filteredIndividuals, ...individuals];
-      } while (indLastResults >= LIMIT);
-
-      if (this.currentEcosystem !== 'todos') {
-        filteredIndividuals = filteredIndividuals.filter(
-          (i) =>
-            this.cumulusByEcosystem[this.currentEcosystem].findIndex((cum) => cum.id == i.associated_cumulus.id) > -1
-        );
-      }
-
-      const individualsGroup = _.groupBy(filteredIndividuals, (i) => i.associated_cumulus.name);
-
-      // dispositivos
-
-      let depOffset = 0;
-      let filteredDeployments = [];
-      let depLastResults = 0;
-
-      do {
-        const {
-          data: { deployments },
-        }: any = await this.apollo
-          .query({
-            query: getDeployments,
-            variables: {
-              pagination: {
-                limit: LIMIT,
-                offset: depOffset,
-              },
-            },
-          })
-          .toPromise();
-
-        indOffset += LIMIT;
-        indLastResults = deployments?.length ?? 0;
-        filteredDeployments = [...filteredDeployments, ...deployments];
-      } while (depLastResults >= LIMIT);
-
-      if (this.currentEcosystem !== 'todos') {
-        filteredDeployments = filteredDeployments.filter(
-          (d) => this.cumulusByEcosystem[this.currentEcosystem].findIndex((cum) => cum.id == d.cumulus.id) > -1
-        );
-      }
-      const deploymentsGroup = _.groupBy(filteredDeployments, (d) => d.cumulus.name);
-
-      // Transectos
-      let tranOffset = 0;
-      let filteredTransects = [];
-      let tranLastResults = 0;
-
-      do {
-        const {
-          data: { transects },
-        }: any = await this.apollo
-          .query({
-            query: getTransects,
-            variables: {
-              pagination: {
-                limit: LIMIT,
-                offset: tranOffset,
-              },
-            },
-          })
-          .toPromise();
-
-        tranOffset += LIMIT;
-        tranLastResults = transects?.length ?? 0;
-        filteredTransects = [...filteredTransects, ...transects];
-      } while (tranLastResults >= LIMIT);
-
-      if (this.currentEcosystem !== 'todos') {
-        filteredTransects = filteredTransects.filter(
-          (t) =>
-            this.cumulusByEcosystem[this.currentEcosystem].findIndex((cum) => {
-              const cumulo = t.associated_node ? t.associated_node.nomenclatura.split('_')[1] : -1;
-              return cum.name == cumulo;
-            }) > -1
-        );
-      }
-
-      const transectsGroup = _.groupBy(filteredTransects, (t) => {
-        const cumulo = t.associated_node ? t.associated_node.nomenclatura.split('_')[1] : -1;
-        if (cumulo === -1) {
-          console.log('//////', t);
-        }
-        return cumulo;
-      });
-
-      // join all
-      let byCumulo = {};
-
-      Object.keys(individualsGroup).forEach((i) => {
-        if (!!!byCumulo[i]) {
-          byCumulo[i] = {};
-        }
-        byCumulo[i].mamiferos = individualsGroup[i].length;
-      });
-      Object.keys(deploymentsGroup).forEach((d) => {
-        if (!!!byCumulo[d]) {
-          byCumulo[d] = {};
-        }
-        byCumulo[d].camaras = deploymentsGroup[d].filter(
-          (deployment) => deployment.device.device.type.toLowerCase() === 'camara'
-        ).length;
-        byCumulo[d].grabadoras = deploymentsGroup[d].filter(
-          (deployment) => deployment.device.device.type.toLowerCase() === 'grabadora'
-        ).length;
-      });
-      Object.keys(transectsGroup).forEach((i) => {
-        if (!!!byCumulo[i]) {
-          byCumulo[i] = {};
-        }
-        byCumulo[i].transectos = transectsGroup[i].length;
-      });
+          },
+        })
+        .toPromise()) as ApolloQueryResult<{
+        kobo_counters: {
+          id: string;
+          cumulus: string;
+          name: string;
+          value: number;
+          kobo_asset_uid: string;
+          kobo_asset_name: string;
+        }[];
+      }>;
 
       const categories = [];
       const camaras = [];
       const grabadoras = [];
       const mamiferos = [];
-      const transectos = [];
+      const eries = [];
+
+      const camaras_name = 'Cámara Trampa';
+      const grabadoras_name = 'Grabadora AudioMoth';
+      const mamiferos_name = 'PM';
+      const eries_name = 'ERIE';
+
+      const byCumulo = data.kobo_counters.reduce((acc, cur) => {
+        //case 1: new cumulus
+        if (!acc?.[cur.cumulus]) {
+          acc[cur.cumulus] = { [cur.name]: cur.value };
+        } else {
+          //case 2: cumulus already exist
+          acc[cur.cumulus][cur.name] = cur.value + (acc[cur.cumulus][cur.name] ?? 0);
+        }
+        return acc;
+      }, {});
 
       Object.keys(byCumulo).forEach((cumulo) => {
         categories.push(`Cúm ${cumulo}`);
-        camaras.push(byCumulo[cumulo].camaras ?? 0);
-        grabadoras.push(byCumulo[cumulo].grabadoras ?? 0);
-        mamiferos.push(byCumulo[cumulo].mamiferos ?? 0);
-        transectos.push(byCumulo[cumulo].transectos ?? 0);
+        camaras.push(byCumulo[cumulo][camaras_name] ?? 0);
+        grabadoras.push(byCumulo[cumulo][grabadoras_name] ?? 0);
+        mamiferos.push(byCumulo[cumulo][mamiferos_name] ?? 0);
+        eries.push(byCumulo[cumulo][eries_name] ?? 0);
+      });
+
+      // We need this timeout to get the categories updated correctly on load.
+      await new Promise((resolve) => {
+        setTimeout(() => {
+          resolve(true);
+        }, updateTimeout);
       });
 
       this.formulariosChart.xaxis = {
@@ -764,10 +927,11 @@ export class TableroGeneralComponent implements OnInit, AfterViewInit {
         },
         categories: categories,
       };
+
       this.formulariosChart.series[0].data = camaras;
       this.formulariosChart.series[1].data = grabadoras;
       this.formulariosChart.series[2].data = mamiferos;
-      this.formulariosChart.series[3].data = transectos;
+      this.formulariosChart.series[3].data = eries;
     } catch (error) {
       console.log(error);
     }
@@ -829,6 +993,7 @@ export class TableroGeneralComponent implements OnInit, AfterViewInit {
     await this.getFormularios();
     await this.getDevices();
     await this.getFiles();
+    await this.partition_files();
     // this.getTransects();
   }
 }

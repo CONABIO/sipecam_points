@@ -1,125 +1,36 @@
-ion-content {
+.content {
   font-size: 20px;
+  overflow-y: scroll;
+  font-family: "Poppins", serif;
 }
 
-.slider {
-  height: 100%;
+.bg-color-transition {
+  -webkit-transition: background-color 500ms linear;
+  -moz-transition: background-color 500ms linear;
+  -o-transition: background-color 500ms linear;
+  -ms-transition: background-color 500ms linear;
+  transition: background-color 500ms linear;
 }
 
-.parallax {
-  min-height: 480px;
-  position: relative;
-  opacity: 0.9;
-  /* Create the parallax scrolling effect */
-  background-attachment: fixed;
-  background-position: bottom;
-  background-repeat: no-repeat;
-  background-size: cover;
+.font-family {
+  font-family: "Poppins", serif;
 }
 
-.caption {
-  position: absolute;
-  left: 0;
-  top: 50%;
-  width: 100%;
-  text-align: center;
-  color: #000;
+.margin-x1 {
+  margin-left: 13%;
+  margin-right: 13%;
 
-  span.border {
-    background-color: #111;
-    color: #fff;
-    padding: 18px;
-    font-size: 25px;
-    letter-spacing: 10px;
+  @media screen and (max-width: 500px) {
+    margin-left: 8%;
+    margin-right: 8%;
+  }
+
+  @media screen and (max-width: 400px) {
+    margin-left: 5%;
+    margin-right: 5%;
   }
 }
 
-.text-section {
-  color: #fff;
-  background-color: #282e34;
-  text-align: center;
-  padding: 40px 60px;
-  text-align: justify;
-}
-
-.bg-1 {
-  /* Full height */
-  min-height: 100%;
-  background-image: url(../../assets/fototrampas/oso.jpeg);
-}
-
-.bg-2 {
-  background-image: url(../../assets/fototrampas/coyote_noche.jpeg);
-}
-
-.bg-3 {
-  background-image: url(../../assets/fototrampas/venado_bura4.jpeg);
-}
-
-.bg-equipo {
-  /* Full height */
-  min-height: 100%;
-  background-image: url(../../assets/equipo/equipo.jpg);
-}
-
-.team-section {
-  background-color: #282e34;
-  padding: 40px 60px;
-  text-align: center;
-
-  ion-card {
-    margin: 0 10px;
-    height: 100%;
-    display: flex;
-    flex-direction: column;
-
-    & > h3 {
-      margin: 0.5rem 0;
-    }
-
-    & > p {
-      margin: 0 0 0.5em 0;
-    }
-  }
-
-  ion-card-content {
-    color: #ddd;
-    background-color: #282e34;
-    text-align: justify;
-    min-height: 170px;
-    flex: 1;
-  }
-
-  ion-thumbnail,
-  img {
-    height: 100px;
-    width: 100px;
-    margin: 10px;
-    object-fit: cover;
-    object-position: top;
-  }
-}
-
-.bg-4 {
-  background-image: url(../../assets/fototrampas/viejo_de_monte.jpeg);
-}
-
-.bg-5 {
-  background-image: url(../../assets/fototrampas/venado_bura2.jpeg);
-}
-
-.bg-6 {
-  background-image: url(../../assets/fototrampas/basariscus_astutus.jpg);
-}
-
-.bg-7 {
-  background-image: url(../../assets/fototrampas/tapir.png);
-}
-
-.bg-8 {
-  background-image: url(../../assets/fototrampas/uamericanus.jpeg);
-}
-
-.bg-9 {
-  background-image: url(../../assets/fototrampas/venado_bura.jpeg);
+.margin-y1 {
+  margin-bottom: 450px;
 }
