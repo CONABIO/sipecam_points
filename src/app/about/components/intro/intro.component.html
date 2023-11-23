@@ -11,7 +11,16 @@
     <div *ngIf="introState >= 9 && hoverLineId === 0" class="bg-logo-100 box-bg"></div>
   </div>
 
-  <div class="flex-box-a lines-container">
+  <div *ngIf="imagesLoading" class="flex-box-a">
+    <div class="lds-ellipsis">
+      <div></div>
+      <div></div>
+      <div></div>
+      <div></div>
+    </div>
+  </div>
+
+  <div *ngIf="!imagesError" class="flex-box-a lines-container">
     <div
       @lineIn
       *ngIf="introState >= 2 || introState >= 9"
