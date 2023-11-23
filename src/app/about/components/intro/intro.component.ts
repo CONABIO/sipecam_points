@@ -84,7 +84,7 @@ export class IntroComponent implements OnInit {
         this.bgColor = '#000';
         this.introStarted.emit();
         resolve(true);
-      }, this.timeout1s);
+      }, 0);
     });
 
     await new Promise((resolve) => {

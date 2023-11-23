@@ -188,6 +188,12 @@
 // ------- -------
 // loading ellipsis
 // ------- -------
+.lds-ellipsis-container {
+  width: 100%;
+  position: absolute;
+  bottom: 0;
+}
+
 .lds-ellipsis {
   display: inline-block;
   position: relative;
