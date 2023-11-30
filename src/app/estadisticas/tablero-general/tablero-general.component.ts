@@ -60,7 +60,7 @@ const updateTimeout = 300;
 
 const inArray = (array) => (input) => _.includes(array, input);
 
-const monthToFourMountPeriod = (month) => {
+const monthToThreeMountPeriod = (month) => {
   const f = _.cond([
     [inArray([0, 1, 2]), _.constant(1)],
     [inArray([3, 4, 5]), _.constant(2)],
@@ -531,7 +531,6 @@ export class TableroGeneralComponent implements OnInit, AfterViewInit {
   }
 
   async partition_files() {
-    let files: any = null;
     try {
       const { data }: any = await this.apollo
         .query({
@@ -549,7 +548,7 @@ export class TableroGeneralComponent implements OnInit, AfterViewInit {
 
       files = _.groupBy(files, (f) => new Date(f.delivery_date).getFullYear());
       Object.keys(files).forEach((key) => {
-        files[key] = _.groupBy(files[key], (f) => monthToFourMountPeriod(new Date(f.delivery_date).getMonth()));
+        files[key] = _.groupBy(files[key], (f) => monthToThreeMountPeriod(new Date(f.delivery_date).getMonth()));
         Object.keys(files[key]).forEach((key2) => {
           files[key][key2] = _.reduce(
             files[key][key2],
