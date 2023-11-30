@@ -109,7 +109,7 @@ export class TableroGeneralComponent implements OnInit, AfterViewInit {
     ],
     chart: {
       type: 'bar',
-      height: 350,
+      height: 400,
       toolbar: { show: false },
     },
     plotOptions: {
@@ -161,7 +161,7 @@ export class TableroGeneralComponent implements OnInit, AfterViewInit {
       },
     ],
     chart: {
-      height: 350,
+      height: 400,
       type: 'bar',
       toolbar: { show: false },
     },
@@ -210,12 +210,12 @@ export class TableroGeneralComponent implements OnInit, AfterViewInit {
   devicesStatusChart: ApexOptions = {
     series: [],
     chart: {
-      height: 250,
+      height: 300,
       type: 'donut',
     },
     labels: [],
     legend: {
-      position: 'left',
+      position: 'bottom',
     },
     plotOptions: {
       pie: {
@@ -234,12 +234,12 @@ export class TableroGeneralComponent implements OnInit, AfterViewInit {
   devicesTypeChart: ApexOptions = {
     series: [],
     chart: {
-      height: 250,
+      height: 300,
       type: 'donut',
     },
     labels: [],
     legend: {
-      position: 'left',
+      position: 'bottom',
     },
     plotOptions: {
       pie: {
@@ -258,12 +258,12 @@ export class TableroGeneralComponent implements OnInit, AfterViewInit {
   activeDevicesChart: ApexOptions = {
     series: [],
     chart: {
-      height: 250,
+      height: 300,
       type: 'donut',
     },
     labels: [],
     legend: {
-      position: 'left',
+      position: 'bottom',
     },
     plotOptions: {
       pie: {
@@ -312,7 +312,7 @@ export class TableroGeneralComponent implements OnInit, AfterViewInit {
     },
     yaxis: {
       title: {
-        text: 'Archivos entregados',
+        text: '',
       },
       min: 0,
       forceNiceScale: true,
@@ -325,7 +325,7 @@ export class TableroGeneralComponent implements OnInit, AfterViewInit {
   filesSizeChart: ApexOptions = {
     series: [
       {
-        name: 'GB',
+        name: 'TB',
         data: [],
       },
     ],
@@ -347,7 +347,7 @@ export class TableroGeneralComponent implements OnInit, AfterViewInit {
     },
     yaxis: {
       title: {
-        text: 'Datos entregados (GB)',
+        text: '',
       },
       min: 0,
       forceNiceScale: true,
@@ -385,7 +385,7 @@ export class TableroGeneralComponent implements OnInit, AfterViewInit {
     },
     yaxis: {
       title: {
-        text: 'Archivos de audio entregados (Acumulados)',
+        text: '',
       },
       min: 0,
       forceNiceScale: true,
@@ -431,7 +431,7 @@ export class TableroGeneralComponent implements OnInit, AfterViewInit {
     },
     yaxis: {
       title: {
-        text: 'Archivos entregados (Acumulados)',
+        text: '',
       },
       min: 0,
       forceNiceScale: true,
@@ -444,7 +444,7 @@ export class TableroGeneralComponent implements OnInit, AfterViewInit {
   filesSizeAccChart: ApexOptions = {
     series: [
       {
-        name: 'MB',
+        name: 'TB',
         data: [],
       },
     ],
@@ -469,7 +469,7 @@ export class TableroGeneralComponent implements OnInit, AfterViewInit {
     },
     yaxis: {
       title: {
-        text: 'Datos entregados (MB Acumulados)',
+        text: '',
       },
       min: 0,
       forceNiceScale: true,
@@ -590,7 +590,7 @@ export class TableroGeneralComponent implements OnInit, AfterViewInit {
           audio.push(audiot);
           video.push(videot);
           images.push(imagest);
-          size.push(sizet.toFixed(2));
+          size.push((sizet / 1000000).toFixed(2));
         });
       });
 
@@ -621,7 +621,7 @@ export class TableroGeneralComponent implements OnInit, AfterViewInit {
 
       this.filesSizeAccChart.series = [
         {
-          name: 'MB',
+          name: 'TB',
           data: size,
         },
       ];
@@ -732,7 +732,7 @@ export class TableroGeneralComponent implements OnInit, AfterViewInit {
 
     this.filesSizeChart.series = [
       {
-        name: 'MB',
+        name: 'TB',
         data: size,
       },
     ];
