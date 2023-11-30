@@ -671,19 +671,45 @@ export class TableroGeneralComponent implements OnInit, AfterViewInit {
       }
     }
 
-    files = files.sort((a, b) => a.delivery_date.localeCompare(b.delivery_date));
+    files = _.sortBy(files, ['delivery_date']);
+    files = _.groupBy(files, (f) => new Date(f.delivery_date).getFullYear());
+    Object.keys(files).forEach((key) => {
+      files[key] = _.groupBy(files[key], (f) => monthToThreeMountPeriod(new Date(f.delivery_date).getMonth()));
+      Object.keys(files[key]).forEach((key2) => {
+        files[key][key2] = _.reduce(
+          files[key][key2],
+          (result, obj) => {
+            return {
+              audio_files: result.audio_files + obj.audio_files,
+              image_files: result.image_files + obj.image_files,
+              video_files: result.video_files + obj.video_files,
+              size: result.size + obj.size / 1024,
+            };
+          },
+          {
+            audio_files: 0,
+            image_files: 0,
+            video_files: 0,
+            size: 0,
+          }
+        );
+      });
+    });
+
     const categories = [];
     const audio = [];
     const video = [];
     const images = [];
     const size = [];
-    files.forEach((delivery) => {
-      categories.push(delivery.delivery_date);
-      audio.push(delivery.audio_files ?? 0);
-      video.push(delivery.video_files ?? 0);
-      images.push(delivery.image_files ?? 0);
-      const sizeMB = delivery.size ?? 0;
-      size.push((sizeMB / 1024).toFixed(2));
+
+    Object.keys(files).forEach((year) => {
+      Object.keys(files[year]).forEach((threeMonthPeriod) => {
+        categories.push(`${year}-0${threeMonthPeriod}`);
+        audio.push(files[year][threeMonthPeriod].audio_files);
+        video.push(files[year][threeMonthPeriod].video_files);
+        images.push(files[year][threeMonthPeriod].image_files);
+        size.push((files[year][threeMonthPeriod].size / 1000000).toFixed(2));
+      });
     });
 
     this.filesChart.series = [
