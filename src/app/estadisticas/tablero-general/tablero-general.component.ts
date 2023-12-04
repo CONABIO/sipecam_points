@@ -60,7 +60,7 @@ const updateTimeout = 300;
 
 const inArray = (array) => (input) => _.includes(array, input);
 
-const monthToFourMountPeriod = (month) => {
+const monthToThreeMountPeriod = (month) => {
   const f = _.cond([
     [inArray([0, 1, 2]), _.constant(1)],
     [inArray([3, 4, 5]), _.constant(2)],
@@ -109,7 +109,7 @@ export class TableroGeneralComponent implements OnInit, AfterViewInit {
     ],
     chart: {
       type: 'bar',
-      height: 350,
+      height: 400,
       toolbar: { show: false },
     },
     plotOptions: {
@@ -161,7 +161,7 @@ export class TableroGeneralComponent implements OnInit, AfterViewInit {
       },
     ],
     chart: {
-      height: 350,
+      height: 400,
       type: 'bar',
       toolbar: { show: false },
     },
@@ -210,12 +210,12 @@ export class TableroGeneralComponent implements OnInit, AfterViewInit {
   devicesStatusChart: ApexOptions = {
     series: [],
     chart: {
-      height: 250,
+      height: 300,
       type: 'donut',
     },
     labels: [],
     legend: {
-      position: 'left',
+      position: 'bottom',
     },
     plotOptions: {
       pie: {
@@ -234,12 +234,12 @@ export class TableroGeneralComponent implements OnInit, AfterViewInit {
   devicesTypeChart: ApexOptions = {
     series: [],
     chart: {
-      height: 250,
+      height: 300,
       type: 'donut',
     },
     labels: [],
     legend: {
-      position: 'left',
+      position: 'bottom',
     },
     plotOptions: {
       pie: {
@@ -258,12 +258,12 @@ export class TableroGeneralComponent implements OnInit, AfterViewInit {
   activeDevicesChart: ApexOptions = {
     series: [],
     chart: {
-      height: 250,
+      height: 300,
       type: 'donut',
     },
     labels: [],
     legend: {
-      position: 'left',
+      position: 'bottom',
     },
     plotOptions: {
       pie: {
@@ -312,7 +312,7 @@ export class TableroGeneralComponent implements OnInit, AfterViewInit {
     },
     yaxis: {
       title: {
-        text: 'Archivos entregados',
+        text: '',
       },
       min: 0,
       forceNiceScale: true,
@@ -325,7 +325,7 @@ export class TableroGeneralComponent implements OnInit, AfterViewInit {
   filesSizeChart: ApexOptions = {
     series: [
       {
-        name: 'GB',
+        name: 'TB',
         data: [],
       },
     ],
@@ -347,7 +347,7 @@ export class TableroGeneralComponent implements OnInit, AfterViewInit {
     },
     yaxis: {
       title: {
-        text: 'Datos entregados (GB)',
+        text: '',
       },
       min: 0,
       forceNiceScale: true,
@@ -385,7 +385,7 @@ export class TableroGeneralComponent implements OnInit, AfterViewInit {
     },
     yaxis: {
       title: {
-        text: 'Archivos de audio entregados (Acumulados)',
+        text: '',
       },
       min: 0,
       forceNiceScale: true,
@@ -431,7 +431,7 @@ export class TableroGeneralComponent implements OnInit, AfterViewInit {
     },
     yaxis: {
       title: {
-        text: 'Archivos entregados (Acumulados)',
+        text: '',
       },
       min: 0,
       forceNiceScale: true,
@@ -444,7 +444,7 @@ export class TableroGeneralComponent implements OnInit, AfterViewInit {
   filesSizeAccChart: ApexOptions = {
     series: [
       {
-        name: 'MB',
+        name: 'TB',
         data: [],
       },
     ],
@@ -469,7 +469,7 @@ export class TableroGeneralComponent implements OnInit, AfterViewInit {
     },
     yaxis: {
       title: {
-        text: 'Datos entregados (MB Acumulados)',
+        text: '',
       },
       min: 0,
       forceNiceScale: true,
@@ -531,7 +531,6 @@ export class TableroGeneralComponent implements OnInit, AfterViewInit {
   }
 
   async partition_files() {
-    let files: any = null;
     try {
       const { data }: any = await this.apollo
         .query({
@@ -549,7 +548,7 @@ export class TableroGeneralComponent implements OnInit, AfterViewInit {
 
       files = _.groupBy(files, (f) => new Date(f.delivery_date).getFullYear());
       Object.keys(files).forEach((key) => {
-        files[key] = _.groupBy(files[key], (f) => monthToFourMountPeriod(new Date(f.delivery_date).getMonth()));
+        files[key] = _.groupBy(files[key], (f) => monthToThreeMountPeriod(new Date(f.delivery_date).getMonth()));
         Object.keys(files[key]).forEach((key2) => {
           files[key][key2] = _.reduce(
             files[key][key2],
@@ -591,7 +590,7 @@ export class TableroGeneralComponent implements OnInit, AfterViewInit {
           audio.push(audiot);
           video.push(videot);
           images.push(imagest);
-          size.push(sizet.toFixed(2));
+          size.push((sizet / 1000000).toFixed(2));
         });
       });
 
@@ -622,7 +621,7 @@ export class TableroGeneralComponent implements OnInit, AfterViewInit {
 
       this.filesSizeAccChart.series = [
         {
-          name: 'MB',
+          name: 'TB',
           data: size,
         },
       ];
@@ -672,19 +671,45 @@ export class TableroGeneralComponent implements OnInit, AfterViewInit {
       }
     }
 
-    files = files.sort((a, b) => a.delivery_date.localeCompare(b.delivery_date));
+    files = _.sortBy(files, ['delivery_date']);
+    files = _.groupBy(files, (f) => new Date(f.delivery_date).getFullYear());
+    Object.keys(files).forEach((key) => {
+      files[key] = _.groupBy(files[key], (f) => monthToThreeMountPeriod(new Date(f.delivery_date).getMonth()));
+      Object.keys(files[key]).forEach((key2) => {
+        files[key][key2] = _.reduce(
+          files[key][key2],
+          (result, obj) => {
+            return {
+              audio_files: result.audio_files + obj.audio_files,
+              image_files: result.image_files + obj.image_files,
+              video_files: result.video_files + obj.video_files,
+              size: result.size + obj.size / 1024,
+            };
+          },
+          {
+            audio_files: 0,
+            image_files: 0,
+            video_files: 0,
+            size: 0,
+          }
+        );
+      });
+    });
+
     const categories = [];
     const audio = [];
     const video = [];
     const images = [];
     const size = [];
-    files.forEach((delivery) => {
-      categories.push(delivery.delivery_date);
-      audio.push(delivery.audio_files ?? 0);
-      video.push(delivery.video_files ?? 0);
-      images.push(delivery.image_files ?? 0);
-      const sizeMB = delivery.size ?? 0;
-      size.push((sizeMB / 1024).toFixed(2));
+
+    Object.keys(files).forEach((year) => {
+      Object.keys(files[year]).forEach((threeMonthPeriod) => {
+        categories.push(`${year}-0${threeMonthPeriod}`);
+        audio.push(files[year][threeMonthPeriod].audio_files);
+        video.push(files[year][threeMonthPeriod].video_files);
+        images.push(files[year][threeMonthPeriod].image_files);
+        size.push((files[year][threeMonthPeriod].size / 1000000).toFixed(2));
+      });
     });
 
     this.filesChart.series = [
@@ -707,7 +732,7 @@ export class TableroGeneralComponent implements OnInit, AfterViewInit {
 
     this.filesSizeChart.series = [
       {
-        name: 'MB',
+        name: 'TB',
         data: size,
       },
     ];
